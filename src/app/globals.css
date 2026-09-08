@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ── Paleta Corporativa Industrial ──────────────────────── */
+  --color-navy-950: #061520;   /* Azul profundo — heroes, footer */
+  --color-navy-900: #091e30;
+  --color-navy-800: #0e2d47;
+  --color-navy-700: #14405f;
+
+  --color-primary-800: #0d3d70;
+  --color-primary-700: #124d8f;  /* Azul corporativo profundo */
+  --color-primary-600: #1a65b5;  /* Azul principal */
+  --color-primary-500: #2177cc;  /* Azul interactivo */
+  --color-primary-400: #4a9de0;
+
+  /* Cian como ACENTO, muy selectivo */
+  --color-accent-600: #0077aa;
+  --color-accent-500: #0099cc;
+  --color-accent-400: #00b8e6;
+  --color-electric: #0099cc;     /* Acento cian controlado */
+
+  /* Grises neutros industriales */
+  --color-gray-50:  #f8f9fa;
+  --color-gray-100: #f1f3f5;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #adb5bd;
+  --color-gray-500: #6c757d;
+  --color-gray-600: #495057;
+  --color-gray-700: #343a40;
+  --color-gray-800: #212529;
+  --color-gray-900: #121416;
+
+  /* ── Tipografía ────────────────────────────────────────── */
+  --font-sans:    var(--font-poppins);
+  --font-heading: var(--font-league-spartan);
+
+  /* ── Radii — Reducidos, industriales ─────────────────── */
+  --radius-none: 0px;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   6px;
+  --radius-xl:   10px;
+
+  /* ── Sombras — Sutiles, sin glow ──────────────────────── */
+  --shadow-xs:  0 1px 3px rgba(6, 21, 32, 0.08);
+  --shadow-sm:  0 2px 8px rgba(6, 21, 32, 0.10);
+  --shadow-md:  0 4px 16px rgba(6, 21, 32, 0.12);
+  --shadow-lg:  0 8px 32px rgba(6, 21, 32, 0.14);
+
+  --color-background: #ffffff;
+  --color-foreground: var(--color-gray-800);
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ── Utilidades Industriales ───────────────────────────────── */
+@layer utilities {
+
+  /* Etiqueta industrial pequeña */
+  .industrial-label {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-electric);
+  }
+
+  /* Línea divisora corporativa */
+  .section-rule {
+    display: block;
+    width: 48px;
+    height: 3px;
+    background-color: var(--color-primary-600);
+    margin-top: 12px;
+  }
+
+  /* Número estadístico grande */
+  .stat-number {
+    font-family: var(--font-heading);
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-primary-600);
+  }
+
+  /* Stat sobre fondo oscuro */
+  .stat-number-light {
+    font-family: var(--font-heading);
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 900;
+    line-height: 1;
+    color: #ffffff;
+  }
+
+  /* Overlay oscuro industrial para heroes */
+  .hero-overlay {
+    background: linear-gradient(
+      100deg,
+      rgba(6, 21, 32, 0.92) 0%,
+      rgba(6, 21, 32, 0.75) 55%,
+      rgba(6, 21, 32, 0.20) 100%
+    );
+  }
+
+  /* Contenedor máximo corporativo */
+  .container-corp {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 4vw, 64px);
+    padding-right: clamp(20px, 4vw, 64px);
+  }
+
+  /* Botón CTA primario — rectangular, sin pills */
+  .btn-primary-corp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background-color: var(--color-primary-600);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 2px solid var(--color-primary-600);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary-corp:hover {
+    background-color: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+  }
+
+  /* Botón CTA secundario — borde blanco */
+  .btn-outline-corp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background-color: transparent;
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 2px solid rgba(255,255,255,0.5);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-outline-corp:hover {
+    border-color: #ffffff;
+    background-color: rgba(255,255,255,0.08);
+  }
+
+  /* Separador de sección con acento */
+  .divider-accent {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-primary-600), transparent);
+    margin: 0;
+  }
+}
+
+/* ── Animaciones Sutiles ───────────────────────────────────── */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Carrusel de logos — movimiento lento y continuo */
+@keyframes scroll-logos {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.7s ease forwards;
+}
+
+.animate-scroll-logos {
+  animation: scroll-logos 60s linear infinite;
+}
+
+.animate-scroll-logos:hover {
+  animation-play-state: paused;
+}
+
+/* ── Utilidades de scroll reveal ──────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Product card hover ──────────────────────────────────── */
+.product-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(6, 21, 32, 0.14);
+}
