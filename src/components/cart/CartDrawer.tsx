@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
+import React from "react";
 import Link from "next/link";
 import {
   Trash2,
@@ -9,13 +8,12 @@ import {
   Minus,
   ShoppingCart,
   FileText,
-  Download,
   Send,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { Drawer } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from "@/i18n/translations";
+import { useTranslation, getTranslatedProduct } from "@/i18n";
 
 export function CartDrawer() {
   const {
@@ -35,7 +33,7 @@ export function CartDrawer() {
     if (cart.length === 0) return;
 
     const quoteRef = `PROD-COT-${Math.floor(1000 + Math.random() * 9000)}`;
-    const today = new Date().toLocaleDateString("es-AR", {
+    const today = new Date().toLocaleDateString(language === "EN" ? "en-US" : language === "PT" ? "pt-BR" : language === "ZH" ? "zh-CN" : "es-AR", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -46,29 +44,52 @@ export function CartDrawer() {
 
     const itemsHtml = cart
       .map(
-        (item, index) => `
+        (item, index) => {
+          const prod = getTranslatedProduct(item.product, language);
+          return `
         <tr style="border-bottom: 1px solid #e2e8f0;">
           <td style="padding: 12px; font-weight: bold; color: #0f172a; text-align: center;">${index + 1}</td>
-          <td style="padding: 12px; font-weight: bold; color: #0f172a;">${item.product.code}</td>
+          <td style="padding: 12px; font-weight: bold; color: #0f172a;">${prod.code}</td>
           <td style="padding: 12px; color: #1e293b;">
-            <strong>${item.product.name}</strong><br/>
-            <span style="font-size: 11px; color: #64748b;">${item.product.sizeInfo || "Medidas de catálogo oficial"}</span>
+            <strong>${prod.name}</strong><br/>
+            <span style="font-size: 11px; color: #64748b;">${prod.sizeInfo || "Catálogo Oficial"}</span>
           </td>
           <td style="padding: 12px; text-align: center; color: #0284c7; font-weight: bold;">
-            ${item.product.homologado ? "✓ HOMOLOGADO" : "Estándar"}
+            ${prod.homologado ? "✓ HOMOLOGADO" : "Estándar"}
           </td>
           <td style="padding: 12px; text-align: center; font-weight: bold; font-size: 15px;">${item.quantity}</td>
         </tr>
-      `
+      `;
+        }
       )
       .join("");
 
+    const isEn = language === "EN";
+    const isPt = language === "PT";
+    const isZh = language === "ZH";
+
+    const titleText = isEn
+      ? "TECHNICAL PRE-QUOTE CERTIFICATE"
+      : isPt
+      ? "COMPROVANTE DE PRÉ-COTAÇÃO TÉCNICA"
+      : isZh
+      ? "技术预报价凭证"
+      : "CONSTANCIA DE PRE-COTIZACIÓN TÉCNICA";
+
+    const legalNotice = isEn
+      ? "This document constitutes an official inquiry for technical quotation generated from Prodelec platform. Final prices and delivery terms will be confirmed by Commercial Dept."
+      : isPt
+      ? "Este documento constitui uma solicitação oficial de cotação técnica emitida pela plataforma Prodelec. Preços finais e prazos serão confirmados pelo Depto Comercial."
+      : isZh
+      ? "本文件为Prodelec平台出具的技术报价咨询凭证。最终价格及交期将由商业部确认。"
+      : "Este documento constituye una constancia oficial de solicitud de cotización técnica emitida desde la plataforma Prodelec. Precios finales, plazos de despacho y condiciones de entrega serán confirmados por nuestro Departamento Comercial.";
+
     const htmlContent = `
       <!DOCTYPE html>
-      <html lang="es">
+      <html lang="${language.toLowerCase()}">
       <head>
         <meta charset="UTF-8" />
-        <title>Constancia de Cotización - ${quoteRef}</title>
+        <title>${titleText} - ${quoteRef}</title>
         <style>
           body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #0f172a; margin: 0; padding: 40px; background: #ffffff; }
           .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 24px; }
@@ -88,7 +109,7 @@ export function CartDrawer() {
       <body>
         <div class="no-print" style="text-align: right; margin-bottom: 20px;">
           <button onclick="window.print()" style="background: #0284c7; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 8px; cursor: pointer;">
-            🖨️ Imprimir / Guardar como PDF
+            🖨️ ${isEn ? "Print / Save PDF" : isPt ? "Imprimir / Salvar PDF" : isZh ? "打印/另存为PDF" : "Imprimir / Guardar como PDF"}
           </button>
         </div>
 
@@ -98,21 +119,20 @@ export function CartDrawer() {
             <div class="subtitle">SOLUCIONES INDUSTRIALES</div>
           </div>
           <div class="company-info">
-            <strong>PRODELEC S.A.</strong><br/>
+            <strong>PRODELEC S.R.L.</strong><br/>
             Parque Industrial Good Park, Florencio Varela<br/>
             Buenos Aires, Argentina<br/>
-            Email: prodelec@prodelec.com.ar | Tel Ventas: +54 9 11 3912-2763 | Planta: (54-11) 2341-3935
+            Email: prodelec@prodelec.com.ar | Tel Ventas: +54 9 11 3912-2763
           </div>
         </div>
 
         <div class="doc-title">
           <div>
-            <h2>CONSTANCIA DE PRE-COTIZACIÓN TÉCNICA</h2>
-            <p>Emisión: ${today}</p>
+            <h2>${titleText}</h2>
+            <p>${today}</p>
           </div>
           <div style="text-align: right;">
-            <strong style="font-size: 16px; color: #0f172a;">Ref: ${quoteRef}</strong><br/>
-            <span style="font-size: 11px; color: #64748b;">Validez sugerida: 15 días</span>
+            <strong style="font-size: 16px; color: #0f172a;">Ref: ${quoteRef}</strong>
           </div>
         </div>
 
@@ -120,10 +140,10 @@ export function CartDrawer() {
           <thead>
             <tr>
               <th style="text-align: center; width: 40px;">#</th>
-              <th>SKU / Código</th>
-              <th>Descripción del Producto</th>
-              <th style="text-align: center;">Estado Homologado</th>
-              <th style="text-align: center; width: 80px;">Cantidad</th>
+              <th>SKU / Code</th>
+              <th>Description</th>
+              <th style="text-align: center;">Status</th>
+              <th style="text-align: center; width: 80px;">Qty</th>
             </tr>
           </thead>
           <tbody>
@@ -132,15 +152,15 @@ export function CartDrawer() {
         </table>
 
         <div style="margin-top: 15px; text-align: right; font-size: 14px; font-weight: bold; color: #0f172a;">
-          Total de Ítems Solicitados: ${totalItems} unidad(es)
+          Total: ${totalItems} ${isEn ? "item(s)" : isPt ? "item(ns)" : isZh ? "件" : "unidad(es)"}
         </div>
 
         <div class="legal-notice">
-          <strong>Aviso Legal y Técnico:</strong> Este documento constituye una constancia oficial de solicitud de cotización técnica emitida desde la plataforma Prodelec. No posee validez fiscal ni representa una factura de venta. Los precios finales, plazos de despacho y condiciones de entrega serán confirmados por nuestro Departamento Comercial al momento de emitir la Orden de Compra definitiva.
+          <strong>Notice:</strong> ${legalNotice}
         </div>
 
         <div class="footer">
-          Prodelec S.A. — Componentes de Ingeniería para Redes de Agua Potable y Saneamiento.
+          PRODELEC S.R.L. — Industrial Engineering Components.
         </div>
       </body>
       </html>
@@ -151,15 +171,23 @@ export function CartDrawer() {
   };
 
   const handleSendWhatsApp = () => {
-    // Teléfono oficial de Ventas Prodelec (+54 9 11 3912-2763)
     const phoneNumber = "5491139122763";
-    let message = "👋 Hola Prodelec (Ventas), quisiera solicitar la cotización formal del siguiente pedido de mi carrito:\n\n";
+    let message = language === "EN"
+      ? "👋 Hello Prodelec (Sales), I would like to request an official quotation for the following items:\n\n"
+      : language === "PT"
+      ? "👋 Olá Prodelec (Vendas), gostaria de solicitar uma cotação formal dos seguintes itens:\n\n"
+      : language === "ZH"
+      ? "👋 您好 Prodelec（销售部），我想咨询以下产品的正式技术报价：\n\n"
+      : "👋 Hola Prodelec (Ventas), quisiera solicitar la cotización formal del siguiente pedido de mi carrito:\n\n";
 
     cart.forEach((item, idx) => {
-      const extraInfo = item.product.sizeInfo ? ` | Medida: ${item.product.sizeInfo}` : "";
-      message += `${idx + 1}. *${item.quantity}x* ${item.product.name} (SKU: ${item.product.code}${extraInfo})\n`;
+      const prod = getTranslatedProduct(item.product, language);
+      const extraInfo = prod.sizeInfo ? ` | ${prod.sizeInfo}` : "";
+      message += `${idx + 1}. *${item.quantity}x* ${prod.name} (SKU: ${prod.code}${extraInfo})\n`;
     });
-    message += `\n📦 *Total de ítems:* ${totalItems} unidad(es)\n\n¿Podrían indicarme precios, disponibilidad y plazos de entrega? Muchas gracias.`;
+
+    const totalWord = language === "EN" ? "Total items" : language === "PT" ? "Total de itens" : language === "ZH" ? "总件数" : "Total de ítems";
+    message += `\n📦 *${totalWord}:* ${totalItems}\n\n`;
 
     window.open(
       `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
@@ -181,89 +209,95 @@ export function CartDrawer() {
               <ShoppingCart className="h-12 w-12 text-slate-400" />
             </div>
             <div>
-              <p className="text-lg font-bold text-navy-950">{t("cartEmpty")}</p>
+              <p className="text-base font-bold text-navy-950">{t("cartEmpty")}</p>
               <p className="mt-1 text-xs text-slate-500 max-w-xs">
-                {t("cartEmptyDesc") || "Agregá productos desde el catálogo para armar tu pedido de cotización."}
+                {t("cartEmptyDesc")}
               </p>
             </div>
             <Button
               className="mt-4 bg-navy-950 hover:bg-primary-600 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
               onClick={() => setCartOpen(false)}
             >
-              Explorar Catálogo
+              {t("navCatalog")}
             </Button>
           </div>
         ) : (
           <>
             <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
               <ul className="divide-y divide-slate-200">
-                {cart.map((item) => (
-                  <li key={item.product.id} className="flex py-4 first:pt-0 last:pb-0">
-                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-2 flex items-center justify-center">
-                      <img
-                        src={item.product.images[0] || "https://placehold.co/200"}
-                        alt={item.product.name}
-                        className="h-full w-full object-contain mix-blend-multiply"
-                      />
-                    </div>
+                {cart.map((item) => {
+                  const prod = getTranslatedProduct(item.product, language);
+                  return (
+                    <li key={item.product.id} className="flex py-4 first:pt-0 last:pb-0">
+                      <div className="h-18 w-18 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-2 flex items-center justify-center">
+                        <img
+                          src={prod.images[0] || "https://placehold.co/200"}
+                          alt={prod.name}
+                          className="h-full w-full object-contain mix-blend-multiply"
+                        />
+                      </div>
 
-                    <div className="ml-4 flex flex-1 flex-col justify-between">
-                      <div>
-                        <div className="flex justify-between items-start gap-2">
-                          <h3 className="text-xs font-bold text-navy-950 leading-snug line-clamp-2">
-                            <Link
-                              href={`/productos/${item.product.slug}`}
-                              onClick={() => setCartOpen(false)}
-                              className="hover:text-primary-600 transition-colors"
+                      <div className="ml-3 flex flex-1 flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start gap-2">
+                            <h3 className="text-xs font-bold text-navy-950 leading-snug line-clamp-2">
+                              <Link
+                                href={`/productos/${prod.slug}`}
+                                onClick={() => setCartOpen(false)}
+                                className="hover:text-primary-600 transition-colors"
+                              >
+                                {prod.name}
+                              </Link>
+                            </h3>
+                            <button
+                              type="button"
+                              onClick={() => removeFromCart(item.product.id)}
+                              className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                              aria-label="Eliminar"
                             >
-                              {item.product.name}
-                            </Link>
-                          </h3>
-                          <button
-                            type="button"
-                            onClick={() => removeFromCart(item.product.id)}
-                            className="text-slate-400 hover:text-red-500 transition-colors p-1"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                        <p className="mt-1 text-[10px] font-mono text-slate-400">
-                          SKU: {item.product.code}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center rounded-lg border border-slate-300 bg-white">
-                          <button
-                            type="button"
-                            className="px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors"
-                            onClick={() =>
-                              updateQuantity(item.product.id, Math.max(1, item.quantity - 1))
-                            }
-                          >
-                            <Minus className="h-3 w-3" />
-                          </button>
-                          <span className="px-2 text-center w-8 text-xs font-extrabold font-mono text-navy-950">
-                            {item.quantity}
-                          </span>
-                          <button
-                            type="button"
-                            className="px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors"
-                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                          >
-                            <Plus className="h-3 w-3" />
-                          </button>
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <p className="mt-0.5 text-[10px] font-mono text-slate-400 font-bold">
+                            SKU: {prod.code}
+                          </p>
                         </div>
 
-                        {item.product.homologado && (
-                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                            ✓ Homologado
-                          </span>
-                        )}
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center rounded-lg border border-slate-300 bg-white">
+                            <button
+                              type="button"
+                              className="px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors"
+                              onClick={() =>
+                                updateQuantity(item.product.id, Math.max(1, item.quantity - 1))
+                              }
+                              aria-label="Menos"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="px-2 text-center w-8 text-xs font-extrabold font-mono text-navy-950">
+                              {item.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              className="px-2 py-1 text-slate-600 hover:bg-slate-100 transition-colors"
+                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                              aria-label="Más"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                          </div>
+
+                          {prod.homologado && (
+                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                              ✓ {t("badge.homologado")}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
@@ -271,20 +305,20 @@ export function CartDrawer() {
             <div className="border-t-2 border-slate-200 p-6 bg-white space-y-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Total de Ítems
+                  {t("common.units")}
                 </span>
-                <span className="text-lg font-extrabold font-mono text-navy-950">
-                  {totalItems} unidades
+                <span className="text-base font-extrabold font-mono text-navy-950">
+                  {totalItems} {t("common.units")}
                 </span>
               </div>
 
-              {/* Botón WhatsApp Directo */}
+              {/* Botón WhatsApp */}
               <Button
-                className="w-full h-12 text-xs font-extrabold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full h-12 text-xs font-extrabold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-xs transition-all flex items-center justify-center gap-2"
                 onClick={handleSendWhatsApp}
               >
                 <Send className="h-4 w-4" />
-                Enviar Cotización por WhatsApp
+                WhatsApp
               </Button>
 
               {/* Botón PDF Proforma */}
@@ -294,13 +328,13 @@ export function CartDrawer() {
                 onClick={handleDownloadPDFQuote}
               >
                 <FileText className="h-4 w-4 text-primary-600" />
-                Descargar Constancia PDF (Proforma B2B)
+                PDF Proforma
               </Button>
 
               <button
                 type="button"
                 onClick={clearCart}
-                className="w-full text-center text-xs text-red-500 hover:text-red-700 font-semibold pt-1"
+                className="w-full text-center text-xs text-red-500 hover:text-red-700 font-bold uppercase tracking-wider pt-1"
               >
                 {t("cartClear")}
               </button>

@@ -93,9 +93,16 @@ function CatalogContent() {
     router.replace("/productos");
   };
 
-  // Filter Logic
+  // Filter Logic with multi-field search
+  const qLower = searchTerm.toLowerCase().trim();
   let filteredProducts = products.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.code.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = !qLower ||
+      p.name.toLowerCase().includes(qLower) ||
+      p.code.toLowerCase().includes(qLower) ||
+      (p.family && p.family.toLowerCase().includes(qLower)) ||
+      (p.tags && p.tags.some(tag => tag.toLowerCase().includes(qLower))) ||
+      (p.models && p.models.some(m => m.code.toLowerCase().includes(qLower) || m.name.toLowerCase().includes(qLower)));
+
     const matchesCategory = selectedCategories.length === 0 ||
       selectedCategories.some(catSlug => {
         const cat = categories.find(c => c.slug === catSlug);
@@ -127,7 +134,7 @@ function CatalogContent() {
       {/* Categories */}
       <div>
         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">{t("catCategories")}</h3>
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
           {categories.map((cat) => (
             <Checkbox
               key={cat.id}
@@ -139,7 +146,15 @@ function CatalogContent() {
         </div>
       </div>
 
-
+      {/* Homologado Filter */}
+      <div className="border-t border-gray-100 pt-5">
+        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">{t("catNorms")}</h3>
+        <Checkbox
+          label={t("catHomologated")}
+          checked={homologadoOnly}
+          onChange={() => setHomologadoOnly(prev => !prev)}
+        />
+      </div>
 
       {/* Diameter Filter */}
       <div className="border-t border-gray-100 pt-5">
@@ -157,7 +172,7 @@ function CatalogContent() {
       </div>
 
       <div className="border-t border-gray-100 pt-5">
-        <Button variant="outline" className="w-full" onClick={clearFilters}>
+        <Button variant="outline" className="w-full text-xs font-bold uppercase tracking-wider" onClick={clearFilters}>
           {t("catClearFilters")}
           {activeFiltersCount > 0 && (
             <span className="ml-2 h-5 w-5 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center">
@@ -172,57 +187,73 @@ function CatalogContent() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* ── Electric Blue Header with Wave ───────────────────── */}
+      {/* ── Corporate Blue Header ───────────────────── */}
       <div className="relative overflow-hidden pt-[72px]">
-        {/* Blue background */}
-        <div className="bg-gradient-to-br from-navy-900 via-primary-700 to-primary-600 relative">
-          {/* Grid pattern */}
+        <div className="bg-gradient-to-br from-navy-950 via-primary-800 to-primary-700 relative">
           <div className="absolute inset-0 opacity-[0.06]"
             style={{ backgroundImage: 'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}
           />
-          {/* Glow blobs */}
           <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-accent-400/20 blur-[80px]" />
-          <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-electric/10 blur-[60px]" />
+          <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-primary-500/10 blur-[60px]" />
 
-          <div className="relative mx-auto max-w-[1600px] px-6 lg:px-10 xl:px-16 py-16">
+          <div className="relative mx-auto max-w-[1600px] px-6 lg:px-10 xl:px-16 py-14">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div>
-                <div className="text-sm text-blue-200 mb-2 font-medium">Inicio / Productos</div>
-                <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">{t("catTitle")}</h1>
-                <p className="text-blue-200 text-lg max-w-xl">
-                  7 familias de producto homologadas para redes de distribución, conexión, derivación, reparación y fijación.
+                <div className="text-xs text-blue-200 mb-2 font-mono uppercase tracking-wider">
+                  {t("navHome")} / {t("navCatalog")}
+                </div>
+                <h1 className="text-3xl md:text-5xl font-heading font-black text-white mb-3 tracking-tight">
+                  {t("catTitle")}
+                </h1>
+                <p className="text-blue-100 text-sm md:text-base max-w-xl leading-relaxed">
+                  {t("catSubtitle")}
                 </p>
               </div>
-              
-              {/* Botones de Descargas de PDFs Máster */}
+
+              {/* Technical Master Downloads */}
               <div className="flex flex-col sm:flex-row gap-3 shrink-0">
                 <a
-                  href="/novedades"
-                  className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-navy-950 text-sm font-extrabold hover:bg-electric transition-all shadow-lg shadow-black/20"
+                  href="/pdf/catalogo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-navy-950 text-xs font-extrabold uppercase tracking-wider hover:bg-primary-50 transition-all shadow-md"
                 >
-                  <BookOpen className="h-5 w-5 text-primary-600" />
-                  Catálogo General (PDF)
+                  <BookOpen className="h-4 w-4 text-primary-600" />
+                  {t("generalCatalogPdf")}
                 </a>
                 <a
-                  href="/novedades"
-                  className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-electric text-navy-950 text-sm font-extrabold hover:bg-white transition-all shadow-lg shadow-electric/20"
+                  href="/pdf/ficha-tecnica"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary-600 text-white text-xs font-extrabold uppercase tracking-wider hover:bg-primary-500 transition-all shadow-md"
                 >
-                  <Download className="h-5 w-5 text-navy-950" />
-                  Ficha Técnica Unificada (PDF)
+                  <Download className="h-4 w-4 text-white" />
+                  {t("techSheetUnified")}
                 </a>
               </div>
             </div>
 
-            {/* Category pills */}
+            {/* Category wrapped chips (no horizontal scrollbar) */}
             <div className="flex flex-wrap gap-2 mt-8">
+              <button
+                onClick={() => setSelectedCategories([])}
+                className={cn(
+                  "px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all duration-150",
+                  selectedCategories.length === 0
+                    ? "bg-white text-primary-700 border-white shadow-sm"
+                    : "bg-white/10 text-white border-white/20 hover:bg-white/20"
+                )}
+              >
+                {t("catAll")}
+              </button>
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => toggleCategory(cat.slug)}
                   className={cn(
-                    "px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200",
+                    "px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all duration-150",
                     selectedCategories.includes(cat.slug)
-                      ? "bg-white text-primary-700 border-white shadow-md"
+                      ? "bg-white text-primary-700 border-white shadow-sm"
                       : "bg-white/10 text-white border-white/20 hover:bg-white/20"
                   )}
                 >
@@ -232,18 +263,6 @@ function CatalogContent() {
             </div>
           </div>
         </div>
-
-        {/* Wave SVG — electric blue to gray-50 */}
-        <div className="relative bg-gray-50 -mt-1">
-          <svg
-            viewBox="0 0 1440 80"
-            preserveAspectRatio="none"
-            className="absolute top-0 left-0 right-0 w-full h-20 -translate-y-full"
-            style={{ fill: '#f8fafc' }}
-          >
-            <path d="M0,20 C240,60 480,0 720,30 C960,60 1200,10 1440,40 L1440,80 L0,80 Z" />
-          </svg>
-        </div>
       </div>
 
       {/* ── Main Content ───────────────────────────────────────── */}
@@ -251,14 +270,14 @@ function CatalogContent() {
         <div className="flex flex-col lg:flex-row gap-8">
 
           {/* Sidebar Desktop */}
-          <div className="hidden lg:block w-60 shrink-0">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-24">
+          <div className="hidden lg:block w-64 shrink-0">
+            <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-6 sticky top-24">
               <Sidebar />
             </div>
           </div>
 
           {/* Filter Drawer Mobile */}
-          <Drawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} title="Filtros" side="left">
+          <Drawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} title={t("catFilters")} side="left">
             <div className="p-6">
               <Sidebar />
             </div>
@@ -268,11 +287,11 @@ function CatalogContent() {
           <div className="flex-1 min-w-0">
 
             {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-2xl border border-gray-200/90 shadow-xs">
               <div className="flex items-center gap-3 flex-1">
-                <Button variant="outline" size="sm" className="lg:hidden shrink-0" onClick={() => setIsFilterDrawerOpen(true)}>
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Filtros
+                <Button variant="outline" size="sm" className="lg:hidden shrink-0 text-xs font-bold" onClick={() => setIsFilterDrawerOpen(true)}>
+                  <SlidersHorizontal className="h-4 w-4 mr-1.5" />
+                  {t("catFilters")}
                   {activeFiltersCount > 0 && (
                     <span className="ml-1.5 h-5 w-5 rounded-full bg-primary-600 text-white text-[10px] flex items-center justify-center font-bold">
                       {activeFiltersCount}
@@ -280,18 +299,18 @@ function CatalogContent() {
                   )}
                 </Button>
 
-                <div className="relative flex-1 max-w-72">
+                <div className="relative flex-1 max-w-sm">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    className="pl-9 h-9"
-                    placeholder="Buscar por nombre o SKU..."
+                    className="pl-9 h-9 text-xs"
+                    placeholder={t("catSearchPlaceholder")}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
 
-                <span className="text-sm text-gray-500 whitespace-nowrap hidden sm:block">
-                  {filteredProducts.length} {filteredProducts.length === 1 ? t("catResult") : t("catResults")}
+                <span className="text-xs font-semibold text-gray-500 whitespace-nowrap hidden sm:block">
+                  {t("catShowing")} <strong className="text-navy-950 font-bold">{filteredProducts.length}</strong> {filteredProducts.length === 1 ? t("catResult") : t("catResults")}
                 </span>
               </div>
 
@@ -299,14 +318,14 @@ function CatalogContent() {
                 <div className="hidden sm:flex items-center border border-gray-200 rounded-lg p-1 bg-gray-50">
                   <button
                     onClick={() => setViewMode("grid")}
-                    className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}
+                    className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-xs text-primary-600 font-bold' : 'text-gray-500 hover:text-gray-900'}`}
                     aria-label="Vista grilla"
                   >
                     <LayoutGrid className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setViewMode("list")}
-                    className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}
+                    className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-xs text-primary-600 font-bold' : 'text-gray-500 hover:text-gray-900'}`}
                     aria-label="Vista lista"
                   >
                     <List className="h-4 w-4" />
@@ -314,7 +333,7 @@ function CatalogContent() {
                 </div>
 
                 <select
-                  className="text-sm font-medium bg-white border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-600 outline-none text-gray-900"
+                  className="text-xs font-bold bg-white border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-600 outline-none text-gray-900"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
@@ -330,7 +349,7 @@ function CatalogContent() {
             {isLoading ? (
               <div className={`grid gap-5 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
                 {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100">
+                  <div key={i} className="bg-white p-6 rounded-2xl border border-gray-200">
                     <div className="animate-pulse flex flex-col gap-4">
                       <div className="h-48 bg-gray-100 rounded-xl" />
                       <div className="h-4 bg-gray-100 rounded w-1/4" />
@@ -350,13 +369,15 @@ function CatalogContent() {
                     <ProductCard key={product.id} product={product} viewMode={viewMode} />
                   ))
                 ) : (
-                  <div className="col-span-full py-20 text-center">
-                    <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 mb-6">
-                      <Search className="h-8 w-8 text-gray-400" />
+                  <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-gray-200">
+                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 mb-4">
+                      <Search className="h-7 w-7 text-gray-400" />
                     </div>
-                    <p className="text-gray-500 text-xl font-medium mb-2">{t("catNotFound")}</p>
-                    <p className="text-gray-400 text-sm mb-6">Probá con otros filtros o categorías</p>
-                    <Button variant="outline" onClick={clearFilters}>{t("catClearFilters")}</Button>
+                    <p className="text-navy-950 text-lg font-bold mb-2">{t("catNotFound")}</p>
+                    <p className="text-gray-500 text-xs mb-6 max-w-sm mx-auto">{t("catNoProductsDesc")}</p>
+                    <Button variant="outline" className="text-xs font-bold uppercase tracking-wider" onClick={clearFilters}>
+                      {t("catClearFilters")}
+                    </Button>
                   </div>
                 )}
               </motion.div>
@@ -367,7 +388,7 @@ function CatalogContent() {
               <div className="mt-12 flex justify-center">
                 <Button
                   variant="outline"
-                  className="px-8 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white"
+                  className="px-8 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white text-xs font-extrabold uppercase tracking-wider"
                   onClick={() => setVisibleCount(prev => prev + 12)}
                 >
                   {t("catLoadMore")}
@@ -382,12 +403,15 @@ function CatalogContent() {
 }
 
 export default function CatalogPage() {
+  const language = useStore(state => state.language);
+  const t = useTranslation(language);
+
   return (
     <Suspense fallback={
       <div className="min-h-screen pt-[72px] flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 rounded-full border-4 border-primary-600 border-t-transparent animate-spin" />
-          <p className="text-gray-500 font-medium">Cargando catálogo...</p>
+          <div className="h-10 w-10 rounded-full border-3 border-primary-600 border-t-transparent animate-spin" />
+          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">{t("loadingProducts")}</p>
         </div>
       </div>
     }>

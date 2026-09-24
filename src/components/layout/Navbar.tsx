@@ -148,20 +148,25 @@ export function Navbar() {
               </button>
             </div>
 
-            {/* Language Selector */}
-            <div className="relative flex items-center gap-1 px-2 py-1.5 text-gray-400 hover:text-white transition-colors">
-              <Globe className="h-3.5 w-3.5" />
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as LanguageCode)}
-                className="bg-transparent text-[11px] font-bold focus:ring-0 outline-none cursor-pointer appearance-none pr-3 text-current uppercase [&>option]:text-gray-900"
-              >
-                <option value="ES">ES</option>
-                <option value="EN">EN</option>
-                <option value="PT">PT</option>
-                <option value="ZH">ZH</option>
-              </select>
-              <ChevronDown className="h-3 w-3 absolute right-0 pointer-events-none" />
+            {/* Clean Segmented Language Selector */}
+            <div className="flex items-center border border-white/20 rounded-lg p-0.5 bg-navy-900/80 shrink-0">
+              {(["ES", "EN", "PT", "ZH"] as const).map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setLanguage(lang)}
+                  className={cn(
+                    "px-2 py-1 rounded text-[10px] font-mono font-extrabold uppercase transition-all duration-150 leading-none",
+                    language === lang
+                      ? "bg-primary-600 text-white shadow-xs"
+                      : "text-gray-400 hover:text-white"
+                  )}
+                  aria-label={`Seleccionar idioma ${lang}`}
+                  aria-pressed={language === lang}
+                >
+                  {lang}
+                </button>
+              ))}
             </div>
 
             {/* Cart */}
@@ -261,18 +266,23 @@ export function Navbar() {
               {t("quote")}
             </button>
 
-            <div className="flex items-center justify-center gap-2 text-gray-500 pt-2">
-              <Globe className="h-4 w-4" />
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as LanguageCode)}
-                className="text-sm font-semibold bg-transparent border border-gray-200 rounded px-2 py-1"
-              >
-                <option value="ES">Español</option>
-                <option value="EN">English</option>
-                <option value="PT">Português</option>
-                <option value="ZH">中文</option>
-              </select>
+            <div className="flex items-center justify-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200">
+              {(["ES", "EN", "PT", "ZH"] as const).map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setLanguage(lang)}
+                  className={cn(
+                    "flex-1 py-2 text-xs font-mono font-extrabold uppercase rounded-lg transition-all",
+                    language === lang
+                      ? "bg-navy-950 text-white shadow-xs"
+                      : "text-slate-600 hover:text-navy-950"
+                  )}
+                  aria-pressed={language === lang}
+                >
+                  {lang}
+                </button>
+              ))}
             </div>
           </div>
         </div>

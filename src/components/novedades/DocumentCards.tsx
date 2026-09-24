@@ -57,13 +57,13 @@ export function DocumentCards() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div className="max-w-2xl">
             <span className="text-xs font-bold text-electric uppercase tracking-widest block mb-2">
-              Centro de Documentación
+              {t("navNews")}
             </span>
             <h2 className="text-3xl md:text-4xl font-heading font-extrabold text-white tracking-tight mb-3 uppercase">
-              Recursos y Descargas Técnicas
+              {t("techDocuments")}
             </h2>
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Accedé a nuestros catálogos oficiales, manuales de instalación y pliegos en formato PDF.
+              {t("catalog.subtitle")}
             </p>
           </div>
         </div>
@@ -104,11 +104,11 @@ export function DocumentCards() {
                       <div className="text-xs font-mono font-bold text-white">{doc.pages}</div>
                     </div>
                     <div className="border-l border-white/10">
-                      <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5">Tamaño</div>
+                      <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5">MB</div>
                       <div className="text-xs font-mono font-bold text-white">{doc.size}</div>
                     </div>
                     <div className="border-l border-white/10">
-                      <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5">Fecha</div>
+                      <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5">Año</div>
                       <div className="text-xs font-mono font-bold text-white">{doc.date}</div>
                     </div>
                   </div>
@@ -121,7 +121,7 @@ export function DocumentCards() {
                       rel="noopener noreferrer"
                       className="flex-1 bg-white hover:bg-electric text-navy-950 font-extrabold py-3 px-4 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
                     >
-                      <Download className="h-4 w-4" /> Bajar PDF
+                      <Download className="h-4 w-4" /> {t("common.downloadPdf")}
                     </a>
                     <a
                       href={doc.url}

@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { categories as rawCategories, products as rawProducts } from "@/data/mock";
-import { Product, Category } from "@/types";
+import { categories as rawCategories, products as rawProducts } from "@/data/products";
 import { useStore } from "@/store/useStore";
-import { useTranslation, getTranslatedCategory, getTranslatedProduct } from "@/i18n/translations";
+import { useTranslation, getTranslatedCategory, getTranslatedProduct } from "@/i18n";
 import { ProductCard } from "@/components/product/ProductCard";
 import {
-  ShieldCheck, Download, BookOpen, Search, X,
-  SlidersHorizontal, ArrowRight, Grid,
+  Download, BookOpen, Search, X, SlidersHorizontal, ArrowRight, Filter, ChevronDown, Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,19 +27,35 @@ export default function CategoriasPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+  // Real multi-field search across name, code/SKU, category, description, features
   const filteredProducts = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
     return allProducts.filter((p) => {
       const matchesCategory =
         selectedCategory === "all" || p.categoryId === selectedCategory;
-      const matchesSearch =
-        !searchTerm ||
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesCategory && matchesSearch;
+
+      if (!matchesCategory) return false;
+      if (!q) return true;
+
+      const nameMatch = p.name.toLowerCase().includes(q);
+      const codeMatch = p.code.toLowerCase().includes(q);
+      const descMatch = p.description.toLowerCase().includes(q);
+      const categoryMatch = p.categoryId.toLowerCase().includes(q);
+      const sizeMatch = p.sizeInfo ? p.sizeInfo.toLowerCase().includes(q) : false;
+      const diameterMatch = p.diameter ? p.diameter.toLowerCase().includes(q) : false;
+
+      return (
+        nameMatch ||
+        codeMatch ||
+        descMatch ||
+        categoryMatch ||
+        sizeMatch ||
+        diameterMatch
+      );
     });
   }, [selectedCategory, searchTerm, allProducts]);
 
+  // Product counts per category
   const productCountMap = useMemo(() => {
     const map: Record<string, number> = {};
     categories.forEach((cat) => {
@@ -53,184 +67,243 @@ export default function CategoriasPage() {
   const activeCategoryObj = categories.find((c) => c.id === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800" style={{ paddingTop: "80px" }}>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800" style={{ paddingTop: "72px" }}>
 
-      {/* ── HERO HEADER ─────────────────────────────────────────────── */}
+      {/* ── HERO HEADER ───────────────────────────────────────────────────── */}
       <section className="bg-navy-950 text-white" style={{ borderBottom: "3px solid #1a65b5" }}>
-        <div className="container-corp py-12 lg:py-16">
+        <div className="container-corp py-10 lg:py-14">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-
             <div className="max-w-2xl">
-              <span className="industrial-label mb-4 block">
-                Catálogo Técnico Industrial
+              <span className="industrial-label mb-3 block text-sky-400">
+                {t("catalog.eyebrow")}
               </span>
               <h1
-                className="font-heading font-black text-white mb-4 leading-none"
-                style={{ fontSize: "clamp(32px, 4.5vw, 60px)", letterSpacing: "-0.025em" }}
+                className="font-heading font-black text-white mb-3 leading-tight"
+                style={{ fontSize: "clamp(28px, 4vw, 52px)", letterSpacing: "-0.025em" }}
               >
-                {t("catFamilyTitle")}
+                {t("catalog.title")}
               </h1>
-              <p className="text-gray-400 mb-6 max-w-lg" style={{ fontSize: "15px", lineHeight: "1.65" }}>
-                {t("catSubtitle")}
+              <p className="text-slate-300 mb-6 max-w-xl text-sm sm:text-base leading-relaxed">
+                {t("catalog.subtitle")}
               </p>
 
-              {/* Stats — sin pills, sin borders decorativos */}
-              <div className="flex flex-wrap gap-8">
+              {/* Technical Indicators */}
+              <div className="flex flex-wrap gap-6 sm:gap-8">
                 <div style={{ borderLeft: "2px solid #1a65b5", paddingLeft: "12px" }}>
                   <span className="font-heading font-black text-white text-2xl block leading-none">
                     {categories.length}
                   </span>
-                  <span className="industrial-label" style={{ color: "#4a9de0" }}>
-                    {t("catFamilies")}
+                  <span className="industrial-label" style={{ color: "#7dd3fc" }}>
+                    {t("nav.catalog")}
                   </span>
                 </div>
                 <div style={{ borderLeft: "2px solid #1a65b5", paddingLeft: "12px" }}>
                   <span className="font-heading font-black text-white text-2xl block leading-none">
                     +{allProducts.length}
                   </span>
-                  <span className="industrial-label" style={{ color: "#4a9de0" }}>
-                    {t("catModels")}
+                  <span className="industrial-label" style={{ color: "#7dd3fc" }}>
+                    {t("common.code")}
                   </span>
                 </div>
                 <div style={{ borderLeft: "2px solid #1a65b5", paddingLeft: "12px" }}>
                   <span className="font-heading font-black text-white text-2xl block leading-none">
                     ISO
                   </span>
-                  <span className="industrial-label" style={{ color: "#4a9de0" }}>
-                    9001 / IRAM
+                  <span className="industrial-label" style={{ color: "#7dd3fc" }}>
+                    9001:2015
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* PDF Downloads — botones rectangulares */}
+            {/* Official PDF Downloads */}
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
               <a
                 href="/pdf/catalogo"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-outline-corp text-sm py-3 px-6 justify-center"
+                className="btn-outline-corp text-xs sm:text-sm py-3 px-5 justify-center"
               >
                 <BookOpen className="h-4 w-4 shrink-0" />
-                {t("catPdfCatalog")}
+                <span>{t("common.officialCatalog")}</span>
               </a>
               <a
                 href="/pdf/ficha-tecnica"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-primary-corp text-sm py-3 px-6 justify-center"
+                className="btn-primary-corp text-xs sm:text-sm py-3 px-5 justify-center"
               >
                 <Download className="h-4 w-4 shrink-0" />
-                {t("catPdfSpecs")}
+                <span>{t("common.unifiedSpecs")}</span>
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── CONTROLES — Búsqueda y Filtros ──────────────────────────── */}
+      {/* ── CONTROLS: BÚSQUEDA Y SELECTOR DE FAMILIAS (NO HORIZONTAL SCROLL) ── */}
       <div className="container-corp py-6">
         <div
-          className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4"
-          style={{ border: "1px solid #dee2e6" }}
+          className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-white p-4 border border-slate-200 shadow-xs mb-4"
         >
-          {/* Búsqueda */}
+          {/* Input de Búsqueda multi-campo */}
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={t("catSearchPlaceholder")}
-              className="w-full h-10 pl-9 pr-9 bg-gray-50 border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-primary-600 transition-colors"
+              placeholder={t("catalog.searchPlaceholder")}
+              className="w-full h-10 pl-9 pr-9 bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-600 transition-colors"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                aria-label="Limpiar búsqueda"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span>
-              Mostrando <strong className="text-gray-800">{filteredProducts.length}</strong> productos
+          {/* Dynamic Counter & Secondary Links */}
+          <div className="flex flex-wrap items-center justify-between md:justify-end gap-4 text-sm text-slate-600">
+            <span className="font-mono text-xs sm:text-sm">
+              {t("catalog.showing")}{" "}
+              <strong className="text-navy-950 font-bold font-sans text-sm">
+                {filteredProducts.length}
+              </strong>{" "}
+              {t("catalog.productsWord")}
             </span>
+
             <Link
               href="/productos"
-              className="flex items-center gap-1.5 font-heading font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wider text-xs transition-colors"
-              style={{ fontSize: "11px" }}
+              className="flex items-center gap-1.5 font-heading font-bold text-primary-700 hover:text-primary-900 uppercase tracking-wider text-xs transition-colors"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
-              {t("catAdvancedFilters")}
+              <span>{t("catalog.advancedFilters")}</span>
             </Link>
           </div>
         </div>
 
-        {/* Filtros de categoría — tabs horizontales limpios */}
-        <div
-          className="flex items-center gap-0 overflow-x-auto mt-px"
-          style={{ borderBottom: "1px solid #dee2e6", background: "white" }}
-        >
-          <button
-            onClick={() => setSelectedCategory("all")}
-            className={cn(
-              "shrink-0 px-5 py-3 font-heading font-bold text-xs uppercase tracking-wider whitespace-nowrap transition-colors border-b-2",
-              selectedCategory === "all"
-                ? "border-primary-600 text-navy-950 bg-white"
-                : "border-transparent text-gray-500 hover:text-navy-950 hover:bg-gray-50"
-            )}
-          >
-            Todas
-            <span className="ml-2 text-[10px] font-mono text-gray-400">
-              ({allProducts.length})
-            </span>
-          </button>
+        {/* ── MOBILE COMPACT SELECTOR (Dropdown for mobile devices) ── */}
+        <div className="block lg:hidden mb-4 bg-white p-3 border border-slate-200 shadow-xs">
+          <label className="block text-[11px] font-heading font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+            {t("catalog.selectFamily")}
+          </label>
+          <div className="relative">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full h-11 bg-slate-50 border border-slate-300 text-slate-900 text-sm font-semibold px-3 pr-8 appearance-none focus:outline-none focus:border-primary-600 rounded-none cursor-pointer"
+            >
+              <option value="all">
+                {t("catalog.allFamilies")} ({allProducts.length})
+              </option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name} ({productCountMap[cat.id] || 0})
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+          </div>
+        </div>
 
-          {categories.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            const count = productCountMap[cat.id] || 0;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
+        {/* ── DESKTOP & TABLET CHIPS CON WRAP (AUTOMÁTICAMENTE EN VARIAS FILAS) ── */}
+        <div className="hidden lg:block bg-white p-4 border border-slate-200 shadow-xs">
+          <div className="flex items-center gap-2 mb-2.5">
+            <Filter className="h-3.5 w-3.5 text-primary-700" />
+            <span className="text-[11px] font-heading font-bold text-slate-600 uppercase tracking-wider">
+              {t("catalog.filterFamilies")}:
+            </span>
+          </div>
+
+          {/* WRAP Container: wraps automatically in multiple lines, NO horizontal scroll */}
+          <div className="flex flex-wrap gap-1.5">
+            {/* Chip: Todas */}
+            <button
+              onClick={() => setSelectedCategory("all")}
+              className={cn(
+                "px-3.5 py-1.5 font-heading font-bold text-xs uppercase tracking-wider transition-all border",
+                selectedCategory === "all"
+                  ? "bg-navy-950 text-white border-navy-950 shadow-xs"
+                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-navy-950"
+              )}
+            >
+              {t("catalog.allFamilies")}
+              <span
                 className={cn(
-                  "shrink-0 px-5 py-3 font-heading font-bold text-xs uppercase tracking-wider whitespace-nowrap transition-colors border-b-2",
-                  isSelected
-                    ? "border-primary-600 text-navy-950 bg-white"
-                    : "border-transparent text-gray-500 hover:text-navy-950 hover:bg-gray-50"
+                  "ml-1.5 text-[10px] font-mono",
+                  selectedCategory === "all" ? "text-sky-300" : "text-slate-400"
                 )}
               >
-                {cat.name}
-                <span className="ml-2 text-[10px] font-mono text-gray-400">
-                  ({count})
-                </span>
-              </button>
-            );
-          })}
+                ({allProducts.length})
+              </span>
+            </button>
+
+            {/* Chips por Categoría */}
+            {categories.map((cat) => {
+              const isSelected = selectedCategory === cat.id;
+              const count = productCountMap[cat.id] || 0;
+              const catColor = cat.color || "#1a65b5";
+
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={cn(
+                    "px-3 py-1.5 font-heading font-bold text-xs uppercase tracking-wider transition-all border flex items-center gap-1.5",
+                    isSelected
+                      ? "bg-navy-950 text-white border-navy-950 shadow-xs"
+                      : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-navy-950"
+                  )}
+                  style={
+                    isSelected
+                      ? { borderTop: `2px solid ${catColor}` }
+                      : undefined
+                  }
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ backgroundColor: catColor }}
+                  />
+                  <span>{cat.name}</span>
+                  <span
+                    className={cn(
+                      "text-[10px] font-mono",
+                      isSelected ? "text-sky-300" : "text-slate-400"
+                    )}
+                  >
+                    ({count})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* ── GRILLA DE FAMILIAS — visible cuando no hay filtro activo ── */}
+      {/* ── GRILLA DE FAMILIAS (VISIBLE CUANDO ESTÁ EN "TODAS" Y SIN BÚSQUEDA) ── */}
       {selectedCategory === "all" && !searchTerm && (
         <section className="container-corp pb-12">
-
           <div className="flex items-end justify-between mb-6">
             <div>
-              <span className="industrial-label mb-2 block">Líneas de Producto</span>
+              <span className="industrial-label mb-1.5 block text-primary-700">
+                {t("catalog.categoriesTitle")}
+              </span>
               <h2
                 className="font-heading font-black text-navy-950"
-                style={{ fontSize: "clamp(22px, 2.5vw, 32px)", letterSpacing: "-0.02em" }}
+                style={{ fontSize: "clamp(20px, 2.5vw, 30px)", letterSpacing: "-0.02em" }}
               >
-                {t("catFamiliesHeadline")}
+                {t("catalog.categoriesTitle")}
               </h2>
             </div>
           </div>
 
-          {/* Grid de categorías — limpio, sin badges de colores ni barras decorativas */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-gray-200">
+          {/* Grid de familias industriales sobrias */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {categories.map((cat, idx) => {
               const catProducts = allProducts.filter((p) => p.categoryId === cat.id);
               const sampleImage =
@@ -238,57 +311,58 @@ export default function CategoriasPage() {
                   ? catProducts[0].images[0]
                   : cat.image;
               const count = productCountMap[cat.id] || 0;
+              const catColor = cat.color || "#1a65b5";
 
               return (
-                <motion.div
+                <div
                   key={cat.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: idx * 0.04 }}
-                  className="bg-white group hover:bg-gray-50 transition-colors flex flex-col"
+                  className="bg-white group hover:bg-slate-50/70 transition-all flex flex-col border border-slate-200 shadow-xs"
+                  style={{ borderTop: `3px solid ${catColor}` }}
                 >
                   {/* Imagen */}
                   <div
-                    className="relative bg-gray-100 overflow-hidden flex items-center justify-center p-8"
-                    style={{ height: "200px" }}
+                    className="relative bg-slate-50 overflow-hidden flex items-center justify-center p-6 border-b border-slate-200"
+                    style={{ height: "180px" }}
                   >
                     <img
                       src={sampleImage}
                       alt={cat.name}
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                       style={{ mixBlendMode: "multiply" }}
                     />
                   </div>
 
                   {/* Contenido */}
-                  <div className="p-5 flex flex-col flex-1" style={{ borderTop: "2px solid #e9ecef" }}>
-
-                    {/* Index técnico */}
-                    <span
-                      className="font-heading font-bold text-gray-400 uppercase tracking-widest mb-2"
-                      style={{ fontSize: "10px" }}
-                    >
-                      Familia #{String(idx + 1).padStart(2, "0")}
-                    </span>
+                  <div className="p-4 flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span
+                        className="font-heading font-bold uppercase tracking-widest text-[10px]"
+                        style={{ color: catColor }}
+                      >
+                        {t("catalog.familyNumber")} #{String(idx + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 border border-slate-200">
+                        {count} {t("catalog.productsWord")}
+                      </span>
+                    </div>
 
                     <h3
-                      className="font-heading font-bold text-navy-950 uppercase group-hover:text-primary-600 transition-colors mb-2 leading-tight"
-                      style={{ fontSize: "15px" }}
+                      className="font-heading font-bold text-navy-950 uppercase group-hover:text-primary-700 transition-colors mb-2 text-sm leading-snug line-clamp-1"
                     >
                       {cat.name}
                     </h3>
 
-                    <p className="text-gray-500 text-xs leading-relaxed mb-4 flex-1 line-clamp-3">
+                    <p className="text-slate-600 text-xs leading-relaxed mb-3 flex-1 line-clamp-2">
                       {cat.description}
                     </p>
 
-                    {/* Subcategorías — etiquetas simples */}
+                    {/* Subcategorías / Variantes */}
                     {cat.subcategories && cat.subcategories.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {cat.subcategories.map((sub) => (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {cat.subcategories.slice(0, 3).map((sub) => (
                           <span
                             key={sub}
-                            className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 uppercase tracking-wider"
+                            className="text-[9px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 uppercase tracking-wider border border-slate-200"
                           >
                             {sub}
                           </span>
@@ -296,67 +370,73 @@ export default function CategoriasPage() {
                       </div>
                     )}
 
-                    {/* CTA */}
+                    {/* Botón de acción */}
                     <button
                       onClick={() => setSelectedCategory(cat.id)}
-                      className="w-full flex items-center justify-between py-2.5 px-4 bg-gray-50 hover:bg-navy-950 hover:text-white text-gray-700 font-heading font-bold uppercase tracking-wider transition-colors group/btn"
-                      style={{ fontSize: "11px", border: "1px solid #dee2e6" }}
+                      className="w-full flex items-center justify-between py-2 px-3 bg-slate-100 hover:bg-navy-950 hover:text-white text-slate-800 font-heading font-bold uppercase tracking-wider transition-colors text-[11px] border border-slate-200 group/btn"
                     >
-                      {t("catViewProducts")}
+                      <span>{t("catalog.viewProducts")}</span>
                       <ArrowRight className="h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
         </section>
       )}
 
-      {/* ── GRILLA DE PRODUCTOS ──────────────────────────────────────── */}
+      {/* ── LISTADO / GRILLA DE PRODUCTOS ─────────────────────────────────── */}
       <section className="container-corp pb-16">
-        {/* Header de la sección de productos */}
+        {/* Cabecera de la sección de productos */}
         <div
-          className="flex items-center justify-between mb-6 pb-4 bg-white px-6 py-4"
-          style={{ border: "1px solid #dee2e6", borderBottom: "2px solid #1a65b5" }}
+          className="flex items-center justify-between mb-6 pb-3 bg-white px-5 py-3.5 border border-slate-200"
+          style={{
+            borderLeft: `4px solid ${
+              activeCategoryObj ? activeCategoryObj.color || "#1a65b5" : "#1a65b5"
+            }`,
+          }}
         >
           <div>
             <h2
-              className="font-heading font-bold text-navy-950 uppercase"
-              style={{ fontSize: "clamp(16px, 1.8vw, 22px)", letterSpacing: "-0.01em" }}
+              className="font-heading font-bold text-navy-950 uppercase text-sm sm:text-base"
+              style={{ letterSpacing: "-0.01em" }}
             >
-              {activeCategoryObj ? activeCategoryObj.name : t("catAllProductsTitle")}
+              {activeCategoryObj
+                ? activeCategoryObj.name
+                : t("catalog.allProductsTitle")}
             </h2>
-            <p className="text-gray-400 text-xs mt-0.5">
+            <p className="text-slate-500 text-xs mt-0.5">
               {activeCategoryObj
                 ? activeCategoryObj.description
-                : t("catAllProductsSub")}
+                : t("catalog.allProductsSub")}
             </p>
           </div>
 
           {selectedCategory !== "all" && (
             <button
               onClick={() => setSelectedCategory("all")}
-              className="text-xs font-heading font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wider transition-colors flex items-center gap-1.5"
-              style={{ fontSize: "11px" }}
+              className="text-xs font-heading font-bold text-primary-700 hover:text-primary-900 uppercase tracking-wider transition-colors flex items-center gap-1 shrink-0 ml-4"
             >
-              ← {t("catBackToAll")}
+              ← {t("common.backToAll")}
             </button>
           )}
         </div>
 
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="bg-white p-16 text-center" style={{ border: "1px solid #dee2e6" }}>
-            <p className="font-heading font-bold text-navy-950 text-lg mb-2">
-              {t("catNoProductsFound")}
+          <div className="bg-white p-12 text-center border border-slate-200">
+            <p className="font-heading font-bold text-navy-950 text-base mb-2">
+              {t("catalog.noResultsTitle")}
             </p>
-            <p className="text-gray-400 text-sm mb-6">{t("catNoProductsSub")}</p>
+            <p className="text-slate-500 text-xs mb-6 max-w-sm mx-auto">
+              {t("catalog.noResultsSub")}
+            </p>
             <button
               onClick={() => {
                 setSelectedCategory("all");
@@ -364,7 +444,7 @@ export default function CategoriasPage() {
               }}
               className="btn-primary-corp"
             >
-              {t("catResetFilters")}
+              {t("catalog.resetFilters")}
             </button>
           </div>
         )}

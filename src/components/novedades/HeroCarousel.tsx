@@ -6,38 +6,43 @@ import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight, ArrowRight, Download, FileText, Zap, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-
-const HERO_SLIDES = [
-  {
-    id: 1,
-    title: "Nueva Línea de Cajas Base Abierta",
-    desc: "Diseñadas para facilitar la instalación y soportar altas presiones. Certificadas y homologadas para obras públicas de máxima exigencia.",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop",
-    badge: "🔥 Lanzamiento",
-    btnText: "Conocer más",
-    badgeColor: "bg-orange-500",
-  },
-  {
-    id: 2,
-    title: "Catálogo Técnico 2026",
-    desc: "Descargá nuestra última versión con todas las especificaciones, dimensiones y materiales de nuestras 7 familias de productos plásticos.",
-    image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop",
-    badge: "📄 Catálogo",
-    btnText: "Descargar PDF",
-    badgeColor: "bg-primary-500",
-  },
-  {
-    id: 3,
-    title: "Tecnología de Inyección Robótica",
-    desc: "Incorporamos nueva maquinaria para triplicar la producción de abrazaderas de reparación, garantizando stock permanente a nivel nacional.",
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop",
-    badge: "⭐ Destacado",
-    btnText: "Ver novedades",
-    badgeColor: "bg-accent-500",
-  },
-];
+import { useStore } from "@/store/useStore";
+import { useTranslation } from "@/i18n";
 
 export function HeroCarousel() {
+  const language = useStore((state) => state.language);
+  const t = useTranslation(language);
+
+  const HERO_SLIDES = [
+    {
+      id: 1,
+      title: t("newsSlide1Title"),
+      desc: t("newsSlide1Desc"),
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop",
+      badge: "🔥 " + (t("badge.launch") || "Lanzamiento"),
+      btnText: t("common.seeMore"),
+      badgeColor: "bg-orange-500",
+    },
+    {
+      id: 2,
+      title: t("newsSlide2Title"),
+      desc: t("newsSlide2Desc"),
+      image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop",
+      badge: "📄 " + (t("catPdfCatalog") || "Catálogo"),
+      btnText: t("common.downloadPdf"),
+      badgeColor: "bg-primary-500",
+    },
+    {
+      id: 3,
+      title: t("newsSlide3Title"),
+      desc: t("newsSlide3Desc"),
+      image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop",
+      badge: "⭐ " + (t("badge.featured") || "Destacado"),
+      btnText: t("common.seeMore"),
+      badgeColor: "bg-accent-500",
+    },
+  ];
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 40 }, [
     Autoplay({ delay: 6000, stopOnInteraction: false }),
   ]);

@@ -1,127 +1,129 @@
 "use client";
 
-import { MapPin, Navigation, Clock, Phone, Mail } from "lucide-react";
+import { MapPin, Navigation, Clock, Phone } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { useTranslation } from "@/i18n/translations";
+import { useTranslation } from "@/i18n";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 export default function UbicacionPage() {
-  const language = useStore(state => state.language);
+  const language = useStore((state) => state.language);
   const t = useTranslation(language);
 
-  // Link directo al mapa proveído por el usuario
   const MAP_URL = "https://maps.app.goo.gl/RRVMFfakNPZBZXU68";
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-[80px] font-sans flex flex-col">
+    <div className="min-h-screen bg-gray-50 pt-[72px] font-sans flex flex-col">
       {/* Header */}
-      <div className="bg-navy-950 py-16 lg:py-24 border-b border-navy-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay" />
+      <div className="bg-navy-950 py-16 lg:py-20 border-b border-navy-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950 to-transparent" />
         
         <div className="relative z-10 text-center max-w-3xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <span className="text-electric font-extrabold uppercase tracking-widest text-sm mb-4 block">
-              Sede Central
+            <span className="text-accent-400 font-extrabold uppercase tracking-widest text-xs mb-3 block">
+              {t("location.headquarters")}
             </span>
-            <h1 className="text-4xl md:text-6xl font-heading font-extrabold text-white mb-6 drop-shadow-lg">
+            <h1 className="text-3xl md:text-5xl font-heading font-extrabold text-white mb-4 uppercase tracking-tight">
               {t("navLocation")}
             </h1>
-            <p className="text-lg md:text-xl text-gray-300">
-              Vení a conocer nuestra planta de inyección robótica y oficinas comerciales. Estamos estratégicamente ubicados para garantizar una logística ágil a todo el país.
+            <p className="text-sm md:text-base text-gray-300 max-w-xl mx-auto leading-relaxed">
+              {t("location.heroDesc")}
             </p>
           </motion.div>
         </div>
       </div>
 
-      <div className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           
-          {/* Tarjeta de Información */}
+          {/* Information Card */}
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-1 bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/60 border border-gray-100 flex flex-col h-full relative overflow-hidden"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="lg:col-span-1 bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-200 flex flex-col justify-between"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-bl-full -z-10 opacity-50" />
-            
-            <h2 className="text-2xl font-bold text-navy-950 mb-8 border-b border-gray-100 pb-4">
-              Información de Contacto
-            </h2>
+            <div>
+              <h2 className="text-xl font-bold font-heading text-navy-950 mb-6 border-b border-gray-100 pb-3 uppercase tracking-wider">
+                {t("location.infoTitle")}
+              </h2>
 
-            <div className="space-y-8 flex-1">
-              <div className="flex gap-4 group">
-                <div className="mt-1 h-12 w-12 shrink-0 flex items-center justify-center rounded-2xl bg-sky-50 group-hover:bg-electric/10 group-hover:text-electric transition-colors">
-                  <MapPin className="h-6 w-6 text-primary-600 group-hover:text-electric transition-colors" />
+              <div className="space-y-6">
+                <div className="flex gap-3.5">
+                  <div className="mt-1 h-10 w-10 shrink-0 flex items-center justify-center rounded-xl bg-sky-50 text-primary-600">
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">
+                      {t("location.addressTitle")}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-800 font-semibold leading-relaxed">
+                      Colectora Au 2 N° 8190<br />
+                      Parque Industrial Good Park<br />
+                      Florencio Varela, Buenos Aires
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Dirección</h3>
-                  <p className="text-gray-900 font-medium leading-relaxed">
-                    Parque Industrial Good Park<br />
-                    Florencio Varela, Provincia de Buenos Aires
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex gap-4 group">
-                <div className="mt-1 h-12 w-12 shrink-0 flex items-center justify-center rounded-2xl bg-sky-50 group-hover:bg-electric/10 group-hover:text-electric transition-colors">
-                  <Clock className="h-6 w-6 text-primary-600 group-hover:text-electric transition-colors" />
+                <div className="flex gap-3.5">
+                  <div className="mt-1 h-10 w-10 shrink-0 flex items-center justify-center rounded-xl bg-sky-50 text-primary-600">
+                    <Clock className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">
+                      {t("location.hours")}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-800 font-semibold leading-relaxed">
+                      {t("footerHoursVal")}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">{t("contactHours")}</h3>
-                  <p className="text-gray-900 font-medium leading-relaxed">
-                    Lunes a Viernes<br />
-                    08:00 hs a 17:00 hs
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex gap-4 group">
-                <div className="mt-1 h-12 w-12 shrink-0 flex items-center justify-center rounded-2xl bg-sky-50 group-hover:bg-electric/10 group-hover:text-electric transition-colors">
-                  <Phone className="h-6 w-6 text-primary-600 group-hover:text-electric transition-colors" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Teléfono & WhatsApp</h3>
-                  <p className="text-gray-900 font-medium leading-relaxed">
-                    <strong className="text-navy-950">+54 9 11 3912-2763</strong> (Ventas)<br />
-                    <span className="text-xs text-gray-500">(54-11) 2341-3935 (Planta Industrial)</span>
-                  </p>
+                <div className="flex gap-3.5">
+                  <div className="mt-1 h-10 w-10 shrink-0 flex items-center justify-center rounded-xl bg-sky-50 text-primary-600">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">
+                      {t("location.phone")}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-800 font-semibold leading-relaxed">
+                      <strong className="text-navy-950">+54 9 11 3912-2763</strong> (Ventas)<br />
+                      <span className="text-xs text-gray-500">(54-11) 2341-3935 (Planta Industrial)</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <Button 
-              className="w-full mt-8 h-14 text-base font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-1 transition-all"
+              className="w-full mt-8 h-12 text-xs font-extrabold uppercase tracking-wider rounded-xl shadow-xs transition-all bg-navy-950 hover:bg-primary-600 text-white"
               onClick={() => window.open(MAP_URL, '_blank')}
             >
-              <Navigation className="mr-2 h-5 w-5" />
-              Abrir en Google Maps
+              <Navigation className="mr-2 h-4 w-4" />
+              {t("contactOpenMap")}
             </Button>
           </motion.div>
 
-          {/* Mapa Interactivo */}
+          {/* Interactive Map */}
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="lg:col-span-2 relative h-[500px] lg:h-auto min-h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white group cursor-pointer"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-2 relative h-[450px] lg:h-auto min-h-[450px] rounded-2xl overflow-hidden shadow-xs border-2 border-gray-200 group cursor-pointer"
             onClick={() => window.open(MAP_URL, '_blank')}
           >
-            {/* Overlay para hacer clic e ir a Maps */}
-            <div className="absolute inset-0 bg-navy-950/0 group-hover:bg-navy-950/20 transition-colors duration-500 z-10 flex items-center justify-center backdrop-blur-[1px] opacity-0 group-hover:opacity-100">
-              <div className="bg-white px-8 py-4 rounded-full font-bold text-primary-600 shadow-2xl flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                <MapPin className="h-6 w-6" />
-                Ver en Google Maps
+            <div className="absolute inset-0 bg-navy-950/0 group-hover:bg-navy-950/20 transition-colors duration-300 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <div className="bg-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-primary-600 shadow-xl flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-200">
+                <MapPin className="h-4 w-4" />
+                {t("contactOpenMap")}
               </div>
             </div>
 
-            {/* Iframe del mapa con las coordenadas proporcionadas */}
             <iframe 
               src="https://maps.google.com/maps?q=-34.788779,-58.247610&t=&z=16&ie=UTF8&iwloc=&output=embed" 
               width="100%" 
@@ -129,7 +131,6 @@ export default function UbicacionPage() {
               style={{ border: 0 }} 
               allowFullScreen={false} 
               loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
               className="absolute inset-0 w-full h-full object-cover scale-[1.02] pointer-events-none"
             />
           </motion.div>

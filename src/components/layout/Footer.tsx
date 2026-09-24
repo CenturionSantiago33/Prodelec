@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Mail, MapPin, Phone, Clock, ExternalLink, ArrowRight } from "lucide-react";
 import { categories } from "@/data/mock";
 import { useStore } from "@/store/useStore";
-import { useTranslation } from "@/i18n/translations";
+import { useTranslation, getTranslatedCategory } from "@/i18n";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -156,20 +156,20 @@ export function Footer() {
               {t("footerCatalog")}
             </h4>
             <ul className="space-y-3">
-              {categories.map((category) => (
+              {categories.slice(0, 10).map((category) => (
                 <li key={category.id}>
                   <Link
                     href={`/productos?categoria=${category.slug}`}
                     className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2"
                   >
                     <span className="w-1 h-1 bg-primary-600 inline-block shrink-0" />
-                    {category.name}
+                    {getTranslatedCategory(category.slug, language, category.name)}
                   </Link>
                 </li>
               ))}
               <li>
                 <Link
-                  href="/productos"
+                  href="/categorias"
                   className="text-sm text-accent-400 hover:text-white font-semibold transition-colors flex items-center gap-1.5 mt-2"
                 >
                   {t("footerViewAll")} <ArrowRight className="h-3.5 w-3.5" />

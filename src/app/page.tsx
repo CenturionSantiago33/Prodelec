@@ -4,105 +4,37 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
-  ArrowRight, ChevronLeft, ChevronRight, ShieldCheck,
-  Factory, Award, Truck, MapPin, Phone
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
+  Factory,
+  Award,
+  Truck,
 } from "lucide-react";
 import { categories, products } from "@/data/mock";
 import { useStore } from "@/store/useStore";
-import { useTranslation } from "@/i18n/translations";
-
-// ─── Slides ──────────────────────────────────────────────────
-const SLIDES = [
-  {
-    image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop",
-    label: "Fabricación Nacional",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop",
-    label: "Ingeniería Industrial",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop",
-    label: "Infraestructura Hidráulica",
-  },
-];
+import { useTranslation, getTranslatedProduct, getTranslatedCategory } from "@/i18n";
 
 // ─── Clientes ────────────────────────────────────────────────
 const CLIENTS = [
-  { name: "Aguas Mendocinas",  abbr: "AM"   },
-  { name: "AySA",              abbr: "AySA" },
-  { name: "ABSA",              abbr: "ABSA" },
-  { name: "Obras Sanitarias",  abbr: "OSN"  },
-  { name: "Aguas Cordobesas",  abbr: "AC"   },
-  { name: "Sabesp",            abbr: "SBP"  },
-  { name: "ASSA",              abbr: "ASSA" },
-  { name: "EPAS Neuquén",      abbr: "EPAS" },
+  { name: "Aguas Mendocinas", abbr: "AM" },
+  { name: "AySA", abbr: "AySA" },
+  { name: "ABSA", abbr: "ABSA" },
+  { name: "Obras Sanitarias", abbr: "OSN" },
+  { name: "Aguas Cordobesas", abbr: "AC" },
+  { name: "Sabesp", abbr: "SBP" },
+  { name: "ASSA", abbr: "ASSA" },
+  { name: "EPAS Neuquén", abbr: "EPAS" },
 ];
 
 // ─── Países ──────────────────────────────────────────────────
 const COUNTRIES = [
   { flag: "🇦🇷", name: "Argentina" },
-  { flag: "🇧🇷", name: "Brasil"    },
-  { flag: "🇺🇾", name: "Uruguay"   },
-  { flag: "🇨🇱", name: "Chile"     },
-  { flag: "🇧🇴", name: "Bolivia"   },
-];
-
-// ─── Noticias ────────────────────────────────────────────────
-const NOTICIAS = [
-  {
-    id: 1,
-    category: "Innovación",
-    date: "Junio 2025",
-    title: "Nueva línea de abrazaderas homologadas para redes de alta presión",
-    excerpt:
-      "Desarrollamos una nueva generación de abrazaderas de derivación con homologación extendida para presiones de trabajo superiores a 16 bar en redes de agua potable.",
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    category: "Producción",
-    date: "Mayo 2025",
-    title: "Ampliación de capacidad productiva en Florencio Varela",
-    excerpt: "Nueva línea de inyección incorporada para responder a la demanda creciente del mercado regional.",
-    image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=800&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    category: "Exportación",
-    date: "Abril 2025",
-    title: "Prodelec consolida su presencia en Brasil y Uruguay",
-    excerpt: "Acuerdos comerciales con operadores de infraestructura hídrica en Sudamérica.",
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop",
-  },
-];
-
-// ─── Ventajas ─────────────────────────────────────────────────
-const VENTAJAS = [
-  {
-    icon: ShieldCheck,
-    num: "ISO",
-    label: "Calidad Homologada",
-    desc: "Certificación ISO 9001:2015. Productos aprobados por entes reguladores de Argentina, Brasil y Uruguay.",
-  },
-  {
-    icon: Factory,
-    num: "24/7",
-    label: "Planta Propia",
-    desc: "Capacidad productiva continua en planta propia en el Parque Industrial Good Park, Florencio Varela.",
-  },
-  {
-    icon: Award,
-    num: "100%",
-    label: "Matricería Propia",
-    desc: "Diseño y fabricación de matrices y moldes en nuestras instalaciones. Control total del proceso.",
-  },
-  {
-    icon: Truck,
-    num: "∞",
-    label: "Stock Permanente",
-    desc: "Disponibilidad inmediata de los principales productos del catálogo. Logística a todo el país.",
-  },
+  { flag: "🇧🇷", name: "Brasil" },
+  { flag: "🇺🇾", name: "Uruguay" },
+  { flag: "🇨🇱", name: "Chile" },
+  { flag: "🇧🇴", name: "Bolivia" },
 ];
 
 // ─── Reveal hook ─────────────────────────────────────────────
@@ -112,7 +44,9 @@ function useReveal() {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) el.classList.add("visible"); },
+      ([entry]) => {
+        if (entry.isIntersecting) el.classList.add("visible");
+      },
       { threshold: 0.12 }
     );
     observer.observe(el);
@@ -121,16 +55,90 @@ function useReveal() {
   return ref;
 }
 
-// ─── Component ────────────────────────────────────────────────
 export default function Home() {
-  const language = useStore(state => state.language);
+  const language = useStore((state) => state.language);
   const t = useTranslation(language);
 
-  const newProducts = products.filter(p => p.isNew).slice(0, 6);
+  // Dynamic Slides with translations
+  const SLIDES = [
+    {
+      image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop",
+      label: t("home.hero.slide1"),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop",
+      label: t("home.hero.slide2"),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop",
+      label: t("home.hero.slide3"),
+    },
+  ];
+
+  // Dynamic Ventajas
+  const VENTAJAS = [
+    {
+      icon: ShieldCheck,
+      num: "ISO",
+      label: t("home.adv1.title"),
+      desc: t("home.adv1.desc"),
+    },
+    {
+      icon: Factory,
+      num: "24/7",
+      label: t("home.adv2.title"),
+      desc: t("home.adv2.desc"),
+    },
+    {
+      icon: Award,
+      num: "100%",
+      label: t("home.adv3.title"),
+      desc: t("home.adv3.desc"),
+    },
+    {
+      icon: Truck,
+      num: "∞",
+      label: t("home.adv4.title"),
+      desc: t("home.adv4.desc"),
+    },
+  ];
+
+  // Dynamic Noticias
+  const NOTICIAS = [
+    {
+      id: 1,
+      category: "Innovación",
+      date: "2025",
+      title: "Nueva línea de abrazaderas homologadas para redes de alta presión",
+      excerpt:
+        "Desarrollamos una nueva generación de abrazaderas de derivación con homologación extendida para presiones de trabajo superiores a 16 bar en redes de agua potable.",
+      image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop",
+    },
+    {
+      id: 2,
+      category: "Producción",
+      date: "2025",
+      title: "Ampliación de capacidad productiva en Florencio Varela",
+      excerpt:
+        "Nueva línea de inyección incorporada para responder a la demanda creciente del mercado regional.",
+      image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=800&auto=format&fit=crop",
+    },
+    {
+      id: 3,
+      category: "Exportación",
+      date: "2025",
+      title: "Prodelec consolida su presencia en Brasil y Uruguay",
+      excerpt:
+        "Acuerdos comerciales con operadores de infraestructura hídrica en Sudamérica.",
+      image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop",
+    },
+  ];
+
+  const newProducts = products.filter((p) => p.isNew).slice(0, 6);
 
   const [slideIndex, setSlideIndex] = useState(0);
-  const nextSlide = () => setSlideIndex(i => (i + 1) % SLIDES.length);
-  const prevSlide = () => setSlideIndex(i => (i - 1 + SLIDES.length) % SLIDES.length);
+  const nextSlide = () => setSlideIndex((i) => (i + 1) % SLIDES.length);
+  const prevSlide = () => setSlideIndex((i) => (i - 1 + SLIDES.length) % SLIDES.length);
 
   useEffect(() => {
     const timer = setInterval(nextSlide, 7000);
@@ -138,13 +146,13 @@ export default function Home() {
   }, []);
 
   // Reveal refs
-  const revealStats    = useReveal();
-  const revealEmpresa  = useReveal();
+  const revealStats = useReveal();
+  const revealEmpresa = useReveal();
   const revealVentajas = useReveal();
-  const revealProd     = useReveal();
+  const revealProd = useReveal();
   const revealClientes = useReveal();
   const revealNoticias = useReveal();
-  const revealPaises   = useReveal();
+  const revealPaises = useReveal();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -175,7 +183,7 @@ export default function Home() {
         {/* Overlay oscuro industrial */}
         <div className="hero-overlay absolute inset-0" />
 
-        {/* Borde inferior horizontal — reemplaza olas */}
+        {/* Borde inferior horizontal */}
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary-600" />
 
         {/* Contenido */}
@@ -194,7 +202,7 @@ export default function Home() {
             >
               <span className="inline-block w-8 h-[2px] bg-accent-400" />
               <span className="industrial-label">
-                Producción Nacional · Desde 1986
+                {t("home.hero.badge")}
               </span>
             </motion.div>
 
@@ -204,11 +212,11 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
               className="font-heading font-black text-white mb-6 leading-[1.0]"
-              style={{ fontSize: "clamp(48px, 7vw, 96px)", letterSpacing: "-0.03em" }}
+              style={{ fontSize: "clamp(44px, 6.5vw, 92px)", letterSpacing: "-0.03em" }}
             >
-              PRODUCCIÓN<br />
-              <span style={{ color: "#4a9de0" }}>INDUSTRIAL</span><br />
-              ARGENTINA
+              {t("home.hero.title1")}<br />
+              <span style={{ color: "#4a9de0" }}>{t("home.hero.title2")}</span><br />
+              {t("home.hero.title3")}
             </motion.h1>
 
             {/* Subtítulo */}
@@ -219,21 +227,20 @@ export default function Home() {
               className="text-gray-200 mb-3 font-medium leading-snug"
               style={{ fontSize: "clamp(18px, 2.2vw, 24px)" }}
             >
-              Soluciones para redes de agua y saneamiento
+              {t("home.hero.subtitle")}
             </motion.p>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.6 }}
-              className="text-gray-400 mb-10 max-w-lg"
+              className="text-gray-400 mb-10 max-w-xl"
               style={{ fontSize: "clamp(14px, 1.4vw, 16px)", lineHeight: "1.65" }}
             >
-              39 años desarrollando productos y soluciones de ingeniería
-              para infraestructura hidráulica en Argentina y Latinoamérica.
+              {t("home.hero.desc")}
             </motion.p>
 
-            {/* CTAs — rectangulares, sin pills */}
+            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -241,11 +248,11 @@ export default function Home() {
               className="flex flex-wrap gap-4"
             >
               <Link href="/empresa" className="btn-primary-corp">
-                Conocer Prodelec
+                {t("home.hero.btnCompany")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="/categorias" className="btn-outline-corp">
-                Ver Catálogo
+                {t("home.hero.btnCatalog")}
               </Link>
             </motion.div>
 
@@ -294,10 +301,10 @@ export default function Home() {
         <div className="container-corp">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
             {[
-              { num: "39+", label: "Años de Experiencia"   },
-              { num: "24/7", label: "Capacidad Productiva" },
-              { num: "ISO",  label: "9001:2015 Certificado"},
-              { num: "200+", label: "Productos en Catálogo"},
+              { num: "39+", label: t("home.stats.experience") },
+              { num: "24/7", label: t("home.stats.capacity") },
+              { num: "ISO", label: t("home.stats.certified") },
+              { num: "200+", label: t("home.stats.products") },
             ].map((stat, i) => (
               <div
                 key={i}
@@ -309,8 +316,10 @@ export default function Home() {
                 >
                   {stat.num}
                 </span>
-                <span className="font-heading font-bold text-primary-400 uppercase tracking-widest"
-                      style={{ fontSize: "10px" }}>
+                <span
+                  className="font-heading font-bold text-primary-200 uppercase tracking-widest text-center"
+                  style={{ fontSize: "10px" }}
+                >
                   {stat.label}
                 </span>
               </div>
@@ -325,7 +334,7 @@ export default function Home() {
       <section ref={revealEmpresa} className="reveal bg-white" style={{ overflow: "hidden" }}>
         <div className="lg:flex">
 
-          {/* Fotografía — 55% ancho en desktop, full en mobile */}
+          {/* Fotografía industrial */}
           <div
             className="relative w-full lg:w-[55%] shrink-0"
             style={{ minHeight: "480px", maxHeight: "640px" }}
@@ -335,46 +344,52 @@ export default function Home() {
               alt="Línea de producción Prodelec"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            {/* Overlay lateral para conectar con texto */}
-            <div className="hidden lg:block absolute inset-y-0 right-0 w-24"
-                 style={{ background: "linear-gradient(to right, transparent, white)" }} />
+            <div
+              className="hidden lg:block absolute inset-y-0 right-0 w-24"
+              style={{ background: "linear-gradient(to right, transparent, white)" }}
+            />
           </div>
 
-          {/* Contenido — 45% */}
+          {/* Contenido */}
           <div className="flex flex-col justify-center px-8 py-16 lg:px-16 lg:py-20 lg:w-[45%]">
-
-            <span className="industrial-label mb-3">Nuestra Empresa</span>
+            <span className="industrial-label mb-3">{t("home.about.eyebrow")}</span>
             <h2
               className="font-heading font-black text-navy-950 mb-5"
-              style={{ fontSize: "clamp(32px, 3.5vw, 52px)", letterSpacing: "-0.025em" }}
+              style={{ fontSize: "clamp(30px, 3.2vw, 48px)", letterSpacing: "-0.025em" }}
             >
-              39 AÑOS DE<br />EXPERIENCIA
+              {t("home.about.title")}
             </h2>
             <span className="section-rule mb-6" />
-            <p className="text-gray-600 leading-relaxed mb-8"
-               style={{ fontSize: "clamp(14px, 1.2vw, 16px)" }}>
-              Somos una empresa argentina dedicada al diseño, fabricación y comercialización
-              de soluciones de ingeniería para redes de agua potable, saneamiento y gas.
-              Con planta propia en el Parque Industrial Good Park (Florencio Varela),
-              producimos con estándares de calidad certificados ISO 9001:2015.
+            <p
+              className="text-gray-600 leading-relaxed mb-8"
+              style={{ fontSize: "clamp(14px, 1.2vw, 16px)" }}
+            >
+              {t("home.about.desc")}
             </p>
 
             {/* Indicadores inline */}
             <div className="grid grid-cols-2 gap-6 mb-8">
               {[
-                { num: "1986",  label: "Año de fundación"     },
-                { num: "24/7",  label: "Capacidad productiva" },
-                { num: "ISO",   label: "Certificación calidad"},
-                { num: "5",     label: "Países de exportación"},
+                { num: "1986", label: t("home.about.kpi1") },
+                { num: "24/7", label: t("home.about.kpi2") },
+                { num: "ISO", label: t("home.about.kpi3") },
+                { num: "5", label: t("home.about.kpi4") },
               ].map((s, i) => (
-                <div key={i} className="flex flex-col gap-0.5"
-                     style={{ borderLeft: "2px solid #1a65b5", paddingLeft: "12px" }}>
-                  <span className="font-heading font-black text-navy-950 leading-none"
-                        style={{ fontSize: "clamp(24px, 2.5vw, 36px)" }}>
+                <div
+                  key={i}
+                  className="flex flex-col gap-0.5"
+                  style={{ borderLeft: "2px solid #1a65b5", paddingLeft: "12px" }}
+                >
+                  <span
+                    className="font-heading font-black text-navy-950 leading-none"
+                    style={{ fontSize: "clamp(24px, 2.5vw, 36px)" }}
+                  >
                     {s.num}
                   </span>
-                  <span className="font-heading font-bold text-gray-400 uppercase tracking-widest"
-                        style={{ fontSize: "10px" }}>
+                  <span
+                    className="font-heading font-bold text-gray-400 uppercase tracking-widest"
+                    style={{ fontSize: "10px" }}
+                  >
                     {s.label}
                   </span>
                 </div>
@@ -382,7 +397,7 @@ export default function Home() {
             </div>
 
             <Link href="/empresa" className="btn-primary-corp self-start">
-              Conocer Prodelec <ArrowRight className="h-4 w-4" />
+              {t("home.about.btn")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -401,18 +416,16 @@ export default function Home() {
           {/* Header */}
           <div className="mb-16 lg:flex lg:items-end lg:justify-between">
             <div>
-              <span className="industrial-label mb-3 block">Ventaja Competitiva</span>
+              <span className="industrial-label mb-3 block">{t("home.advantages.eyebrow")}</span>
               <h2
                 className="font-heading font-black text-white"
-                style={{ fontSize: "clamp(32px, 4vw, 56px)", letterSpacing: "-0.025em" }}
+                style={{ fontSize: "clamp(30px, 3.8vw, 52px)", letterSpacing: "-0.025em" }}
               >
-                ¿POR QUÉ ELEGIR<br />
-                <span style={{ color: "#4a9de0" }}>PRODELEC?</span>
+                {t("home.advantages.title")}
               </h2>
             </div>
             <p className="text-gray-400 max-w-sm mt-4 lg:mt-0 text-sm leading-relaxed">
-              Cuatro décadas de experiencia en soluciones para infraestructura hidráulica
-              respaldan cada producto que fabricamos.
+              {t("home.advantages.desc")}
             </p>
           </div>
 
@@ -427,10 +440,9 @@ export default function Home() {
                 transition={{ delay: idx * 0.1 }}
                 className="bg-navy-950 p-10 lg:p-12 group hover:bg-navy-900 transition-colors"
               >
-                {/* Número / indicador grande */}
                 <div
-                  className="font-heading font-black text-primary-600 mb-4 leading-none group-hover:text-primary-500 transition-colors"
-                  style={{ fontSize: "clamp(48px, 5vw, 72px)" }}
+                  className="font-heading font-black text-primary-500 mb-4 leading-none group-hover:text-primary-400 transition-colors"
+                  style={{ fontSize: "clamp(44px, 4.5vw, 68px)" }}
                 >
                   {v.num}
                 </div>
@@ -440,7 +452,7 @@ export default function Home() {
                 >
                   {v.label}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
+                <p className="text-gray-400 text-sm leading-relaxed">{v.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -456,97 +468,114 @@ export default function Home() {
           {/* Header sección */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>
-              <span className="industrial-label mb-3 block">Catálogo Industrial</span>
+              <span className="industrial-label mb-3 block">{t("home.featured.eyebrow")}</span>
               <h2
                 className="font-heading font-black text-navy-950"
                 style={{ fontSize: "clamp(28px, 3.5vw, 48px)", letterSpacing: "-0.025em" }}
               >
-                PRODUCTOS DESTACADOS
+                {t("home.featured.title")}
               </h2>
               <span className="section-rule" />
             </div>
             <Link
               href="/categorias"
-              className="mt-6 md:mt-0 flex items-center gap-2 font-heading font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wider text-sm transition-colors"
+              className="mt-6 md:mt-0 flex items-center gap-2 font-heading font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wider text-xs sm:text-sm transition-colors"
             >
-              Ver Catálogo Completo <ArrowRight className="h-4 w-4" />
+              {t("home.featured.viewAll")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          {/* Grilla productos — 3 cols */}
+          {/* Grilla productos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {newProducts.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="product-card"
-              >
-                <Link
-                  href={`/productos/${product.slug}`}
-                  className="flex flex-col bg-white border border-gray-200 overflow-hidden group hover:border-primary-500 transition-colors h-full"
+            {newProducts.map((rawProduct, i) => {
+              const product = getTranslatedProduct(rawProduct, language);
+              const rawCat = categories.find((c) => c.id === rawProduct.categoryId || c.slug === rawProduct.categoryId);
+              const catName = rawCat ? getTranslatedCategory(rawCat, language).name : product.categoryId;
+
+              return (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="product-card"
                 >
-                  {/* Imagen */}
-                  <div className="relative bg-gray-100 overflow-hidden" style={{ height: "280px" }}>
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="absolute inset-0 w-full h-full object-contain p-8 group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {/* Categoría label */}
-                    <div className="absolute top-0 left-0 bg-primary-700 text-white px-3 py-1">
-                      <span className="font-heading font-bold uppercase tracking-wider"
-                            style={{ fontSize: "10px" }}>
-                        {categories.find(c => c.id === product.categoryId)?.name}
-                      </span>
-                    </div>
-                    {product.homologado && (
-                      <div className="absolute bottom-0 left-0 bg-navy-950 text-accent-400 px-3 py-1">
-                        <span className="font-heading font-bold uppercase tracking-wider"
-                              style={{ fontSize: "10px" }}>
-                          Homologado
+                  <Link
+                    href={`/productos/${product.slug}`}
+                    className="flex flex-col bg-white border border-gray-200 overflow-hidden group hover:border-primary-500 transition-colors h-full rounded-xl"
+                  >
+                    {/* Imagen */}
+                    <div className="relative bg-gray-100 overflow-hidden" style={{ height: "260px" }}>
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="absolute inset-0 w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {/* Categoría label */}
+                      <div className="absolute top-0 left-0 bg-navy-950 text-white px-3 py-1">
+                        <span
+                          className="font-heading font-bold uppercase tracking-wider"
+                          style={{ fontSize: "10px" }}
+                        >
+                          {catName}
                         </span>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-6 flex-1 flex flex-col"
-                       style={{ borderTop: "2px solid #f1f3f5" }}>
-                    <h3
-                      className="font-heading font-bold text-navy-950 mb-2 leading-tight group-hover:text-primary-600 transition-colors"
-                      style={{ fontSize: "clamp(15px, 1.3vw, 18px)" }}
-                    >
-                      {product.name}
-                    </h3>
-                    <p className="text-gray-400 font-mono text-xs mb-3">
-                      COD: {product.code}
-                    </p>
-                    {product.description && (
-                      <p className="text-gray-500 text-sm leading-relaxed mb-4 flex-1 line-clamp-2">
-                        {product.description}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-1.5 font-heading font-bold text-primary-600 uppercase tracking-wider mt-auto"
-                         style={{ fontSize: "11px" }}>
-                      Ver detalles <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                      {product.homologado && (
+                        <div className="absolute bottom-0 left-0 bg-emerald-600 text-white px-2.5 py-0.5">
+                          <span
+                            className="font-heading font-bold uppercase tracking-wider"
+                            style={{ fontSize: "9px" }}
+                          >
+                            {t("badge.homologado")}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+
+                    {/* Info */}
+                    <div
+                      className="p-5 flex-1 flex flex-col"
+                      style={{ borderTop: "2px solid #f1f3f5" }}
+                    >
+                      <h3
+                        className="font-heading font-bold text-navy-950 mb-1.5 leading-tight group-hover:text-primary-600 transition-colors line-clamp-2"
+                        style={{ fontSize: "16px" }}
+                      >
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-400 font-mono text-[11px] mb-2 font-bold">
+                        SKU: {product.code}
+                      </p>
+                      {product.description && (
+                        <p className="text-gray-500 text-xs leading-relaxed mb-4 flex-1 line-clamp-2">
+                          {product.description}
+                        </p>
+                      )}
+                      <div
+                        className="flex items-center gap-1.5 font-heading font-bold text-primary-600 uppercase tracking-wider mt-auto"
+                        style={{ fontSize: "11px" }}
+                      >
+                        {t("common.viewFull")}{" "}
+                        <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* CTA catálogo completo */}
-          <div className="mt-12 text-center"
-               style={{ borderTop: "1px solid #e9ecef", paddingTop: "40px" }}>
-            <p className="text-gray-500 text-sm mb-5">
-              Más de 200 productos técnicos para infraestructura hidráulica y sanitaria
+          <div
+            className="mt-12 text-center"
+            style={{ borderTop: "1px solid #e9ecef", paddingTop: "40px" }}
+          >
+            <p className="text-gray-500 text-xs sm:text-sm mb-5">
+              {t("home.featured.desc")}
             </p>
-            <Link href="/categorias" className="btn-primary-corp inline-flex">
-              Ver Catálogo Completo <ArrowRight className="h-4 w-4" />
+            <Link href="/categorias" className="btn-primary-corp inline-flex text-xs font-bold uppercase tracking-wider">
+              {t("home.featured.viewAll")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -558,40 +587,39 @@ export default function Home() {
       <section
         ref={revealClientes}
         className="reveal py-16 lg:py-20"
-        style={{ background: "#f1f3f5", borderTop: "1px solid #dee2e6" }}
+        style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}
       >
         <div className="container-corp">
           <div className="mb-10 text-center">
-            <span className="industrial-label mb-3 block">Partners Estratégicos</span>
+            <span className="industrial-label mb-3 block">{t("home.clients.eyebrow")}</span>
             <h2
               className="font-heading font-black text-navy-950 mb-3"
               style={{ fontSize: "clamp(24px, 3vw, 40px)" }}
             >
-              NUESTROS CLIENTES
+              {t("home.clients.title")}
             </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
-              Empresas y organismos de servicios de agua que confían en nuestras soluciones
-              para sus redes de distribución e infraestructura.
+            <p className="text-gray-500 text-xs sm:text-sm max-w-xl mx-auto">
+              {t("home.clients.desc")}
             </p>
           </div>
 
-          {/* Grilla logos — sin cards flotantes */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-gray-300">
+          {/* Grilla logos */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-gray-200 border border-gray-200 rounded-xl overflow-hidden">
             {CLIENTS.map((client, i) => (
               <div
                 key={i}
-                className="bg-white flex flex-col items-center justify-center py-8 px-4 text-center
-                           opacity-60 hover:opacity-100 transition-opacity duration-300"
+                className="bg-white flex flex-col items-center justify-center py-7 px-4 text-center opacity-70 hover:opacity-100 transition-opacity duration-200"
               >
-                {/* Abbr como placeholder de logo */}
                 <span
                   className="font-heading font-black text-navy-950 mb-1"
-                  style={{ fontSize: "clamp(20px, 2vw, 28px)" }}
+                  style={{ fontSize: "clamp(18px, 2vw, 24px)" }}
                 >
                   {client.abbr}
                 </span>
-                <span className="text-gray-400 font-bold uppercase tracking-widest"
-                      style={{ fontSize: "10px" }}>
+                <span
+                  className="text-gray-400 font-bold uppercase tracking-wider"
+                  style={{ fontSize: "10px" }}
+                >
                   {client.name}
                 </span>
               </div>
@@ -608,27 +636,27 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>
-              <span className="industrial-label mb-3 block">Novedades Corporativas</span>
+              <span className="industrial-label mb-3 block">{t("home.news.eyebrow")}</span>
               <h2
                 className="font-heading font-black text-navy-950"
                 style={{ fontSize: "clamp(28px, 3.5vw, 48px)", letterSpacing: "-0.025em" }}
               >
-                NOTICIAS
+                {t("home.news.title")}
               </h2>
               <span className="section-rule" />
             </div>
             <Link
               href="/novedades"
-              className="mt-6 md:mt-0 flex items-center gap-2 font-heading font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wider text-sm transition-colors"
+              className="mt-6 md:mt-0 flex items-center gap-2 font-heading font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wider text-xs sm:text-sm transition-colors"
             >
-              Ver todas las noticias <ArrowRight className="h-4 w-4" />
+              {t("home.news.viewAll")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          {/* Layout editorial: noticia principal + secundarias */}
+          {/* Layout editorial */}
           <div className="lg:grid lg:grid-cols-12 lg:gap-8">
 
-            {/* Noticia principal — 7 cols */}
+            {/* Noticia principal */}
             <motion.article
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -636,45 +664,55 @@ export default function Home() {
               className="lg:col-span-7 group"
             >
               <Link href="/novedades" className="block">
-                <div className="relative overflow-hidden" style={{ height: "clamp(280px, 35vw, 440px)" }}>
+                <div
+                  className="relative overflow-hidden rounded-xl"
+                  style={{ height: "clamp(280px, 35vw, 420px)" }}
+                >
                   <img
                     src={NOTICIAS[0].image}
                     alt={NOTICIAS[0].title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0"
-                       style={{ background: "linear-gradient(to top, rgba(6,21,32,0.85) 0%, transparent 50%)" }} />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: "linear-gradient(to top, rgba(6,21,32,0.9) 0%, transparent 60%)",
+                    }}
+                  />
                   <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="bg-primary-600 text-white px-2 py-0.5 font-heading font-bold uppercase tracking-widest"
-                            style={{ fontSize: "10px" }}>
+                      <span
+                        className="bg-primary-600 text-white px-2.5 py-0.5 font-heading font-bold uppercase tracking-widest text-[9px] rounded"
+                      >
                         {NOTICIAS[0].category}
                       </span>
-                      <span className="text-gray-300 font-bold uppercase tracking-widest"
-                            style={{ fontSize: "10px" }}>
+                      <span
+                        className="text-gray-300 font-bold uppercase tracking-widest text-[10px]"
+                      >
                         {NOTICIAS[0].date}
                       </span>
                     </div>
                     <h3
                       className="font-heading font-black text-white group-hover:text-accent-400 transition-colors"
-                      style={{ fontSize: "clamp(18px, 2vw, 26px)", letterSpacing: "-0.02em" }}
+                      style={{ fontSize: "clamp(18px, 2vw, 24px)", letterSpacing: "-0.02em" }}
                     >
                       {NOTICIAS[0].title}
                     </h3>
                   </div>
                 </div>
-                <div className="py-5 border-b border-gray-200">
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4">{NOTICIAS[0].excerpt}</p>
-                  <span className="font-heading font-bold text-primary-600 uppercase tracking-wider text-xs
-                                   flex items-center gap-1.5 hover:gap-2 transition-all">
-                    Leer artículo <ArrowRight className="h-3.5 w-3.5" />
+                <div className="py-4 border-b border-gray-200">
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-3">
+                    {NOTICIAS[0].excerpt}
+                  </p>
+                  <span className="font-heading font-bold text-primary-600 uppercase tracking-wider text-xs flex items-center gap-1.5 hover:gap-2 transition-all">
+                    {t("common.seeMore")} <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                 </div>
               </Link>
             </motion.article>
 
-            {/* Noticias secundarias — 5 cols */}
-            <div className="lg:col-span-5 mt-8 lg:mt-0 flex flex-col justify-between gap-px bg-gray-200">
+            {/* Noticias secundarias */}
+            <div className="lg:col-span-5 mt-8 lg:mt-0 flex flex-col justify-between gap-px bg-gray-200 rounded-xl overflow-hidden">
               {NOTICIAS.slice(1).map((news, i) => (
                 <motion.article
                   key={news.id}
@@ -685,7 +723,10 @@ export default function Home() {
                   className="bg-white group"
                 >
                   <Link href="/novedades" className="flex gap-0 h-full">
-                    <div className="relative shrink-0 overflow-hidden" style={{ width: "130px", minHeight: "130px" }}>
+                    <div
+                      className="relative shrink-0 overflow-hidden"
+                      style={{ width: "130px", minHeight: "130px" }}
+                    >
                       <img
                         src={news.image}
                         alt={news.title}
@@ -694,22 +735,20 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col justify-center p-5 flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-primary-700 text-white px-2 py-0.5 font-heading font-bold uppercase tracking-widest"
-                              style={{ fontSize: "9px" }}>
+                        <span
+                          className="bg-navy-950 text-white px-2 py-0.5 font-heading font-bold uppercase tracking-widest text-[9px] rounded"
+                        >
                           {news.category}
                         </span>
-                        <span className="text-gray-400 font-bold uppercase"
-                              style={{ fontSize: "9px" }}>
+                        <span className="text-gray-400 font-bold uppercase text-[9px]">
                           {news.date}
                         </span>
                       </div>
-                      <h3 className="font-heading font-bold text-navy-950 text-sm leading-tight mb-2
-                                     group-hover:text-primary-600 transition-colors">
+                      <h3 className="font-heading font-bold text-navy-950 text-xs sm:text-sm leading-tight mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
                         {news.title}
                       </h3>
-                      <span className="font-heading font-bold text-primary-600 uppercase tracking-wider flex items-center gap-1"
-                            style={{ fontSize: "10px" }}>
-                        Leer <ArrowRight className="h-3 w-3" />
+                      <span className="font-heading font-bold text-primary-600 uppercase tracking-wider flex items-center gap-1 text-[10px]">
+                        {t("common.seeMore")} <ArrowRight className="h-3 w-3" />
                       </span>
                     </div>
                   </Link>
@@ -722,7 +761,7 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          8. PRESENCIA INTERNACIONAL — Sección potente
+          8. PRESENCIA INTERNACIONAL
       ════════════════════════════════════════════════════ */}
       <section
         ref={revealPaises}
@@ -732,30 +771,27 @@ export default function Home() {
         <div className="container-corp">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12 lg:items-center">
 
-            {/* Copy — 5 cols */}
+            {/* Copy */}
             <div className="lg:col-span-5 mb-12 lg:mb-0">
-              <span className="industrial-label mb-4 block">Presencia Internacional</span>
+              <span className="industrial-label mb-4 block">{t("home.export.eyebrow")}</span>
               <h2
                 className="font-heading font-black text-white mb-4"
-                style={{ fontSize: "clamp(30px, 4vw, 52px)", letterSpacing: "-0.025em" }}
+                style={{ fontSize: "clamp(28px, 3.8vw, 48px)", letterSpacing: "-0.025em" }}
               >
-                EXPORTAMOS<br />
-                DESDE<br />
-                <span style={{ color: "#4a9de0" }}>ARGENTINA</span>
+                {t("home.export.title")}
               </h2>
               <span className="block w-12 h-[2px] bg-primary-600 mb-6" />
-              <p className="text-gray-400 text-sm leading-relaxed max-w-sm mb-8">
-                Nuestras soluciones industriales llegan a operadores de infraestructura hídrica
-                en toda América Latina. Calidad certificada, diseño argentino, escala regional.
+              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-sm mb-8">
+                {t("home.export.desc")}
               </p>
-              <Link href="/contacto" className="btn-primary-corp inline-flex">
-                Contactar Exportaciones <ArrowRight className="h-4 w-4" />
+              <Link href="/contacto" className="btn-primary-corp inline-flex text-xs font-bold uppercase tracking-wider">
+                {t("home.cta.btnContact")} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            {/* Países — 7 cols */}
+            {/* Países */}
             <div className="lg:col-span-7">
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-px bg-navy-800">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-px bg-navy-800 rounded-xl overflow-hidden">
                 {COUNTRIES.map((country, i) => (
                   <motion.div
                     key={i}
@@ -763,15 +799,13 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className="bg-navy-950 flex flex-col items-center justify-center py-8 px-4 text-center
-                               hover:bg-navy-900 transition-colors group"
+                    className="bg-navy-950 flex flex-col items-center justify-center py-8 px-4 text-center hover:bg-navy-900 transition-colors group"
                   >
-                    <span className="text-4xl mb-3 group-hover:scale-110 transition-transform block">
+                    <span className="text-3xl sm:text-4xl mb-3 group-hover:scale-110 transition-transform block">
                       {country.flag}
                     </span>
                     <span
-                      className="font-heading font-bold text-white uppercase tracking-widest"
-                      style={{ fontSize: "11px" }}
+                      className="font-heading font-bold text-white uppercase tracking-widest text-[11px]"
                     >
                       {country.name}
                     </span>
@@ -780,11 +814,9 @@ export default function Home() {
               </div>
 
               {/* Nota corporativa */}
-              <div className="mt-6 p-5 bg-navy-900 border-l-[3px] border-primary-600">
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  <span className="font-heading font-bold text-white">Somos proveedores estratégicos</span> de
-                  entes prestatarios de agua potable y empresas constructoras de infraestructura hidráulica
-                  en la región latinoamericana.
+              <div className="mt-6 p-5 bg-navy-900 border-l-[3px] border-primary-600 rounded-r-xl">
+                <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                  {t("home.export.desc")}
                 </p>
               </div>
             </div>
@@ -805,22 +837,24 @@ export default function Home() {
             <div>
               <h2
                 className="font-heading font-black text-white mb-2"
-                style={{ fontSize: "clamp(24px, 3vw, 40px)", letterSpacing: "-0.02em" }}
+                style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.02em" }}
               >
-                ¿NECESITÁS SOLUCIONES PARA TU RED?
+                {t("home.cta.title")}
               </h2>
-              <p className="text-primary-400 text-sm">
-                Asesoramiento técnico · Cotizaciones · Especificaciones de producto
+              <p className="text-primary-100 text-xs sm:text-sm">
+                {t("home.cta.desc")}
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
-              <Link href="/contacto" className="btn-outline-corp">
-                Solicitar Cotización
+              <Link href="/contacto" className="btn-outline-corp text-xs font-bold uppercase tracking-wider">
+                {t("home.cta.btnQuote")}
               </Link>
-              <Link href="/categorias"
-                    className="btn-primary-corp"
-                    style={{ background: "white", color: "#124d8f", borderColor: "white" }}>
-                Ver Catálogo
+              <Link
+                href="/categorias"
+                className="btn-primary-corp text-xs font-bold uppercase tracking-wider"
+                style={{ background: "white", color: "#124d8f", borderColor: "white" }}
+              >
+                {t("home.hero.btnCatalog")}
               </Link>
             </div>
           </div>
