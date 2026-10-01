@@ -144,6 +144,8 @@
 
   /* Botón CTA primario — rectangular, sin pills */
   .btn-primary-corp {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -167,6 +169,8 @@
 
   /* Botón CTA secundario — borde blanco */
   .btn-outline-corp {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -271,4 +275,111 @@
 .product-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 32px rgba(6, 21, 32, 0.14);
+}
+
+/* ════════════════════════════════════════════════════════════
+   ONDA HIDRÁULICA INDUSTRIAL (HERO) & BOTÓN RIPPLE
+   Optimizado: SVG + CSS transform3d (Aceleración por GPU)
+   Cero JS en loops, Cero WebGL/Canvas, Rendimiento nativo 60fps
+════════════════════════════════════════════════════════════ */
+
+.hydraulic-wave-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Capa 1: Flujo Profundo (Movimiento pausado de fondo) */
+.hydraulic-wave-layer-1 {
+  animation: hydraulic-drift-forward 28s linear infinite;
+}
+
+/* Capa 2: Corriente Media (Contracorriente azul PRODELEC) */
+.hydraulic-wave-layer-2 {
+  animation: hydraulic-drift-backward 22s linear infinite;
+}
+
+/* Capa 3: Superficie e Interfase con Sección Siguiente */
+.hydraulic-wave-layer-3 {
+  animation: hydraulic-drift-forward 18s linear infinite;
+}
+
+@keyframes hydraulic-drift-forward {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes hydraulic-drift-backward {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Efecto Ripple Hidráulico en Botones */
+.hydraulic-ripple-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(0, 184, 230, 0.4) 0%,
+    rgba(26, 101, 181, 0.2) 45%,
+    rgba(2, 132, 199, 0) 72%
+  );
+  transform: scale(0);
+  animation: hydraulic-ripple-expand 400ms cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes hydraulic-ripple-expand {
+  0% {
+    transform: scale(0);
+    opacity: 0.65;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Optimización Responsive Mobile: Simplificar capas para no saturar dispositivos modestos */
+@media (max-width: 768px) {
+  .hydraulic-wave-layer-1 {
+    display: none;
+  }
+  .hydraulic-wave-layer-2 {
+    animation-duration: 32s;
+  }
+  .hydraulic-wave-layer-3 {
+    animation-duration: 25s;
+  }
+}
+
+/* Accesibilidad: Respeto estricto por usuarios con prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .hydraulic-wave-layer,
+  .hydraulic-wave-layer-1,
+  .hydraulic-wave-layer-2,
+  .hydraulic-wave-layer-3 {
+    animation: none !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+  .hydraulic-ripple-circle {
+    display: none !important;
+    animation: none !important;
+  }
 }

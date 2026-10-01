@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { HydraulicRippleProvider } from "@/components/ui/HydraulicRippleProvider";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -38,6 +39,7 @@ export default function RootLayout({
       className={`${poppins.variable} ${leagueSpartan.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <HydraulicRippleProvider />
         <Navbar />
         <main className="flex-1 flex flex-col">
           {children}

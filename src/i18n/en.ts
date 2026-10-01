@@ -329,6 +329,7 @@ export const en: typeof es = {
   "contact.areaLogistica": "Logistics & Shipping",
   "contact.areaCobranzas": "Billing & Accounts Receivable",
   "contact.areaFinanzas": "Finance & Administration",
+  "contact.areaSuppliers": "Supplier Payments",
   "contact.btnSend": "Send Message",
   "contact.btnSending": "Sending message...",
   "contact.successTitle": "Message sent successfully!",

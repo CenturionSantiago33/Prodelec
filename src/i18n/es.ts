@@ -289,12 +289,12 @@ export const es = {
   "equipment.dept5.s3": "Cotizaciones Corporativas por Volumen",
 
   // Ubicación Page
-  "location.hero.badge": "Planta Industrial y Administración",
-  "location.hero.title": "Ubicación Estratégica",
-  "location.hero.desc": "Nuestra planta de producción y centro logístico se encuentra en el Parque Industrial Good Park, Florencio Varela, con acceso directo a las principales autopistas del país.",
+  "location.hero.badge": "Planta Industrial y Comercial",
+  "location.hero.title": "Ubicación",
+  "location.hero.desc": "Nuestra sede comercial y punto de atención al cliente se encuentra en Berazategui, Buenos Aires. Visitanos o contactanos para coordinar.",
   "location.cardTitle": "Información de la Sede",
   "location.address": "Dirección",
-  "location.addressVal": "Colectora Autopista Buenos Aires - La Plata / Ramal Gutiérrez, Parque Industrial Good Park, Florencio Varela, Provincia de Buenos Aires, Argentina.",
+  "location.addressVal": "Camino General Belgrano 1910, Berazategui, Buenos Aires, Argentina.",
   "location.hours": "Horario de Atención",
   "location.hoursVal": "Lunes a Viernes: 08:00 a 17:00 hs",
   "location.phone": "Teléfonos de Contacto",
@@ -327,6 +327,7 @@ export const es = {
   "contact.areaLogistica": "Logística y Despachos",
   "contact.areaCobranzas": "Cobranzas y Facturación",
   "contact.areaFinanzas": "Finanzas y Administración",
+  "contact.areaSuppliers": "Pago a Proveedores",
   "contact.btnSend": "Enviar Mensaje",
   "contact.btnSending": "Enviando consulta...",
   "contact.successTitle": "¡Consulta enviada con éxito!",
@@ -384,7 +385,7 @@ export const es = {
   "footer.hours": "Horario de Atención",
   "footer.hoursVal": "Lunes a Viernes de 08:00 a 17:00 hs",
   "footer.rights": "Todos los derechos reservados. Industria Argentina.",
-  "footer.plant": "Planta Industrial Good Park · Florencio Varela · Buenos Aires · Argentina",
+  "footer.plant": "Camino General Belgrano 1910 · Berazategui · Buenos Aires · Argentina",
   "footer.whatsappSales": "WhatsApp Ventas",
   "footer.plantPhone": "Planta Industrial",
 };

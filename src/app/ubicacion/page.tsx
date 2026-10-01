@@ -10,7 +10,7 @@ export default function UbicacionPage() {
   const language = useStore((state) => state.language);
   const t = useTranslation(language);
 
-  const MAP_URL = "https://maps.app.goo.gl/RRVMFfakNPZBZXU68";
+  const MAP_URL = "https://maps.google.com/maps?q=Camino+General+Belgrano+1910,+Berazategui,+Buenos+Aires";
 
   return (
     <div className="min-h-screen bg-gray-50 pt-[72px] font-sans flex flex-col">
@@ -62,9 +62,9 @@ export default function UbicacionPage() {
                       {t("location.addressTitle")}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-800 font-semibold leading-relaxed">
-                      Colectora Au 2 N° 8190<br />
-                      Parque Industrial Good Park<br />
-                      Florencio Varela, Buenos Aires
+                      Camino General Belgrano 1910<br />
+                      Berazategui<br />
+                      Buenos Aires, Argentina
                     </p>
                   </div>
                 </div>
@@ -125,7 +125,7 @@ export default function UbicacionPage() {
             </div>
 
             <iframe 
-              src="https://maps.google.com/maps?q=-34.788779,-58.247610&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+              src="https://maps.google.com/maps?q=-34.7630,-58.2097&t=&z=16&ie=UTF8&iwloc=&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 

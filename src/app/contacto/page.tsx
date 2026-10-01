@@ -55,8 +55,23 @@ export default function ContactoPage() {
     const ref = `PROD-${Math.floor(10000 + Math.random() * 90000)}`;
     setRefNumber(ref);
 
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    // Build mailto with area as subject so recipient knows the category
+    const body = [
+      `Nombre: ${data.name}`,
+      data.company ? `Empresa: ${data.company}` : "",
+      `Email: ${data.email}`,
+      `Teléfono: ${data.phone}`,
+      `Área: ${data.type}`,
+      "",
+      `Mensaje:\n${data.message}`,
+      "",
+      `Referencia: ${ref}`,
+    ].filter(Boolean).join("\n");
 
+    const mailtoLink = `mailto:prodelec@prodelec.com.ar?subject=${encodeURIComponent(dynamicSubject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink, "_blank");
+
+    await new Promise((resolve) => setTimeout(resolve, 800));
     setIsSendingDirect(false);
     setSendSuccess(true);
   };
@@ -67,12 +82,12 @@ export default function ContactoPage() {
   };
 
   const areas = [
-    { value: "Ventas", label: t("contactAreaSales") },
-    { value: "Compras", label: t("contactAreaPurchasing") },
-    { value: "Logística", label: t("contactAreaLogistics") },
-    { value: "Finanzas", label: t("contactAreaFinance") },
-    { value: "Cobranzas", label: t("contactAreaCollections") },
-    { value: "Pago a proveedores", label: t("contactAreaSuppliers") },
+    { value: "Ventas y Cotizaciones", label: t("contactAreaSales"), icon: "💼", color: "bg-blue-50 border-blue-200 text-blue-700", activeColor: "bg-blue-600 border-blue-600 text-white" },
+    { value: "Compras y Ventas", label: "Compras y Ventas", icon: "🛒", color: "bg-emerald-50 border-emerald-200 text-emerald-700", activeColor: "bg-emerald-600 border-emerald-600 text-white" },
+    { value: "Logística y Despachos", label: t("contactAreaLogistics"), icon: "🚚", color: "bg-orange-50 border-orange-200 text-orange-700", activeColor: "bg-orange-500 border-orange-500 text-white" },
+    { value: "Finanzas y Administración", label: t("contactAreaFinance"), icon: "📊", color: "bg-purple-50 border-purple-200 text-purple-700", activeColor: "bg-purple-600 border-purple-600 text-white" },
+    { value: "Cobranzas y Facturación", label: t("contactAreaCollections"), icon: "🧾", color: "bg-rose-50 border-rose-200 text-rose-700", activeColor: "bg-rose-600 border-rose-600 text-white" },
+    { value: "Pago a Proveedores", label: t("contactAreaSuppliers"), icon: "💳", color: "bg-slate-50 border-slate-200 text-slate-700", activeColor: "bg-slate-700 border-slate-700 text-white" },
   ];
 
   return (
@@ -149,10 +164,9 @@ export default function ContactoPage() {
               </div>
             </div>
 
-            {/* Map Highlight */}
             <div
               className="overflow-hidden rounded-2xl border-2 border-slate-200 bg-slate-100 h-[280px] relative group cursor-pointer shadow-xs"
-              onClick={() => window.open('https://maps.app.goo.gl/RRVMFfakNPZBZXU68', '_blank')}
+              onClick={() => window.open('https://maps.google.com/maps?q=Camino+General+Belgrano+1910,+Berazategui,+Buenos+Aires', '_blank')}
             >
               <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center">
                 <div className="inline-flex items-center rounded-xl bg-white px-5 py-2.5 font-bold text-xs uppercase tracking-wider text-slate-900 shadow-md transition-transform duration-200 group-hover:scale-105 group-hover:text-primary-600 border border-slate-200">
@@ -162,7 +176,7 @@ export default function ContactoPage() {
               </div>
               
               <iframe 
-                src="https://maps.google.com/maps?q=-34.788779,-58.247610&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.google.com/maps?q=-34.7630,-58.2097&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
@@ -257,21 +271,38 @@ export default function ContactoPage() {
 
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-navy-950 uppercase">{t("contactLabelArea")} *</label>
-                  <select 
-                    {...register("type")} 
-                    className={`flex h-10 w-full rounded-xl border bg-white px-3 py-2 text-xs font-semibold text-navy-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 ${errors.type ? 'border-red-500' : 'border-slate-300'}`}
-                  >
-                    <option value="">{t("contactSelectOption")}</option>
+                  
+                  {/* Visual area card selector */}
+                  <div className="grid grid-cols-2 gap-2">
                     {areas.map((a) => (
-                      <option key={a.value} value={a.value}>{a.label}</option>
+                      <label
+                        key={a.value}
+                        className={`relative flex items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all duration-150 font-semibold text-xs ${
+                          selectedArea === a.value
+                            ? a.activeColor + " shadow-md scale-[1.02]"
+                            : a.color + " hover:shadow-sm"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          value={a.value}
+                          {...register("type")}
+                          className="sr-only"
+                        />
+                        <span className="text-base leading-none">{a.icon}</span>
+                        <span className="leading-tight">{a.label}</span>
+                        {selectedArea === a.value && (
+                          <span className="absolute top-1.5 right-2 text-[8px] font-black uppercase tracking-wider opacity-70">✓</span>
+                        )}
+                      </label>
                     ))}
-                  </select>
+                  </div>
                   {errors.type && <p className="text-[11px] text-red-500">{errors.type.message}</p>}
 
                   {selectedArea && (
                     <div className="mt-2 p-2.5 bg-sky-50 border border-sky-200 rounded-lg text-[11px]">
-                      <span className="font-bold text-slate-500 uppercase block text-[9px] mb-0.5">Asunto oficial / Official Subject:</span>
-                      <span className="font-mono font-bold text-primary-700">
+                      <span className="font-bold text-slate-500 uppercase block text-[9px] mb-0.5">Asunto que verá el receptor:</span>
+                      <span className="font-mono font-bold text-primary-700 break-all">
                         {getSubjectForArea(selectedArea, watch("name") || "Cliente", watch("company"))}
                       </span>
                     </div>

@@ -329,6 +329,7 @@ export const zh: typeof es = {
   "contact.areaLogistica": "仓储物流与发货查询",
   "contact.areaCobranzas": "对账结算与发票管理",
   "contact.areaFinanzas": "财务与综合行政",
+  "contact.areaSuppliers": "供应商款项支付",
   "contact.btnSend": "发送咨询信息",
   "contact.btnSending": "正在提交信息...",
   "contact.successTitle": "咨询已成功提交！",

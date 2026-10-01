@@ -152,6 +152,41 @@ export const useTranslation = (lang: LanguageCode = "ES") => {
       favEmptyTitle: "favorites.emptyTitle",
       favEmptyDesc: "favorites.emptyDesc",
       cartGoCatalog: "favorites.btnCatalog",
+
+      // Location page
+      "location.headquarters": "location.hero.badge",
+      "location.heroDesc": "location.hero.desc",
+      "location.infoTitle": "location.cardTitle",
+      "location.addressTitle": "location.address",
+      contactOpenMap: "location.btnMaps",
+
+      // Empresa page
+      empresaConsult: "empresa.cert.btnPliego",
+
+      // Contact form
+      contactFormTitle: "contact.formTitle",
+      contactLabelName: "contact.labelName",
+      contactLabelCompany: "contact.labelCompany",
+      contactLabelPhone: "contact.labelPhone",
+      contactLabelArea: "contact.labelArea",
+      contactLabelMsg: "contact.labelMessage",
+      contactSelectOption: "contact.placeholderArea",
+      contactSubmitBtn: "contact.btnSend",
+      contactSuccessTitle: "contact.successTitle",
+      contactSuccessMsg: "contact.successDesc",
+      contactAnotherMsg: "contact.btnSendAnother",
+      contactAreaSales: "contact.areaVentas",
+      contactAreaPurchasing: "contact.areaCompras",
+      contactAreaLogistics: "contact.areaLogistica",
+      contactAreaFinance: "contact.areaFinanzas",
+      contactAreaCollections: "contact.areaCobranzas",
+      contactAreaSuppliers: "contact.areaSuppliers",
+
+      // Equipment page
+      equipCultureTitle: "equipment.cultureTitle",
+      equipCultureDesc: "equipment.cultureDesc",
+      equipCultureBtn: "equipment.btnHistory",
+      equipContactDept: "equipment.contactDept",
     };
 
     const mappedKey = legacyMap[key];

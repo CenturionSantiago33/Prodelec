@@ -15,6 +15,7 @@ import {
 import { categories, products } from "@/data/mock";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedProduct, getTranslatedCategory } from "@/i18n";
+import { HeroHydraulicWave } from "@/components/home/HeroHydraulicWave";
 
 // ─── Clientes ────────────────────────────────────────────────
 const CLIENTS = [
@@ -183,6 +184,9 @@ export default function Home() {
         {/* Overlay oscuro industrial */}
         <div className="hero-overlay absolute inset-0" />
 
+        {/* Onda Hidráulica Industrial (Transición fluida a la siguiente sección) */}
+        <HeroHydraulicWave />
+
         {/* Borde inferior horizontal */}
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary-600" />
 
@@ -340,9 +344,9 @@ export default function Home() {
             style={{ minHeight: "480px", maxHeight: "640px" }}
           >
             <img
-              src="/productos/Linea Prodelec SRL-1.jpg.jpeg"
-              alt="Línea de producción Prodelec"
-              className="absolute inset-0 w-full h-full object-cover"
+              src="https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?q=80&w=2070&auto=format&fit=crop"
+              alt="Planta industrial Prodelec - Fabricación de accesorios plásticos"
+              className="absolute inset-0 w-full h-full object-cover object-center"
             />
             <div
               className="hidden lg:block absolute inset-y-0 right-0 w-24"
