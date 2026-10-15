@@ -85,10 +85,10 @@ export default function EmpresaPage() {
 
           <div className="space-y-20">
             {[
-              { year: t("empresaHist1Year"), title: t("empresaHist1Title"), desc: t("empresaHist1Desc"), img: "/productos/caja cuerpo ampliado 1.jpg.jpeg" },
-              { year: t("empresaHist2Year"), title: t("empresaHist2Title"), desc: t("empresaHist2Desc"), img: "/productos/Abrazadera de Derivacion - Frente.jpg.jpeg" },
-              { year: t("empresaHist3Year"), title: t("empresaHist3Title"), desc: t("empresaHist3Desc"), img: "/productos/Abrazadera con llave de corte.jpg.jpeg" },
-              { year: t("empresaHist4Year"), title: t("empresaHist4Title"), desc: t("empresaHist4Desc"), img: "/productos/Abrazadera de Reparación 1 Banda.jpg.jpeg" }
+              { year: t("empresaHist1Year"), title: t("empresaHist1Title"), desc: t("empresaHist1Desc"), img: "/carousel-1.jpg" },
+              { year: t("empresaHist2Year"), title: t("empresaHist2Title"), desc: t("empresaHist2Desc"), img: "/carousel-2.jpg" },
+              { year: t("empresaHist3Year"), title: t("empresaHist3Title"), desc: t("empresaHist3Desc"), img: "/carousel-4.jpg" },
+              { year: t("empresaHist4Year"), title: t("empresaHist4Title"), desc: t("empresaHist4Desc"), img: "/carousel-3.jpg" }
             ].map((item, idx) => (
               <motion.div
                 key={idx}

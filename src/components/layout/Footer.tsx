@@ -188,9 +188,8 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 shrink-0 text-accent-400 mt-0.5" />
                 <span className="text-sm text-gray-400 leading-relaxed">
-                  Colectora Au 2 N° 8190<br />
-                  Parque Industrial Good Park<br />
-                  Florencio Varela, Buenos Aires
+                  Camino General Belgrano 1910<br />
+                  Berazategui, Buenos Aires
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -239,7 +238,7 @@ export function Footer() {
             © {currentYear} <span className="text-gray-400 font-bold">PRODELEC S.R.L.</span> — {t("footerRights")}
           </p>
           <p>
-            Colectora Au 2 N° 8190 · Florencio Varela · Buenos Aires · Argentina
+            Camino General Belgrano 1910 · Berazategui · Buenos Aires · Argentina
           </p>
         </div>
       </div>

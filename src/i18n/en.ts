@@ -4,7 +4,7 @@ export const en: typeof es = {
   // Navigation & Header
   "nav.home": "Home",
   "nav.company": "Company",
-  "nav.catalog": "Catalog",
+  "nav.catalog": "Products",
   "nav.news": "News",
   "nav.equipment": "Teams",
   "nav.location": "Location",
@@ -254,6 +254,14 @@ export const en: typeof es = {
   "news.newsletterPlaceholder": "Enter your corporate email address...",
   "news.newsletterBtn": "Subscribe",
   "news.newsletterSuccess": "Thank you for subscribing to our technical newsletter!",
+
+  // Novedades Hero Carousel
+  "newsSlide1Title": "Expanded C-Series Connection Box Line",
+  "newsSlide1Desc": "New diameters and approved variants added to our successful C-Series Connection Box line, with permanent stock availability.",
+  "newsSlide2Title": "2024 Technical Catalog Available",
+  "newsSlide2Desc": "Download the updated general catalog with all technical data sheets, dimensional specifications and current certifications from Prodelec.",
+  "newsSlide3Title": "24/7 Robotic Automation at the Plant",
+  "newsSlide3Desc": "Our new robotic injection cell at Good Park Industrial Park ensures continuous production capacity to supply large tenders without delay.",
 
   // Equipos Page
   "equipment.hero.badge": "Human & Technical Capital",

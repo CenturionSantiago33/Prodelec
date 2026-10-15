@@ -63,15 +63,15 @@ export default function Home() {
   // Dynamic Slides with translations
   const SLIDES = [
     {
-      image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop",
+      image: "/carousel-2.jpg",
       label: t("home.hero.slide1"),
     },
     {
-      image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop",
+      image: "/carousel-3.jpg",
       label: t("home.hero.slide2"),
     },
     {
-      image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop",
+      image: "/carousel-4.jpg",
       label: t("home.hero.slide3"),
     },
   ];
@@ -113,7 +113,7 @@ export default function Home() {
       title: "Nueva línea de abrazaderas homologadas para redes de alta presión",
       excerpt:
         "Desarrollamos una nueva generación de abrazaderas de derivación con homologación extendida para presiones de trabajo superiores a 16 bar en redes de agua potable.",
-      image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop",
+      image: "/carousel-2.jpg",
     },
     {
       id: 2,
@@ -122,7 +122,7 @@ export default function Home() {
       title: "Ampliación de capacidad productiva en Florencio Varela",
       excerpt:
         "Nueva línea de inyección incorporada para responder a la demanda creciente del mercado regional.",
-      image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=800&auto=format&fit=crop",
+      image: "/carousel-3.jpg",
     },
     {
       id: 3,
@@ -131,7 +131,7 @@ export default function Home() {
       title: "Prodelec consolida su presencia en Brasil y Uruguay",
       excerpt:
         "Acuerdos comerciales con operadores de infraestructura hídrica en Sudamérica.",
-      image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop",
+      image: "/carousel-4.jpg",
     },
   ];
 
@@ -344,8 +344,8 @@ export default function Home() {
             style={{ minHeight: "480px", maxHeight: "640px" }}
           >
             <img
-              src="https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?q=80&w=2070&auto=format&fit=crop"
-              alt="Planta industrial Prodelec - Fabricación de accesorios plásticos"
+              src="/carousel-1.jpg"
+              alt="Sede Prodelec - Planta industrial en Florencio Varela"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
             <div

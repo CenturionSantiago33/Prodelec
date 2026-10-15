@@ -4,7 +4,7 @@ export const pt: typeof es = {
   // Navigation & Header
   "nav.home": "Início",
   "nav.company": "Empresa",
-  "nav.catalog": "Catálogo",
+  "nav.catalog": "Produtos",
   "nav.news": "Novidades",
   "nav.equipment": "Equipes",
   "nav.location": "Localização",
@@ -254,6 +254,14 @@ export const pt: typeof es = {
   "news.newsletterPlaceholder": "Informe seu e-mail corporativo...",
   "news.newsletterBtn": "Inscrever-se",
   "news.newsletterSuccess": "Obrigado por assinar nosso boletim técnico!",
+
+  // Novedades Hero Carousel
+  "newsSlide1Title": "Nova Linha Expandida de Caixas C-Series",
+  "newsSlide1Desc": "Novos diâmetros e variantes homologadas incorporados à nossa linha C-Series de Caixas de Conexão, com estoque permanente disponível.",
+  "newsSlide2Title": "Catálogo Técnico 2024 Disponível",
+  "newsSlide2Desc": "Baixe o catálogo geral atualizado com todas as fichas técnicas, especificações dimensionais e certificações vigentes da Prodelec.",
+  "newsSlide3Title": "Automação Robótica 24/7 na Planta",
+  "newsSlide3Desc": "Nossa nova célula de injeção robótica no Parque Industrial Good Park garante capacidade produtiva contínua para abastecer grandes licitações.",
 
   // Equipos Page
   "equipment.hero.badge": "Recursos Humanos e Técnicos",

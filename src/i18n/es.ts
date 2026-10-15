@@ -2,7 +2,7 @@ export const es = {
   // Navigation & Header
   "nav.home": "Inicio",
   "nav.company": "Empresa",
-  "nav.catalog": "Catálogo",
+  "nav.catalog": "Productos",
   "nav.news": "Novedades",
   "nav.equipment": "Equipos",
   "nav.location": "Ubicación",
@@ -79,7 +79,7 @@ export const es = {
   "home.hero.title1": "PRODUCCIÓN",
   "home.hero.title2": "INDUSTRIAL",
   "home.hero.title3": "ARGENTINA",
-  "home.hero.subtitle": "Soluciones de ingeniería para redes de agua potable y saneamiento.",
+  "home.hero.subtitle": "Soluciones de ingeniería para redes de agua potable, saneamiento y gas.",
   "home.hero.desc": "Más de 39 años fabricando componentes plásticos de precisión, matricería propia y calidad homologada por las principales prestatarias de Argentina y la región.",
   "home.hero.btnCompany": "Conocer Prodelec",
   "home.hero.btnCatalog": "Ver Catálogo Técnico",
@@ -252,6 +252,14 @@ export const es = {
   "news.newsletterPlaceholder": "Ingresá tu correo electrónico corporativo...",
   "news.newsletterBtn": "Suscribirme",
   "news.newsletterSuccess": "¡Gracias por suscribirte a nuestro boletín técnico!",
+
+  // Novedades Hero Carousel
+  "newsSlide1Title": "Nueva Línea de Cajas C-Series Ampliada",
+  "newsSlide1Desc": "Incorporamos nuevos diámetros y variantes homologadas a nuestra exitosa línea de Cajas de Conexión C-Series, con stock permanente disponible.",
+  "newsSlide2Title": "Catálogo Técnico 2024 Disponible",
+  "newsSlide2Desc": "Descargá el catálogo general actualizado con todas las fichas técnicas, especificaciones dimensionales y certificaciones vigentes de Prodelec.",
+  "newsSlide3Title": "Automatización Robótica 24/7 en Planta",
+  "newsSlide3Desc": "Nuestra nueva celda de inyección robótica en el Parque Industrial Good Park garantiza capacidad productiva continua para abastecer grandes pliegos.",
 
   // Equipos Page
   "equipment.hero.badge": "Capital Humano y Técnico",

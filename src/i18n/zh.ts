@@ -255,6 +255,14 @@ export const zh: typeof es = {
   "news.newsletterBtn": "立即订阅",
   "news.newsletterSuccess": "感谢您订阅 Prodelec 技术通报！",
 
+  // Novedades Hero Carousel
+  "newsSlide1Title": "C系列接线盒产品线全面扩展",
+  "newsSlide1Desc": "我们成功的C系列接线盒新增了更多认证规格和管径，确保长期稳定备货供应。",
+  "newsSlide2Title": "2024年技术目录正式发布",
+  "newsSlide2Desc": "立即下载最新综合目录，包含Prodelec所有产品的技术参数表、尺寸规格及现行认证文件。",
+  "newsSlide3Title": "工厂24/7全天候机器人自动化",
+  "newsSlide3Desc": "位于Good Park工业园区的新型机器人注塑单元，确保持续生产能力，为大型项目招标提供无中断供货。",
+
   // Equipos Page
   "equipment.hero.badge": "专业团队与技术团队",
   "equipment.hero.title": "我们的专业工作团队",
