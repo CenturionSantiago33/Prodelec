@@ -8,7 +8,6 @@ import {
   X,
   ShoppingCart,
   Ruler,
-  Layers,
   ShieldCheck,
   CheckCircle2,
   ArrowUpRight,
@@ -238,7 +237,7 @@ export function ProductQuickViewModal({ product, onClose }: ProductQuickViewModa
                   <div style={{ marginBottom: 28 }}>
                     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 14 }}>
                       <span style={{ fontSize: 10, fontFamily: "monospace", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                        SKU: {product.code}
+                        {t("common.code")}: {product.code}
                       </span>
                       {product.homologado && (
                         <span style={{

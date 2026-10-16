@@ -30,6 +30,24 @@ export interface ProductModel {
   technicalSheet?: string;
 }
 
+/** Ficha técnica descargable de un modelo de la línea. */
+export interface TechnicalSheetRef {
+  /** Nombre técnico del modelo, tal como figura en el PDF oficial. */
+  label: string;
+  /** Ruta pública del PDF, por ejemplo "/fichas/ficha-tecnica-caja-compacta-c1401-cs.pdf". */
+  url: string;
+}
+
+/**
+ * Nicho de aplicación. Agrupación de negocio aprobada por PRODELEC (2026-10-15).
+ * Una categoría puede pertenecer a más de un nicho (p. ej. las cajas de conexión
+ * sirven para agua, saneamiento y gas).
+ */
+export type Niche = "agua" | "saneamiento" | "gas" | "domiciliaria";
+
+/** Orden de presentación de los nichos en el catálogo. */
+export const NICHE_ORDER: Niche[] = ["agua", "saneamiento", "gas", "domiciliaria"];
+
 export interface Category {
   id: string;
   name: string;
@@ -43,6 +61,17 @@ export interface Category {
   descriptionI18n?: I18nText;
   subcategoriesI18n?: I18nList;
   technicalSheet?: string;
+  /**
+   * Nichos de aplicación a los que pertenece la categoría. Aprobado por el
+   * cliente; el primero de la lista es el que define la sección principal.
+   */
+  niches?: Niche[];
+  /**
+   * Fichas de los modelos de la categoría que todavía no están publicados como
+   * producto (la línea real de PRODELEC es más amplia que el catálogo). Se
+   * listan a nivel categoría para que el PDF quede accesible igual.
+   */
+  technicalSheets?: TechnicalSheetRef[];
   order?: number;
 }
 
@@ -50,7 +79,7 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  code: string; // SKU or official item code
+  code: string; // Código oficial de producto
   family?: string; // Product family name or grouping
   categoryId: string;
   subcategory?: string;

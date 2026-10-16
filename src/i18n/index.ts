@@ -1,10 +1,18 @@
-import { es, TranslationKey } from "./es";
+import { es } from "./es";
 import { en } from "./en";
 import { pt } from "./pt";
 import { zh } from "./zh";
-import { Category, Product } from "@/types";
+import { Category, Product, Spec } from "@/types";
 
 export type LanguageCode = "ES" | "EN" | "PT" | "ZH";
+export type LangKey = "es" | "en" | "pt" | "zh";
+
+/** Firma de la función de traducción devuelta por `useTranslation` / `createTranslator`. */
+export type TranslateFn = (key: string, fallback?: string) => string;
+
+type LocalizedProduct = Product & {
+  specsI18n?: Partial<Record<LangKey, Spec[]>>;
+};
 
 export const translations: Record<LanguageCode, Record<string, string>> = {
   ES: es,
@@ -16,8 +24,11 @@ export const translations: Record<LanguageCode, Record<string, string>> = {
 /**
  * Returns a translation function `t(key, fallback)` for the given language.
  * Supports dot notation keys, e.g. t("nav.home") or legacy keys like t("navHome").
+ *
+ * Nota: es una fábrica pura (no usa hooks de React). Se exporta además como
+ * `useTranslation` por compatibilidad con el código existente.
  */
-export const useTranslation = (lang: LanguageCode = "ES") => {
+export const createTranslator = (lang: LanguageCode = "ES"): TranslateFn => {
   const currentLang = (lang && translations[lang]) ? lang : "ES";
   const dict = translations[currentLang] || translations.ES;
 
@@ -47,7 +58,7 @@ export const useTranslation = (lang: LanguageCode = "ES") => {
       catTitle: "catalog.title",
       catSubtitle: "catalog.subtitle",
       catFamilies: "catalog.allFamilies",
-      catModels: "common.sku",
+      catModels: "common.code",
       catSearchPlaceholder: "catalog.searchPlaceholder",
       catViewProducts: "catalog.viewProducts",
       catAllProductsTitle: "catalog.allProductsTitle",
@@ -66,6 +77,8 @@ export const useTranslation = (lang: LanguageCode = "ES") => {
       catSortNew: "catalog.sortNew",
       catCategories: "catalog.categoriesTitle",
       catDiameter: "catalog.filterDiameter",
+      catAll: "common.all",
+      catFilters: "common.filters",
       catClearFilters: "catalog.filterClear",
       catResult: "catalog.productsWord",
       catResults: "catalog.productsWord",
@@ -185,6 +198,7 @@ export const useTranslation = (lang: LanguageCode = "ES") => {
       contactAreaPurchasing: "contact.areaCompras",
       contactAreaLogistics: "contact.areaLogistica",
       contactAreaFinance: "contact.areaFinanzas",
+      contactAreaGeneral: "contact.areaGeneral",
       contactAreaCollections: "contact.areaCobranzas",
       contactAreaSuppliers: "contact.areaSuppliers",
 
@@ -193,6 +207,34 @@ export const useTranslation = (lang: LanguageCode = "ES") => {
       equipCultureDesc: "equipment.cultureDesc",
       equipCultureBtn: "equipment.btnHistory",
       equipContactDept: "equipment.contactDept",
+
+      // Product detail & badges
+      catHomologated: "badge.homologado",
+      catHomologatedBadge: "badge.homologado",
+      catNorms: "common.standard",
+      techSheet: "common.technicalSheet",
+      techSheetUnified: "common.unifiedSpecs",
+      generalCatalogPdf: "common.officialCatalog",
+      isoCertPdf: "empresa.cert.cardTitle",
+      specs: "product.tabSpecs",
+      specsMatrix: "product.specsMatrix",
+      specsDimensions: "common.dimensions",
+      specsDiameterRange: "catalog.filterDiameter",
+      specsPressure: "common.pressure",
+      specsTorque: "specs.torque",
+      standardsTitle: "common.standard",
+      standardsIram: "empresa.cert.iram",
+      standardsPotableWater: "empresa.cert.potable",
+      relatedProducts: "product.relatedTitle",
+      badgeNew: "badge.new",
+      favorite: "favorites.title",
+      prodDimensions: "common.dimensions",
+      prodDiameter: "catalog.filterDiameter",
+      prodFeatures: "product.mainFeatures",
+      addToQuote: "common.addToQuote",
+      catNotFound: "product.notFoundTitle",
+      catNoProductsDesc: "product.notFoundDesc",
+      backToCatalog: "common.backToCatalog",
     };
 
     const mappedKey = legacyMap[key];
@@ -213,38 +255,41 @@ export const useTranslation = (lang: LanguageCode = "ES") => {
   };
 };
 
+/** Alias compatible con el nombre histórico (fábrica pura, no es un hook de React). */
+export const useTranslation = createTranslator;
+
 /**
  * Returns translated product using data-driven localized fields if present,
  * or falling back gracefully to base fields.
  */
 export function getTranslatedProduct(prod: Product, lang: LanguageCode | string): Product {
   const normLang = ((lang || "ES").toUpperCase()) as LanguageCode;
-  const langKey = normLang.toLowerCase() as "es" | "en" | "pt" | "zh";
+  const langKey = normLang.toLowerCase() as LangKey;
 
-  const anyProd = prod as any;
+  const localized = prod as LocalizedProduct;
 
   // Name
   let name = prod.name;
-  if (anyProd.nameI18n && anyProd.nameI18n[langKey]) {
-    name = anyProd.nameI18n[langKey];
+  if (localized.nameI18n && localized.nameI18n[langKey]) {
+    name = localized.nameI18n[langKey];
   }
 
   // Description
   let description = prod.description;
-  if (anyProd.descriptionI18n && anyProd.descriptionI18n[langKey]) {
-    description = anyProd.descriptionI18n[langKey];
+  if (localized.descriptionI18n && localized.descriptionI18n[langKey]) {
+    description = localized.descriptionI18n[langKey];
   }
 
   // Features
   let features = prod.features;
-  if (anyProd.featuresI18n && anyProd.featuresI18n[langKey]) {
-    features = anyProd.featuresI18n[langKey];
+  if (localized.featuresI18n && localized.featuresI18n[langKey]) {
+    features = localized.featuresI18n[langKey];
   }
 
   // Specs
   let specs = prod.specs;
-  if (anyProd.specsI18n && anyProd.specsI18n[langKey]) {
-    specs = anyProd.specsI18n[langKey];
+  if (localized.specsI18n && localized.specsI18n[langKey]) {
+    specs = localized.specsI18n[langKey] as Spec[];
   }
 
   return {
@@ -262,9 +307,9 @@ export function getTranslatedProduct(prod: Product, lang: LanguageCode | string)
  */
 export function getTranslatedCategory(cat: Category, lang: LanguageCode | string): Category;
 export function getTranslatedCategory(catSlug: string, lang: LanguageCode | string, fallbackName?: string): string;
-export function getTranslatedCategory(catOrSlug: Category | string, lang: LanguageCode | string, fallbackName?: string): any {
+export function getTranslatedCategory(catOrSlug: Category | string, lang: LanguageCode | string, fallbackName?: string): Category | string {
   const normLang = ((lang || "ES").toUpperCase()) as LanguageCode;
-  const langKey = normLang.toLowerCase() as "es" | "en" | "pt" | "zh";
+  const langKey = normLang.toLowerCase() as LangKey;
 
   if (typeof catOrSlug === "string") {
     // If it's a slug or string, return the fallback name or the slug
@@ -272,21 +317,20 @@ export function getTranslatedCategory(catOrSlug: Category | string, lang: Langua
   }
 
   const cat = catOrSlug;
-  const anyCat = cat as any;
 
   let name = cat.name;
-  if (anyCat.nameI18n && anyCat.nameI18n[langKey]) {
-    name = anyCat.nameI18n[langKey];
+  if (cat.nameI18n && cat.nameI18n[langKey]) {
+    name = cat.nameI18n[langKey];
   }
 
   let description = cat.description;
-  if (anyCat.descriptionI18n && anyCat.descriptionI18n[langKey]) {
-    description = anyCat.descriptionI18n[langKey];
+  if (cat.descriptionI18n && cat.descriptionI18n[langKey]) {
+    description = cat.descriptionI18n[langKey];
   }
 
   let subcategories = cat.subcategories;
-  if (anyCat.subcategoriesI18n && anyCat.subcategoriesI18n[langKey]) {
-    subcategories = anyCat.subcategoriesI18n[langKey];
+  if (cat.subcategoriesI18n && cat.subcategoriesI18n[langKey]) {
+    subcategories = cat.subcategoriesI18n[langKey];
   }
 
   return {
@@ -302,7 +346,7 @@ export function getTranslatedCategory(catOrSlug: Category | string, lang: Langua
  */
 export function getTranslatedTag(tagKey: string, lang: LanguageCode | string): string {
   const normLang = ((lang || "ES").toUpperCase()) as LanguageCode;
-  const t = useTranslation(normLang);
+  const t = createTranslator(normLang);
   const cleanKey = tagKey.toLowerCase().replace(/[\s-]+/g, "_");
   const fullKey = `tag.${cleanKey}`;
   return t(fullKey, tagKey.toUpperCase());

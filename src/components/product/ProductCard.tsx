@@ -2,12 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import { ShoppingCart, Ruler, ArrowRight, FileText, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, Ruler, ArrowRight, FileText } from "lucide-react";
 import { Product } from "@/types";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedCategory, getTranslatedProduct, getTranslatedTag } from "@/i18n";
 import { categories as rawCategories } from "@/data/products";
-import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -35,7 +34,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
   if (viewMode === "list") {
     return (
       <div
-        className="group relative flex flex-col sm:flex-row bg-white hover:bg-slate-50/80 transition-colors border border-slate-200 shadow-xs"
+        className="group relative flex flex-col sm:flex-row bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-slate-300"
         style={{ borderTop: `3px solid ${familyColor}` }}
       >
         {/* Imagen */}
@@ -52,7 +51,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
           />
           {product.homologado && (
             <div
-              className="absolute top-2 left-2 bg-navy-950 text-sky-300 px-2 py-0.5 font-heading font-extrabold uppercase text-[9px] tracking-wider border border-sky-400/30 shadow-xs"
+              className="absolute top-3 left-3 rounded-full bg-navy-950/95 text-sky-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm"
             >
               {t("badge.homologado")}
             </div>
@@ -69,7 +68,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
               >
                 {category?.name || product.categoryId}
               </span>
-              <span className="font-mono text-slate-500 font-semibold text-[11px] bg-slate-100 px-2 py-0.5 border border-slate-200">
+              <span className="font-mono text-slate-600 font-semibold text-[11px] bg-slate-100 px-2 py-0.5 rounded-md">
                 {product.code}
               </span>
             </div>
@@ -87,13 +86,13 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
             {/* Spec pills & tags */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
               {product.sizeInfo && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-slate-600 bg-slate-100 px-2 py-0.5 border border-slate-200">
+                <span className="inline-flex items-center gap-1 text-[11px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
                   <Ruler className="h-3 w-3 text-slate-400" />
                   {product.sizeInfo}
                 </span>
               )}
               {product.diameter && (
-                <span className="text-[11px] text-slate-600 bg-slate-100 px-2 py-0.5 border border-slate-200 font-mono">
+                <span className="text-[11px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full font-mono">
                   DN: {product.diameter}
                 </span>
               )}
@@ -103,7 +102,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
                 product.tags.map((tagKey) => (
                   <span
                     key={tagKey}
-                    className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 bg-slate-100 text-slate-700 border border-slate-200"
+                    className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-slate-100 text-slate-700"
                   >
                     {getTranslatedTag(tagKey, language)}
                   </span>
@@ -116,7 +115,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
             <div className="flex items-center gap-3">
               <Link
                 href={`/productos/${product.slug}`}
-                className="text-xs font-heading font-bold text-primary-700 hover:text-primary-900 uppercase tracking-wider flex items-center gap-1 transition-colors"
+                className="text-xs font-semibold text-primary-700 hover:text-primary-900 flex items-center gap-1 transition-colors"
               >
                 {t("common.viewFull")} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -150,7 +149,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
   // ── GRID VIEW ──────────────────────────────────────────────────────────────
   return (
     <div
-      className="group relative flex flex-col h-full bg-white hover:bg-slate-50/60 transition-colors border border-slate-200 shadow-xs"
+      className="group relative flex flex-col h-full bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-slate-300"
       style={{ borderTop: `3px solid ${familyColor}` }}
     >
       {/* Product Image */}
@@ -169,7 +168,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
         {/* Badge Homologado */}
         {product.homologado && (
           <div
-            className="absolute top-2.5 left-2.5 bg-navy-950 text-sky-300 px-2 py-0.5 font-heading font-extrabold uppercase text-[9px] tracking-wider border border-sky-400/30 shadow-xs"
+            className="absolute top-3 left-3 rounded-full bg-navy-950/95 text-sky-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm"
           >
             {t("badge.homologado")}
           </div>
@@ -177,7 +176,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
 
         {/* New badge */}
         {product.isNew && (
-          <div className="absolute top-2.5 right-2.5 bg-primary-600 text-white px-2 py-0.5 font-heading font-bold uppercase text-[9px] tracking-wider">
+          <div className="absolute top-3 right-3 rounded-full bg-primary-600 text-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm">
             {t("badge.new")}
           </div>
         )}
@@ -193,7 +192,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
           >
             {category?.name || product.categoryId}
           </span>
-          <span className="font-mono text-slate-500 font-semibold text-[10px] shrink-0 bg-slate-100 px-1.5 py-0.5 border border-slate-200">
+          <span className="font-mono text-slate-600 font-semibold text-[10px] shrink-0 bg-slate-100 px-1.5 py-0.5 rounded-md">
             {product.code}
           </span>
         </div>
@@ -219,7 +218,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
             {product.tags.slice(0, 3).map((tagKey) => (
               <span
                 key={tagKey}
-                className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-slate-100 text-slate-600 border border-slate-200"
+                className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600"
               >
                 {getTranslatedTag(tagKey, language)}
               </span>
@@ -231,7 +230,7 @@ export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductC
         <div className="mt-auto pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
           <Link
             href={`/productos/${product.slug}`}
-            className="text-[11px] font-heading font-bold text-primary-700 hover:text-primary-900 uppercase tracking-wider flex items-center gap-1 transition-colors"
+            className="text-[11px] font-semibold text-primary-700 hover:text-primary-900 flex items-center gap-1 transition-colors"
           >
             {t("common.viewFull")} <ArrowRight className="h-3 w-3" />
           </Link>

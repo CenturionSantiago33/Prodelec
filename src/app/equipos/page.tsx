@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { PenTool, Factory, ShieldCheck, Truck, Users, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useStore } from "@/store/useStore";
-import { useTranslation } from "@/i18n/translations";
+import { useTranslation, TranslateFn } from "@/i18n/translations";
 
-const getDepartments = (t: any) => [
+const getDepartments = (t: TranslateFn) => [
   {
     id: "ingenieria",
     name: t("equipDept1Name"),

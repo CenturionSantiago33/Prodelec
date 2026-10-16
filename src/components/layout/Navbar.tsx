@@ -1,21 +1,35 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, ShoppingCart, Menu, X, ChevronRight, Globe, ChevronDown } from "lucide-react";
+import {
+  Search, ShoppingCart, Menu, ChevronRight, ChevronDown, ArrowRight, Download, LayoutGrid,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { Drawer } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
-import { useTranslation, LanguageCode } from "@/i18n/translations";
+import { useTranslation } from "@/i18n/translations";
+import { categories as rawCategories, products as rawProducts } from "@/data/products";
+import { getTranslatedCategory } from "@/i18n";
+
+const emptySubscribe = () => () => {};
+/** true solo en el cliente, sin setState en efectos (evita mismatch de hidratación). */
+const useIsMounted = () =>
+  useSyncExternalStore(emptySubscribe, () => true, () => false);
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsMounted();
   const [scrolled, setScrolled] = useState(false);
+  const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
+  const [hoveredCategoryId, setHoveredCategoryId] = useState<string>(rawCategories[0]?.id || "cajas-conexion");
+  const [isMobileProductsExpanded, setIsMobileProductsExpanded] = useState(false);
+  const dropdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -25,6 +39,22 @@ export function Navbar() {
   const setLanguage = useStore((state) => state.setLanguage);
 
   const t = useTranslation(language);
+
+  const categories = useMemo(() => {
+    return rawCategories.map((c) => getTranslatedCategory(c, language));
+  }, [language]);
+
+  const productCountMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    rawCategories.forEach((cat) => {
+      map[cat.id] = rawProducts.filter((p) => p.categoryId === cat.id).length;
+    });
+    return map;
+  }, []);
+
+  const activeHoveredCategory = useMemo(() => {
+    return categories.find((c) => c.id === hoveredCategoryId) || categories[0];
+  }, [categories, hoveredCategoryId]);
 
   const NAV_LINKS = [
     { name: t("navHome"),    href: "/" },
@@ -37,17 +67,32 @@ export function Navbar() {
   ];
 
   useEffect(() => {
-    setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleDropdownEnter = () => {
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+      dropdownTimerRef.current = null;
+    }
+    setIsProductsDropdownOpen(true);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimerRef.current = setTimeout(() => {
+      setIsProductsDropdownOpen(false);
+    }, 220);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/productos?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchExpanded(false);
+      setIsProductsDropdownOpen(false);
+      setIsMobileMenuOpen(false);
       setSearchQuery("");
     }
   };
@@ -85,9 +130,244 @@ export function Navbar() {
           {/* ── Desktop Nav ────────────────────────────────────── */}
           <nav className="hidden min-[900px]:flex items-center gap-0.5" aria-label="Navegación principal">
             {NAV_LINKS.map((link) => {
+              const isCatalog = link.href === "/categorias";
               const isActive =
                 pathname === link.href ||
                 (link.href !== "/" && pathname.startsWith(link.href));
+
+              if (isCatalog) {
+                return (
+                  <div
+                    key={link.href}
+                    className="relative"
+                    onMouseEnter={handleDropdownEnter}
+                    onMouseLeave={handleDropdownLeave}
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsProductsDropdownOpen(false)}
+                      className={cn(
+                        "relative px-3.5 py-2 font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-colors duration-200 flex items-center gap-1.5 text-[11.5px] group",
+                        isActive || isProductsDropdownOpen
+                          ? "text-white"
+                          : "text-gray-300 hover:text-white"
+                      )}
+                    >
+                      <span>{link.name}</span>
+                      <ChevronDown
+                        className={cn(
+                          "h-3 w-3 text-gray-400 group-hover:text-primary-400 transition-transform duration-200",
+                          isProductsDropdownOpen && "rotate-180 text-primary-400"
+                        )}
+                      />
+                      {isActive && (
+                        <span
+                          className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-accent-500"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </Link>
+
+                    {/* Dropdown Menu */}
+                    <AnimatePresence>
+                      {isProductsDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 8 }}
+                          transition={{ duration: 0.18, ease: "easeOut" }}
+                          className="absolute top-full left-0 z-50 w-[min(940px,calc(100vw-40px))] pt-2"
+                        >
+                          <div
+                            className="overflow-hidden rounded-2xl border border-navy-800 bg-navy-950/98 backdrop-blur-xl"
+                            style={{
+                              boxShadow:
+                                "0 40px 80px -28px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04) inset",
+                            }}
+                          >
+                            {/* Encabezado del panel */}
+                            <div className="relative flex items-center justify-between gap-4 border-b border-navy-800 bg-gradient-to-r from-primary-950 via-navy-900 to-navy-900 px-5 py-4">
+                              <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-primary-500 via-sky-400 to-accent-400" />
+                              <Link
+                                href="/categorias"
+                                onClick={() => setIsProductsDropdownOpen(false)}
+                                className="group flex items-center gap-3"
+                              >
+                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600/20 text-sky-300 ring-1 ring-inset ring-primary-500/30 transition-colors group-hover:bg-primary-600/30">
+                                  <LayoutGrid className="h-[18px] w-[18px]" />
+                                </span>
+                                <span className="leading-tight">
+                                  <span className="block font-heading text-[16px] font-bold text-white">
+                                    Catálogo completo
+                                  </span>
+                                  <span className="block text-[12px] text-slate-400">
+                                    {rawProducts.length} productos en {categories.length} categorías
+                                  </span>
+                                </span>
+                              </Link>
+                              <Link
+                                href="/categorias"
+                                onClick={() => setIsProductsDropdownOpen(false)}
+                                className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-[12.5px] font-semibold text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+                              >
+                                <span>Ver todas las categorías</span>
+                                <ArrowRight className="h-3.5 w-3.5" />
+                              </Link>
+                            </div>
+
+                          {/* Dos columnas: categorías (izq.) + vista previa (der.) */}
+                          <div className="flex h-[min(462px,calc(100vh-200px))]">
+                            {/* Columna izquierda: categorías */}
+                            <div className="dd-scroll w-[372px] shrink-0 overflow-y-auto border-r border-navy-800 p-2.5">
+                              <p className="px-3 pb-1.5 pt-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                                Categorías de productos
+                              </p>
+                              {categories.map((cat) => {
+                                const isHovered = hoveredCategoryId === cat.id;
+                                const count = productCountMap[cat.id] || 0;
+                                const catColor = cat.color || "#1a65b5";
+
+                                return (
+                                  <Link
+                                    key={cat.id}
+                                    href={`/categorias?categoria=${cat.id}`}
+                                    onMouseEnter={() => setHoveredCategoryId(cat.id)}
+                                    onClick={() => setIsProductsDropdownOpen(false)}
+                                    className={cn(
+                                      "flex items-center gap-3 rounded-xl px-3 py-3 transition-colors",
+                                      isHovered ? "bg-navy-800" : "hover:bg-navy-900/70"
+                                    )}
+                                  >
+                                    <span
+                                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                      style={{ backgroundColor: catColor }}
+                                    />
+                                    <span
+                                      className={cn(
+                                        "min-w-0 flex-1 text-[13.5px] font-medium leading-snug",
+                                        isHovered ? "text-white" : "text-slate-200"
+                                      )}
+                                    >
+                                      {cat.name}
+                                    </span>
+                                    <span
+                                      className={cn(
+                                        "shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[11px] tabular-nums",
+                                        isHovered
+                                          ? "bg-navy-950 text-sky-300"
+                                          : "bg-navy-900 text-slate-400"
+                                      )}
+                                    >
+                                      {count}
+                                    </span>
+                                    <ChevronRight
+                                      className={cn(
+                                        "h-4 w-4 shrink-0 transition-transform",
+                                        isHovered
+                                          ? "translate-x-0.5 text-accent-400"
+                                          : "text-navy-700"
+                                      )}
+                                    />
+                                  </Link>
+                                );
+                              })}
+                            </div>
+
+                            {/* Columna derecha: vista previa de la categoría */}
+                            <div className="flex flex-1 flex-col justify-between bg-navy-900/50 p-5">
+                              {activeHoveredCategory ? (
+                                <>
+                                  <div>
+                                    {/* Imagen de la categoría */}
+                                    <div className="group relative mb-4 h-[236px] w-full overflow-hidden rounded-xl bg-white ring-1 ring-inset ring-white/10">
+                                      <img
+                                        src={activeHoveredCategory.image}
+                                        alt={activeHoveredCategory.name}
+                                        className="h-full w-full object-contain p-8 transition-transform duration-300 group-hover:scale-105"
+                                      />
+                                      <span className="absolute right-3 top-3 rounded-full bg-navy-950/85 px-2.5 py-1 text-[11px] font-semibold text-sky-300 ring-1 ring-inset ring-white/10">
+                                        {productCountMap[activeHoveredCategory.id] || 0} modelos
+                                      </span>
+                                    </div>
+
+                                    {/* Título de la categoría */}
+                                    <h3
+                                      className="font-heading text-[19px] font-bold leading-snug"
+                                      style={{ color: activeHoveredCategory.color || "#38bdf8" }}
+                                    >
+                                      {activeHoveredCategory.name}
+                                    </h3>
+
+                                    {/* Descripción */}
+                                    <p className="mt-1.5 line-clamp-3 text-[13px] leading-relaxed text-slate-300">
+                                      {activeHoveredCategory.description}
+                                    </p>
+
+                                    {/* Líneas y variantes */}
+                                    {activeHoveredCategory.subcategories &&
+                                      activeHoveredCategory.subcategories.length > 0 && (
+                                        <div className="mt-4">
+                                          <span className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                                            Líneas y variantes
+                                          </span>
+                                          <div className="flex flex-wrap gap-1.5">
+                                            {activeHoveredCategory.subcategories
+                                              .slice(0, 8)
+                                              .map((sub) => (
+                                                <span
+                                                  key={sub}
+                                                  className="rounded-full border border-navy-800 bg-navy-950 px-2.5 py-1 text-[11.5px] font-medium text-slate-300"
+                                                >
+                                                  {sub}
+                                                </span>
+                                              ))}
+                                            {activeHoveredCategory.subcategories.length > 8 && (
+                                              <span className="px-1.5 py-1 text-[11.5px] text-slate-500">
+                                                +{activeHoveredCategory.subcategories.length - 8}{" "}
+                                                más
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )}
+                                  </div>
+
+                                  {/* Acciones */}
+                                  <div className="mt-4 flex items-center gap-2.5 border-t border-navy-800 pt-4">
+                                    <Link
+                                      href={`/categorias?categoria=${activeHoveredCategory.id}`}
+                                      onClick={() => setIsProductsDropdownOpen(false)}
+                                      className="btn-primary-corp h-11 flex-1 justify-center text-[13.5px]"
+                                    >
+                                      <span>Ver productos</span>
+                                      <ArrowRight className="h-4 w-4" />
+                                    </Link>
+                                    <a
+                                      href={`/pdf/catalogo?categoria=${activeHoveredCategory.id}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-navy-700 bg-navy-800 text-slate-300 transition-colors hover:bg-navy-700 hover:text-white"
+                                      title="Descargar catálogo de esta categoría (PDF)"
+                                    >
+                                      <Download className="h-4 w-4" />
+                                    </a>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="flex h-full items-center justify-center text-sm text-slate-400">
+                                  Seleccioná una categoría
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.href}
@@ -235,9 +515,85 @@ export function Navbar() {
       >
         <div className="flex flex-col p-6">
           {NAV_LINKS.map((link) => {
+            const isCatalog = link.href === "/categorias";
             const isActive =
               pathname === link.href ||
               (link.href !== "/" && pathname.startsWith(link.href));
+
+            if (isCatalog) {
+              return (
+                <div key={link.href} className="border-b border-gray-100">
+                  <div className="flex items-center justify-between py-4">
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "font-heading font-bold uppercase tracking-wider text-sm flex-1",
+                        isActive ? "text-primary-600" : "text-gray-700 hover:text-primary-600"
+                      )}
+                    >
+                      {link.name}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setIsMobileProductsExpanded(!isMobileProductsExpanded)}
+                      className="p-1.5 text-gray-400 hover:text-primary-600 transition-colors"
+                      aria-label="Desplegar categorías"
+                    >
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 transition-transform duration-200",
+                          isMobileProductsExpanded && "rotate-180 text-primary-600"
+                        )}
+                      />
+                    </button>
+                  </div>
+
+                  <AnimatePresence>
+                    {isMobileProductsExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden bg-slate-50 border-t border-slate-100 px-3 py-2 mb-2"
+                      >
+                        <Link
+                          href="/categorias"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center justify-between py-2 text-xs font-heading font-bold text-primary-700 uppercase"
+                        >
+                          <span>★ Ver Todo el Catálogo</span>
+                          <span className="font-mono text-[10px] text-slate-400">({rawProducts.length})</span>
+                        </Link>
+                        <div className="space-y-1 mt-1 max-h-56 overflow-y-auto">
+                          {categories.map((cat) => (
+                            <Link
+                              key={cat.id}
+                              href={`/categorias?categoria=${cat.id}`}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className="flex items-center justify-between py-1.5 px-2 hover:bg-slate-200/60 rounded text-xs text-slate-700 font-medium"
+                            >
+                              <div className="flex items-center gap-2 truncate">
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full shrink-0"
+                                  style={{ backgroundColor: cat.color || "#1a65b5" }}
+                                />
+                                <span className="truncate">{cat.name}</span>
+                              </div>
+                              <span className="font-mono text-[10px] text-slate-400 shrink-0 ml-1">
+                                ({productCountMap[cat.id] || 0})
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={link.href}

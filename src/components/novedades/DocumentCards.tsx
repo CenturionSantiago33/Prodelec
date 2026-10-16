@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText, Download, Eye, FileDown } from "lucide-react";
+import { FileText, Download, Eye } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { useTranslation } from "@/i18n/translations";
 

@@ -46,7 +46,7 @@ function Counter({ end, duration = 2000, suffix = "", prefix = "" }: CounterProp
 
 const STATS = [
   { value: 39, prefix: "+", suffix: "", label: "Años en la Industria" },
-  { value: 10, prefix: "", suffix: "", label: "Familias de Productos" },
+  { value: 10, prefix: "", suffix: "", label: "Categorías de Productos" },
   { value: 30, prefix: "+", suffix: "", label: "Modelos y Variantes" },
   { value: 9001, prefix: "ISO ", suffix: "", label: "Calidad Certificada" },
 ];

@@ -13,7 +13,6 @@ import {
   BarChart3,
   Clock,
   ShieldCheck,
-  FileText,
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,7 +26,7 @@ const LISTS = [
     icon: Users,
     color: "text-blue-600 bg-blue-50",
     defaultSubject: "Boletín Oficial Prodelec — Soluciones de Ingeniería e Infraestructura",
-    defaultBody: "Estimado cliente,\n\nLe enviamos el boletín oficial con el resumen consolidado de productos homologados, fichas técnicas y novedades operativas de Prodelec S.A.\n\nConsulte nuestro catálogo en línea para más información o solicitar cotización.",
+    defaultBody: "Estimado cliente,\n\nLe enviamos el boletín oficial con el resumen consolidado de productos homologados, fichas técnicas y novedades operativas de Prodelec S.R.L.\n\nConsulte nuestro catálogo en línea para más información o solicitar cotización.",
     defaultCta: "Ver Catálogo Completo",
   },
   {
@@ -357,7 +356,7 @@ export default function MailingPage() {
               {/* Pie de email institucional */}
               <div className="bg-sky-50/80 p-4 text-center border-t border-sky-100">
                 <p className="text-[10px] text-gray-500 font-medium">
-                  PRODELEC S.A. — Parque Industrial Good Park, Florencio Varela.<br/>
+                  PRODELEC S.R.L. — Parque Industrial Good Park, Florencio Varela.<br/>
                   Este correo automático fue enviado a la lista de clientes seleccionada.
                 </p>
               </div>

@@ -5,6 +5,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { HydraulicRippleProvider } from "@/components/ui/HydraulicRippleProvider";
+import { AppHydration } from "@/components/system/AppHydration";
+import { SITE } from "@/lib/site";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -24,8 +26,34 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Prodelec | Soluciones de Ingeniería para Redes de Agua y Saneamiento",
-  description: "Fabricación nacional de cajas de conexión, abrazaderas y accesorios de polímeros para redes de agua potable y saneamiento.",
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: "Prodelec | Soluciones de Ingeniería para Redes de Agua, Saneamiento y Gas",
+    template: "%s | Prodelec",
+  },
+  description: SITE.description,
+  applicationName: SITE.name,
+  keywords: [
+    "Prodelec",
+    "cajas de conexión",
+    "abrazaderas de derivación",
+    "abrazaderas de reparación",
+    "componentes para agua potable",
+    "redes de saneamiento",
+    "polímeros de ingeniería",
+    "ISO 9001",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    title: "Prodelec | Componentes poliméricos para redes de agua, saneamiento y gas",
+    description: SITE.description,
+    locale: "es_AR",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -39,6 +67,7 @@ export default function RootLayout({
       className={`${poppins.variable} ${leagueSpartan.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <AppHydration />
         <HydraulicRippleProvider />
         <Navbar />
         <main className="flex-1 flex flex-col">

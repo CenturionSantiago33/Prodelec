@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useSyncExternalStore } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { ChevronLeft, ChevronRight, ArrowRight, Download, FileText, Zap, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/store/useStore";
@@ -46,23 +46,29 @@ export function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 40 }, [
     Autoplay({ delay: 6000, stopOnInteraction: false }),
   ]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      if (!emblaApi) return () => {};
+      emblaApi.on("select", onStoreChange);
+      emblaApi.on("reInit", onStoreChange);
+      return () => {
+        emblaApi.off("select", onStoreChange);
+        emblaApi.off("reInit", onStoreChange);
+      };
+    },
+    [emblaApi]
+  );
+
+  const selectedIndex = useSyncExternalStore(
+    subscribe,
+    () => (emblaApi ? emblaApi.selectedScrollSnap() : 0),
+    () => 0
+  );
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
   const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi, setSelectedIndex]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-  }, [emblaApi, onSelect]);
 
   return (
     <div className="relative w-full h-[85vh] min-h-[600px] overflow-hidden bg-navy-950">

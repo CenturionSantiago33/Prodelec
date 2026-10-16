@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
@@ -40,13 +39,9 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    // If asChild is true, we should render the Slot component from radix, but since we didn't install radix slot, let's just use standard button for simplicity unless strictly needed.
-    // Wait, let's avoid @radix-ui/react-slot dependency to keep it simple, or I should install it.
-    // I will rewrite this to not use Slot to save an install, since we don't strictly need polymorphism right now, or we can just use a simple button.
-    const Comp = "button"
+  ({ className, variant, size, ...props }, ref) => {
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}

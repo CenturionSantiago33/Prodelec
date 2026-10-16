@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <g transform="translate(10, 10)">
+    <!-- EPAS Neuquén Wave Droplet -->
+    <path d="M20 4 C20 4, 34 18, 34 26 C34 34, 28 40, 20 40 C12 40, 6 34, 6 26 C6 18, 20 4, 20 4 Z" fill="#0D9488"/>
+    <path d="M12 28 C16 24, 24 24, 28 28" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <text x="56" y="36" font-family="'Inter', 'Montserrat', Arial, sans-serif" font-weight="900" font-size="26" fill="#115E59" letter-spacing="-0.5">EPAS</text>
+  <text x="57" y="47" font-family="'Inter', Arial, sans-serif" font-weight="700" font-size="7" fill="#64748B" letter-spacing="1">NEUQUÉN · AGUA Y SANEAMIENTO</text>
+</svg>

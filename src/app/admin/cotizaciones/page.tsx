@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Clock, CheckCircle, XCircle, Eye, Download, MessageSquare, Send } from "lucide-react";
+import { Download, MessageSquare } from "lucide-react";
 
 interface Cotizacion {
   id: string;
@@ -38,6 +38,31 @@ export default function CotizacionesPage() {
     rechazada: cotizaciones.filter(c => c.estado === "rechazada").length,
   };
 
+  const handleExportCsv = () => {
+    const headers = ["ID", "Cliente", "Email", "Telefono", "Fecha", "Productos", "Estado"];
+    const rows = cotizaciones.map((c) => [
+      c.id,
+      c.cliente,
+      c.email,
+      c.telefono,
+      c.fecha,
+      c.productos,
+      c.estado,
+    ]);
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((r) => r.map((field) => `"${field}"`).join(","))].join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `cotizaciones_prodelec_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8 font-sans">
       {/* Header */}
@@ -48,7 +73,10 @@ export default function CotizacionesPage() {
             Administrá solicitudes de cotización y cambiá su estado con 1 solo clic.
           </p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-navy-950 text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-colors shadow-md">
+        <button
+          onClick={handleExportCsv}
+          className="flex items-center gap-2 px-5 py-2.5 bg-navy-950 text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-colors shadow-md cursor-pointer"
+        >
           <Download className="h-4 w-4" /> Exportar a Excel/CSV
         </button>
       </div>

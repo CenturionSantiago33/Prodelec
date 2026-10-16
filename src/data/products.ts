@@ -1,17 +1,36 @@
 import { Category, Product } from "@/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 17 FAMILIAS OFICIALES DE PRODUCTO — PRODELEC
+// CATEGORÍAS OFICIALES DE PRODUCTO — PRODELEC
 // ─────────────────────────────────────────────────────────────────────────────
 export const categories: Category[] = [
   {
     id: "cajas-conexion",
+    niches: ["agua", "saneamiento", "gas"],
     slug: "cajas-conexion",
     name: "Cajas de Conexión y Protección",
     order: 1,
     color: "#1a65b5", // Prodelec Corporate Blue
     image: "/productos/catalogo/04-cajas/5_-_compactada.jpg",
     technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
+    // Fichas oficiales de modelos de la línea que aún no están publicados como
+    // producto. Los 4 modelos publicados (C1400CS, C11530CS, C4200CSLC y
+    // C10500CS) ya llevan su ficha en la ficha del producto.
+    technicalSheets: [
+      { label: "Boca de Acceso a Conexión Cloacal Homologada C4170 CSLC", url: "/fichas/ficha-tecnica-boca-de-acceso-a-conexion-cloacal-homologada-c4170-cslc.pdf" },
+      { label: "Boca de Acceso a Conexión Cloacal C4171 CSLC", url: "/fichas/ficha-tecnica-boca-de-acceso-a-conexion-cloacal-c4171-cslc.pdf" },
+      { label: "Caja Brasero para Válvula Esclusa C4171 CSLVE", url: "/fichas/ficha-tecnica-caja-brasero-para-valvula-esclusa-c4171-cslve.pdf" },
+      { label: "Caja Brasero para Válvula Esclusa C6201 CSLVE", url: "/fichas/ficha-tecnica-caja-brasero-para-valvula-esclusa-c6201-cslve.pdf" },
+      { label: "Caja Compacta C1401 CS", url: "/fichas/ficha-tecnica-caja-compacta-c1401-cs.pdf" },
+      { label: "Caja Compacta C5151 CS", url: "/fichas/ficha-tecnica-caja-compacta-c5151-cs.pdf" },
+      { label: "Caja Cx Cloacal C4201 CSLC", url: "/fichas/ficha-tecnica-caja-cx-cloacal-c4201-cslc.pdf" },
+      { label: "Caja Plástica para Hidrante C5201 CSLH", url: "/fichas/ficha-tecnica-caja-plastica-para-hidrante-c5201-cslh.pdf" },
+      { label: "Caja Recta Alta Homologada C12530 CS", url: "/fichas/ficha-tecnica-caja-recta-alta-homologada-c12530-cs.pdf" },
+      { label: "Caja Recta Alta C12531 CS", url: "/fichas/ficha-tecnica-caja-recta-alta-c12531-cs.pdf" },
+      { label: "Caja Recta Baja C11531 CS", url: "/fichas/ficha-tecnica-caja-recta-baja-c11531-cs.pdf" },
+      { label: "Caja Reducida C2201 CS", url: "/fichas/ficha-tecnica-caja-reducida-c2201-cs.pdf" },
+      { label: "Caja Reducida C6151 CS", url: "/fichas/ficha-tecnica-caja-reducida-c6151-cs.pdf" },
+    ],
     description: "Cajas y gabinetes en polímeros de ingeniería para protección de medidores y válvulas en redes de agua potable, cloaca y gas.",
     subcategories: ["Compactas", "Reducidas", "Rectas", "Cloacales", "Válvula Esclusa", "Hidrante", "Gas"],
     nameI18n: {
@@ -35,12 +54,23 @@ export const categories: Category[] = [
   },
   {
     id: "abrazaderas-derivacion",
+    niches: ["agua", "gas"],
     slug: "abrazaderas-derivacion",
     name: "Abrazaderas de Derivación",
     order: 2,
     color: "#0284c7", // Steel Blue
     image: "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_1.jpg",
     technicalSheet: "/productos/LP 13-2025-AB.DER. HOMOLOGADAS.pdf",
+    // Fichas de los modelos de la línea que no están publicados como producto.
+    // Las versiones ABS y PP comparten código interno en el origen (AD-INS /
+    // AD-RAP), por eso se identifican por su nombre técnico completo.
+    technicalSheets: [
+      { label: "Abrazadera de Derivación ABS con Inserto", url: "/fichas/ficha-tecnica-abrazadera-derivacion-abs-con-inserto.pdf" },
+      { label: "Abrazadera de Derivación ABS Inserto con Racord Bronce", url: "/fichas/ficha-tecnica-abrazadera-derivacion-abs-inserto-con-racord-bronce.pdf" },
+      { label: "Abrazadera de Derivación ABS Salida PEAD Homologada", url: "/fichas/ficha-tecnica-abrazadera-derivacion-abs-salida-pead-homologada.pdf" },
+      { label: "Abrazadera de Derivación PP con Inserto", url: "/fichas/ficha-tecnica-abrazadera-derivacion-pp-con-inserto.pdf" },
+      { label: "Abrazadera de Derivación PP Salida PEAD", url: "/fichas/ficha-tecnica-abrazadera-derivacion-pp-salida-pead.pdf" },
+    ],
     description: "Sistemas de acople y derivación domiciliaria e industrial para cañerías de PVC, PEAD, Asbesto Cemento e Hierro.",
     subcategories: ["Estándar", "Inserto Metálico", "Racor Bronce", "Racor Plástico", "Económicas"],
     nameI18n: {
@@ -64,6 +94,7 @@ export const categories: Category[] = [
   },
   {
     id: "abrazaderas-reparacion",
+    niches: ["agua"],
     slug: "abrazaderas-reparacion",
     name: "Abrazaderas de Reparación",
     order: 3,
@@ -93,6 +124,7 @@ export const categories: Category[] = [
   },
   {
     id: "til",
+    niches: ["domiciliaria", "agua"],
     slug: "til",
     name: "TIL - Toma Intradomiciliaria de Línea",
     order: 4,
@@ -122,6 +154,7 @@ export const categories: Category[] = [
   },
   {
     id: "cinchas",
+    niches: ["agua", "saneamiento", "gas"],
     slug: "cinchas",
     name: "Cinchas de Acero Inoxidable",
     order: 5,
@@ -151,6 +184,7 @@ export const categories: Category[] = [
   },
   {
     id: "cepos",
+    niches: ["agua"],
     slug: "cepos",
     name: "Cepos de Corte y Seguridad",
     order: 6,
@@ -179,6 +213,7 @@ export const categories: Category[] = [
   },
   {
     id: "collar-toma-carga",
+    niches: ["agua"],
     slug: "collar-toma-carga",
     name: "Collar Toma en Carga",
     order: 7,
@@ -207,6 +242,7 @@ export const categories: Category[] = [
   },
   {
     id: "juntas-reparacion",
+    niches: ["agua", "saneamiento"],
     slug: "juntas-reparacion",
     name: "Junta de Reparación",
     order: 8,
@@ -235,6 +271,7 @@ export const categories: Category[] = [
   },
   {
     id: "collar-toma-agua",
+    niches: ["agua"],
     slug: "collar-toma-agua",
     name: "Collar de Toma de Agua",
     order: 9,
@@ -263,6 +300,7 @@ export const categories: Category[] = [
   },
   {
     id: "empalmes-goma-cloacal",
+    niches: ["saneamiento"],
     slug: "empalmes-goma-cloacal",
     name: "Empalmes de Goma Cloacal",
     order: 10,
@@ -291,6 +329,7 @@ export const categories: Category[] = [
   },
   {
     id: "empalmes-goma",
+    niches: ["agua"],
     slug: "empalmes-goma",
     name: "Empalmes de Goma Hidráulicos",
     order: 11,
@@ -319,6 +358,7 @@ export const categories: Category[] = [
   },
   {
     id: "llaves",
+    niches: ["domiciliaria", "agua"],
     slug: "llaves",
     name: "Llaves Esféricas de Polímero",
     order: 12,
@@ -347,6 +387,7 @@ export const categories: Category[] = [
   },
   {
     id: "llaves-bronce",
+    niches: ["agua"],
     slug: "llaves-bronce",
     name: "Llaves de Bronce Sanitario",
     order: 13,
@@ -375,6 +416,7 @@ export const categories: Category[] = [
   },
   {
     id: "kits",
+    niches: ["domiciliaria", "agua"],
     slug: "kits",
     name: "Kits de Conexión Domiciliaria",
     order: 14,
@@ -404,6 +446,7 @@ export const categories: Category[] = [
   },
   {
     id: "niples",
+    niches: ["domiciliaria"],
     slug: "niples",
     name: "Niples de Conexión",
     order: 15,
@@ -433,6 +476,7 @@ export const categories: Category[] = [
   },
   {
     id: "grupales",
+    niches: ["domiciliaria"],
     slug: "grupales",
     name: "Sistemas Grupales",
     order: 16,
@@ -478,8 +522,10 @@ export const products: Product[] = [
     diameter: "DN15 a DN25",
     familyColor: "#1a65b5",
     tags: ["homologado", "estandar", "alta_presion"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-caja-compacta-homologada-c1400-cs.pdf",
     images: [
+      "/productos/fotos/caja-conexion-compacta-c1400cs-1.jpg",
+      "/productos/fotos/caja-conexion-compacta-c1400cs-2.jpg",
       "/productos/catalogo/04-cajas/5_-_compactada.jpg",
       "/productos/catalogo/04-cajas/13-compacta_cozzuol_1.jpg",
     ],
@@ -548,8 +594,8 @@ export const products: Product[] = [
     diameter: "DN15",
     familyColor: "#1a65b5",
     tags: ["homologado", "estandar"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
     images: [
+      "/productos/fotos/caja-conexion-reducida-c2200cs-1.jpg",
       "/productos/catalogo/04-cajas/6_-_reducida_1.jpg",
       "/productos/catalogo/04-cajas/10-reducida_cozzuol_1.jpg",
     ],
@@ -590,8 +636,12 @@ export const products: Product[] = [
     diameter: "DN25 a DN50",
     familyColor: "#1a65b5",
     tags: ["homologado", "alta_presion"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
-    images: ["/productos/catalogo/04-cajas/16_-recta_alta.jpg"],
+    technicalSheet: "/fichas/ficha-tecnica-caja-recta-baja-homologada-c11530-cs.pdf",
+    images: [
+      "/productos/fotos/caja-recta-alta-c11530cs-1.jpg",
+      "/productos/fotos/caja-recta-alta-c11530cs-2.jpg",
+      "/productos/catalogo/04-cajas/16_-recta_alta.jpg",
+    ],
     name: "Caja Recta Alta C11530CS",
     description: "Caja recta de gran capacidad para acometidas comerciales e industriales. Medidas 532x292x305 mm con resistencia de 3.000 kg.",
     nameI18n: {
@@ -629,7 +679,7 @@ export const products: Product[] = [
     diameter: "DN110",
     familyColor: "#1a65b5",
     tags: ["homologado", "cloacal"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-caja-cx-cloacal-homologada-c4200-cslc.pdf",
     images: ["/productos/catalogo/04-cajas/7-_cloacal_1.jpg"],
     name: "Caja Cloacal DN110 C4200CSLC",
     description: "Caja de inspección cloacal homologada con pasaje para cañería DN110. Resistencia certificada de 1.500 kg.",
@@ -668,7 +718,6 @@ export const products: Product[] = [
     diameter: "DN15 a DN50",
     familyColor: "#1a65b5",
     tags: ["homologado", "estandar"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
     images: ["/productos/catalogo/04-cajas/9-_ve_1.jpg"],
     name: "Brasero para Válvula Esclusa C6200CSLVE",
     description: "Caja protectora homologada tipo brasero para operación y maniobra de válvulas esclusas subterráneas.",
@@ -705,8 +754,12 @@ export const products: Product[] = [
     diameter: "DN15 a DN20",
     familyColor: "#1a65b5",
     tags: ["homologado", "estandar"],
-    technicalSheet: "/productos/Kit de Gabinete de pared.pdf",
-    images: ["/productos/catalogo/04-cajas/14_-_pared_1.jpg"],
+    technicalSheet: "/fichas/ficha-tecnica-caja-gabinete-c10500-cs.pdf",
+    images: [
+      "/productos/fotos/gabinete-pared-c10500cs-1.jpg",
+      "/productos/fotos/gabinete-pared-c10500cs-2.jpg",
+      "/productos/catalogo/04-cajas/14_-_pared_1.jpg",
+    ],
     name: "Gabinete de Pared para Medidor C10500CS",
     description: "Gabinete de embutir en pared homologado para alojar y proteger medidor volumétrico, válvula de corte y antirretorno.",
     nameI18n: {
@@ -746,10 +799,12 @@ export const products: Product[] = [
     diameter: "50mm a 160mm",
     familyColor: "#0284c7",
     tags: ["homologado", "estandar", "doble_bulon"],
-    technicalSheet: "/productos/LP 13-2025-AB.DER. HOMOLOGADAS.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-abrazadera-derivacion-pp-standard.pdf",
     images: [
       "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_1.jpg",
+      "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_2.jpg",
       "/productos/Abrazadera de Derivacion - Frente.jpg.jpeg",
+      "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_3.jpg",
     ],
     name: "Abrazadera de Derivación Estándar",
     description: "Abrazadera homologada de doble bulón para derivaciones domiciliarias en redes de distribución de agua potable.",
@@ -789,7 +844,6 @@ export const products: Product[] = [
     diameter: "63mm a 160mm",
     familyColor: "#0284c7",
     tags: ["homologado", "inserto", "doble_bulon"],
-    technicalSheet: "/productos/LP 13-2025-AB.DER. HOMOLOGADAS.pdf",
     images: [
       "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_2.jpg",
       "/productos/abrazadera Inserto.jpg",
@@ -831,7 +885,10 @@ export const products: Product[] = [
     diameter: "63mm a 160mm",
     familyColor: "#0284c7",
     tags: ["homologado", "racor_bronce", "alta_presion"],
-    technicalSheet: "/productos/LP 13-2025-AB.DER. HOMOLOGADAS.pdf",
+    // Ficha del modelo "Abrazadera Derivación ABS Estandar + Racord Bronce"
+    // (código de plano ADA-ERB). Es la variante sin inserto, que es la que
+    // corresponde a este producto (racor de bronce sobre abrazadera estándar).
+    technicalSheet: "/fichas/ficha-tecnica-abrazadera-derivacion-abs-estandar-con-racord-bronce.pdf",
     images: [
       "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_3.jpg",
       "/productos/Abrazadera Estandar + Racord Bronce.jpg.jpeg",
@@ -875,7 +932,7 @@ export const products: Product[] = [
     diameter: "45mm a 55mm",
     familyColor: "#0d9488",
     tags: ["homologado", "acero_inox", "alta_presion"],
-    technicalSheet: "/productos/LISTA DE PRECIOS ABRAZADERAS DE REPARACION LP11-2025.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-abrazadera-reparacion.pdf",
     images: [
       "/productos/catalogo/1-_abrazaderas_de_reparacion/45-55_largo_191_1.jpg",
       "/productos/Abrazadera de Reparación 1 Banda.jpg.jpeg",
@@ -918,9 +975,10 @@ export const products: Product[] = [
     diameter: "150mm a 165mm",
     familyColor: "#0d9488",
     tags: ["homologado", "acero_inox", "alta_presion"],
-    technicalSheet: "/productos/LISTA DE PRECIOS ABRAZADERAS DE REPARACION LP11-2025.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-abrazadera-reparacion.pdf",
     images: [
       "/productos/catalogo/1-_abrazaderas_de_reparacion/150-165_largo_191_1.jpg",
+      "/productos/catalogo/1-_abrazaderas_de_reparacion/150-165_largo_191_2.jpg",
       "/productos/catalogo/1-_abrazaderas_de_reparacion/abrazaderas_de_reparacion.jpeg",
     ],
     name: "Abrazadera de Reparación 1 Banda (150-165 mm)",
@@ -959,7 +1017,7 @@ export const products: Product[] = [
     diameter: "290mm a 315mm",
     familyColor: "#0d9488",
     tags: ["homologado", "acero_inox", "alta_presion"],
-    technicalSheet: "/productos/LISTA DE PRECIOS ABRAZADERAS DE REPARACION LP11-2025.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-abrazadera-reparacion.pdf",
     images: [
       "/productos/catalogo/21-_ab_reparacion/2-300.jpeg",
       "/productos/catalogo/21-_ab_reparacion/1_-_150_1.jpg",
@@ -1003,7 +1061,7 @@ export const products: Product[] = [
     diameter: "DN110",
     familyColor: "#b45309",
     tags: ["homologado", "corte_seguridad", "paso_total"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-ramal-t-de-limpieza-til-dn110.pdf",
     images: ["/productos/catalogo/3-til/3-til.jpeg"],
     name: "TIL - Toma Intradomiciliaria de Línea DN110",
     description: "Toma Intradomiciliaria de Línea homologada DN110 con llave de corte esférica incorporada de paso total para redes de distribución.",
@@ -1045,7 +1103,7 @@ export const products: Product[] = [
     diameter: "DN100",
     familyColor: "#3b82f6",
     tags: ["homologado", "acero_inox"],
-    technicalSheet: "/productos/LP 15-2025-Cincha de Acero Inoxidable.pdf",
+    technicalSheet: "/fichas/ficha-tecnica-cincha-para-collar-toma-en-carga.pdf",
     images: [
       "/productos/catalogo/15_-_cinchas/1-_dn_100_1.jpg",
       "/productos/catalogo/15_-_cinchas/2-_todas_1.jpg",
@@ -1089,9 +1147,12 @@ export const products: Product[] = [
     diameter: "DN15 a DN25",
     familyColor: "#dc2626",
     tags: ["homologado", "antivandalico", "corte_seguridad"],
+    technicalSheet: "/fichas/ficha-tecnica-cepos-para-corte-y-restriccion-de-servicio.pdf",
     images: [
       "/productos/catalogo/23_cepos/23_cepos_1.jpg",
       "/productos/catalogo/23_cepos/23_cepos_2.jpg",
+      "/productos/catalogo/23_cepos/23_cepos_3.jpg",
+      "/productos/catalogo/23_cepos/23_cepos_4.jpg",
     ],
     name: "Cepo de Corte y Restricción Antivandálico",
     description: "Dispositivo de seguridad homologado para suspensión y restricción de servicio en medidores de agua domiciliarios. Cerradura especial con llave de seguridad.",
@@ -1132,9 +1193,11 @@ export const products: Product[] = [
     diameter: "50mm a 200mm",
     familyColor: "#0369a1",
     tags: ["homologado", "alta_presion"],
+    technicalSheet: "/fichas/ficha-tecnica-collar-toma-en-carga-plastico.pdf",
     images: [
       "/productos/catalogo/24_collar_toma_en_carga/24_collar_toma_en_carga_1.jpg",
       "/productos/catalogo/24_collar_toma_en_carga/24_collar_toma_en_carga_2.jpeg",
+      "/productos/catalogo/24_collar_toma_en_carga/24_collar_toma_en_carga_3.jpeg",
     ],
     name: "Collar Toma en Carga Bajo Presión",
     description: "Collarín para perforación y toma en carga sobre cañerías en servicio activo sin interrupción del flujo de agua.",
@@ -1218,6 +1281,7 @@ export const products: Product[] = [
     images: [
       "/productos/catalogo/6-collar_de_toma_de_agua/6-collar_de_toma_de_agua.jpg",
       "/productos/catalogo/6-collar_de_toma_de_agua/6-collar_de_toma_de_agua_b.jpeg",
+      "/productos/catalogo/6-collar_de_toma_de_agua/6-collar_de_toma_de_agua_c.jpeg",
     ],
     name: "Collarín de Toma de Agua Potable",
     description: "Collarín para conexión de acometidas domiciliarias de agua potable con asiento anatómico sobre el caño principal.",
@@ -1257,9 +1321,12 @@ export const products: Product[] = [
     diameter: "DN110 - DN160",
     familyColor: "#78716c",
     tags: ["homologado", "cloacal"],
+    technicalSheet: "/fichas/ficha-tecnica-empalme-de-goma-cloacal.pdf",
     images: [
       "/productos/catalogo/7-emplame_de_goma_cloacal/7-emplame_de_goma_cloacal.jpeg",
       "/productos/catalogo/7-emplame_de_goma_cloacal/7-emplame_de_goma_cloacal_calle.jpg",
+      "/productos/catalogo/7-emplame_de_goma_cloacal/7-emplame_de_goma_cloacal_detalle.jpeg",
+      "/productos/catalogo/7-emplame_de_goma_cloacal/7-emplame_de_goma_cloacal_reverso.jpeg",
     ],
     name: "Empalme Flexible de Goma Cloacal",
     description: "Empalme elastomérico reforzado para interconexión flexible de cañerías en redes cloacales y desagües pluviales.",
@@ -1551,7 +1618,6 @@ export const products: Product[] = [
     diameter: "DN15",
     familyColor: "#475569",
     tags: ["homologado", "estandar"],
-    technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
     images: ["/productos/catalogo/2-_niple/2-_niple.jpg"],
     name: "Niple de Conexión DN15 (165 x 3/4\")",
     description: "Niple de empalme homologado en polipropileno técnico copolímero de 165 mm de longitud con roscas macho de 3/4\".",

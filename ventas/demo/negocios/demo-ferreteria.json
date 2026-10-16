@@ -1,0 +1,37 @@
+{
+  "_comentario": "EJEMPLO — datos ficticios.",
+
+  "nombre": "Ferretería El Tornillo",
+  "rubro": "Ferretería y materiales",
+  "ciudad": "Ezpeleta",
+  "direccion": "Av. Calchaquí 3400",
+  "telefono": "011 4224-1188",
+  "whatsapp": "1134567890",
+  "whatsappTexto": "Hola! Quería consultar por un producto.",
+  "sitio": "https://ferreteriaeltornillo.com.ar",
+
+  "color": "#0f766e",
+  "colorOscuro": "#134e4a",
+
+  "tagline": "Todo para tu obra, cerca de casa",
+  "descripcion": "Materiales, herramientas y sanitarios. Consultá disponibilidad y precios por WhatsApp antes de venir.",
+
+  "hero": { "foto": "" },
+
+  "servicios": [
+    { "icono": "llave", "titulo": "Herramientas", "texto": "Manuales y eléctricas de las mejores marcas, con garantía." },
+    { "icono": "check", "titulo": "Sanitarios y plomería", "texto": "Caños, conexiones, griferías y todo para instalaciones de agua y gas." },
+    { "icono": "camion", "titulo": "Entrega en la zona", "texto": "Llevamos el material a tu obra en Ezpeleta y alrededores." }
+  ],
+
+  "galeria": [
+    { "foto": "", "alt": "Local de materiales" },
+    { "foto": "", "alt": "Herramientas" },
+    { "foto": "", "alt": "Sanitarios" }
+  ],
+
+  "horarios": [
+    "Lunes a viernes: 08:00 a 18:00",
+    "Sábado: 08:00 a 13:00"
+  ]
+}

@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Briefcase, ShoppingCart, BarChart3, Building2, Truck, Wrench, Wallet, CreditCard } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useStore } from "@/store/useStore";
 import { useTranslation } from "@/i18n";
+import { cn } from "@/lib/utils";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Por favor ingrese su nombre / Name required"),
@@ -81,13 +81,17 @@ export default function ContactoPage() {
     reset();
   };
 
+  // Áreas de contacto. El `value` se mantiene estable porque viaja en el asunto
+  // del correo; la etiqueta visible se traduce en los 4 idiomas.
   const areas = [
-    { value: "Ventas y Cotizaciones", label: t("contactAreaSales"), icon: "💼", color: "bg-blue-50 border-blue-200 text-blue-700", activeColor: "bg-blue-600 border-blue-600 text-white" },
-    { value: "Compras y Ventas", label: "Compras y Ventas", icon: "🛒", color: "bg-emerald-50 border-emerald-200 text-emerald-700", activeColor: "bg-emerald-600 border-emerald-600 text-white" },
-    { value: "Logística y Despachos", label: t("contactAreaLogistics"), icon: "🚚", color: "bg-orange-50 border-orange-200 text-orange-700", activeColor: "bg-orange-500 border-orange-500 text-white" },
-    { value: "Finanzas y Administración", label: t("contactAreaFinance"), icon: "📊", color: "bg-purple-50 border-purple-200 text-purple-700", activeColor: "bg-purple-600 border-purple-600 text-white" },
-    { value: "Cobranzas y Facturación", label: t("contactAreaCollections"), icon: "🧾", color: "bg-rose-50 border-rose-200 text-rose-700", activeColor: "bg-rose-600 border-rose-600 text-white" },
-    { value: "Pago a Proveedores", label: t("contactAreaSuppliers"), icon: "💳", color: "bg-slate-50 border-slate-200 text-slate-700", activeColor: "bg-slate-700 border-slate-700 text-white" },
+    { value: "Ventas y Cotizaciones", labelKey: "contact.areaVentas", Icon: Briefcase },
+    { value: "Logística y Despachos", labelKey: "contact.areaLogistica", Icon: Truck },
+    { value: "Cobranzas y Facturación", labelKey: "contact.areaCobranzas", Icon: Wallet },
+    { value: "Finanzas", labelKey: "contact.areaFinanzas", Icon: BarChart3 },
+    { value: "Compras", labelKey: "contact.areaCompras", Icon: ShoppingCart },
+    { value: "Pago a Proveedores", labelKey: "contact.areaSuppliers", Icon: CreditCard },
+    { value: "General", labelKey: "contact.areaGeneral", Icon: Building2 },
+    { value: "Soporte Técnico", labelKey: "contact.areaTecnica", Icon: Wrench },
   ];
 
   return (
@@ -96,10 +100,10 @@ export default function ContactoPage() {
       {/* Header */}
       <div className="bg-navy-950 text-white border-b border-navy-900 py-12 lg:py-16">
         <div className="text-center max-w-3xl mx-auto px-4">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3.5 py-1 text-xs font-bold text-accent-400 uppercase tracking-widest mb-3">
+          <span className="industrial-label mb-3 block text-accent-400">
             {t("navContact")}
-          </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold font-heading text-white uppercase tracking-tight mb-4">
+          </span>
+          <h1 className="text-3xl md:text-5xl font-extrabold font-heading text-white mb-4">
             {t("contactHeroTitle")}
           </h1>
           <p className="text-sm sm:text-base text-slate-300">
@@ -113,7 +117,7 @@ export default function ContactoPage() {
           
           {/* Info & Map */}
           <div>
-            <h2 className="text-2xl font-bold font-heading text-navy-950 mb-6 uppercase tracking-wider">
+            <h2 className="text-2xl font-bold font-heading text-navy-950 mb-6">
               {t("contactTitle")}
             </h2>
             
@@ -123,21 +127,17 @@ export default function ContactoPage() {
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t("contactPhone")}</h3>
-                  <div className="flex flex-col gap-0.5 mt-0.5">
-                    <a
-                      href="https://wa.me/5491139122763"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm font-bold text-navy-950 hover:text-emerald-600 transition-colors inline-flex items-center gap-2"
-                    >
-                      +54 9 11 3912-2763
-                      <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                        WhatsApp Ventas
-                      </span>
-                    </a>
-                    <span className="text-xs text-slate-500">(54-11) 2341-3935 (Planta Industrial)</span>
-                  </div>
+                  <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    {t("contact.whatsappCardTitle")}
+                  </h3>
+                  <a
+                    href="https://wa.me/5491139122763"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-bold text-navy-950 hover:text-emerald-600 transition-colors inline-flex items-center gap-2 mt-0.5"
+                  >
+                    {t("contact.whatsappCardCta")}
+                  </a>
                 </div>
               </div>
               
@@ -169,7 +169,7 @@ export default function ContactoPage() {
               onClick={() => window.open('https://maps.google.com/maps?q=Camino+General+Belgrano+1910,+Berazategui,+Buenos+Aires', '_blank')}
             >
               <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center">
-                <div className="inline-flex items-center rounded-xl bg-white px-5 py-2.5 font-bold text-xs uppercase tracking-wider text-slate-900 shadow-md transition-transform duration-200 group-hover:scale-105 group-hover:text-primary-600 border border-slate-200">
+                <div className="inline-flex items-center rounded-xl bg-white px-5 py-2.5 font-semibold text-xs text-slate-900 shadow-md transition-transform duration-200 group-hover:scale-105 group-hover:text-primary-600 border border-slate-200">
                   <MapPin className="mr-2 h-4 w-4 text-primary-600" />
                   {t("contactOpenMap")}
                 </div>
@@ -189,13 +189,11 @@ export default function ContactoPage() {
 
           {/* Form */}
           <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-slate-200">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-bold font-heading text-navy-950 uppercase tracking-wider">
+            <div className="mb-2">
+              <h2 className="text-xl font-bold font-heading text-navy-950">
                 {t("contactFormTitle")}
               </h2>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <ShieldCheck className="h-3.5 w-3.5" /> Direct Web
-              </span>
+              <span className="block w-12 h-[3px] bg-primary-600 mt-3 rounded-full" />
             </div>
 
             <p className="text-xs text-slate-500 mb-6">
@@ -233,84 +231,100 @@ export default function ContactoPage() {
                       <span className="font-mono font-bold text-primary-600">{refNumber}</span>
                     </div>
                   </div>
+
+                  <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+                    {t("contact.mailtoHint")}
+                  </p>
                 </div>
 
-                <Button
-                  className="w-full bg-navy-950 hover:bg-primary-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-xs py-3"
+                <button
+                  type="button"
+                  className="btn-ghost-corp w-full"
                   onClick={handleSendAnother}
                 >
                   {t("contactAnotherMsg")}
-                </Button>
+                </button>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-navy-950 uppercase">{t("contactLabelName")} *</label>
+                    <label className="text-xs font-semibold text-slate-600">{t("contactLabelName")} *</label>
                     <Input {...register("name")} className={errors.name ? "border-red-500" : "border-slate-300"} />
                     {errors.name && <p className="text-[11px] text-red-500">{errors.name.message}</p>}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-navy-950 uppercase">{t("contactLabelCompany")}</label>
+                    <label className="text-xs font-semibold text-slate-600">{t("contactLabelCompany")}</label>
                     <Input {...register("company")} className="border-slate-300" placeholder="Ej: Sanitaria S.A." />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-navy-950 uppercase">Email *</label>
+                    <label className="text-xs font-semibold text-slate-600">Email *</label>
                     <Input type="email" {...register("email")} className={errors.email ? "border-red-500" : "border-slate-300"} />
                     {errors.email && <p className="text-[11px] text-red-500">{errors.email.message}</p>}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-navy-950 uppercase">{t("contactLabelPhone")} *</label>
+                    <label className="text-xs font-semibold text-slate-600">{t("contactLabelPhone")} *</label>
                     <Input type="tel" {...register("phone")} className={errors.phone ? "border-red-500" : "border-slate-300"} />
                     {errors.phone && <p className="text-[11px] text-red-500">{errors.phone.message}</p>}
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-navy-950 uppercase">{t("contactLabelArea")} *</label>
-                  
-                  {/* Visual area card selector */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {areas.map((a) => (
-                      <label
-                        key={a.value}
-                        className={`relative flex items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all duration-150 font-semibold text-xs ${
-                          selectedArea === a.value
-                            ? a.activeColor + " shadow-md scale-[1.02]"
-                            : a.color + " hover:shadow-sm"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          value={a.value}
-                          {...register("type")}
-                          className="sr-only"
-                        />
-                        <span className="text-base leading-none">{a.icon}</span>
-                        <span className="leading-tight">{a.label}</span>
-                        {selectedArea === a.value && (
-                          <span className="absolute top-1.5 right-2 text-[8px] font-black uppercase tracking-wider opacity-70">✓</span>
-                        )}
-                      </label>
-                    ))}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-600">{t("contactLabelArea")} *</label>
+
+                  {/* Selector de área con íconos reales (reemplaza los emojis) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {areas.map(({ value, labelKey, Icon }) => {
+                      const isSelected = selectedArea === value;
+                      return (
+                        <label
+                          key={value}
+                          className={cn(
+                            "group relative flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200",
+                            isSelected
+                              ? "border-primary-600 bg-primary-50/70 ring-1 ring-primary-600"
+                              : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                          )}
+                        >
+                          <input
+                            type="radio"
+                            value={value}
+                            {...register("type")}
+                            className="sr-only"
+                          />
+                          <span
+                            className={cn(
+                              "h-9 w-9 shrink-0 rounded-lg flex items-center justify-center transition-colors",
+                              isSelected
+                                ? "bg-primary-600 text-white"
+                                : "bg-slate-100 text-slate-500 group-hover:text-primary-600"
+                            )}
+                          >
+                            <Icon className="h-5 w-5" />
+                          </span>
+                          <span
+                            className={cn(
+                              "text-sm font-semibold leading-tight",
+                              isSelected ? "text-primary-800" : "text-slate-700"
+                            )}
+                          >
+                            {t(labelKey)}
+                          </span>
+                          {isSelected && (
+                            <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-primary-600" />
+                          )}
+                        </label>
+                      );
+                    })}
                   </div>
                   {errors.type && <p className="text-[11px] text-red-500">{errors.type.message}</p>}
-
-                  {selectedArea && (
-                    <div className="mt-2 p-2.5 bg-sky-50 border border-sky-200 rounded-lg text-[11px]">
-                      <span className="font-bold text-slate-500 uppercase block text-[9px] mb-0.5">Asunto que verá el receptor:</span>
-                      <span className="font-mono font-bold text-primary-700 break-all">
-                        {getSubjectForArea(selectedArea, watch("name") || "Cliente", watch("company"))}
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-navy-950 uppercase">{t("contactLabelMsg")} *</label>
+                  <label className="text-xs font-semibold text-slate-600">{t("contactLabelMsg")} *</label>
                   <textarea 
                     {...register("message")}
                     rows={4}
@@ -320,10 +334,9 @@ export default function ContactoPage() {
                   {errors.message && <p className="text-[11px] text-red-500">{errors.message.message}</p>}
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  size="lg"
-                  className="w-full h-12 bg-navy-950 hover:bg-primary-600 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-xs flex items-center justify-center gap-2"
+                  className="btn-primary-corp w-full h-12"
                   disabled={isSendingDirect}
                 >
                   {isSendingDirect ? (
@@ -334,7 +347,7 @@ export default function ContactoPage() {
                       {t("contactSubmitBtn")}
                     </>
                   )}
-                </Button>
+                </button>
               </form>
             )}
           </div>

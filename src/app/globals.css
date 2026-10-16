@@ -142,54 +142,100 @@
     padding-right: clamp(20px, 4vw, 64px);
   }
 
-  /* Botón CTA primario — rectangular, sin pills */
-  .btn-primary-corp {
+  /* ── Sistema de Botones ──────────────────────────────────
+     Redondeados (10px), en oración (no mayúsculas), con estados
+     de hover/active/focus. Un solo CTA dominante por vista. */
+  .btn-primary-corp,
+  .btn-outline-corp,
+  .btn-ghost-corp {
     position: relative;
     overflow: hidden;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 14px 32px;
+    padding: 13px 26px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease,
+                color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  .btn-primary-corp svg,
+  .btn-outline-corp svg,
+  .btn-ghost-corp svg {
+    flex-shrink: 0;
+  }
+
+  .btn-primary-corp:focus-visible,
+  .btn-outline-corp:focus-visible,
+  .btn-ghost-corp:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 101, 181, 0.35);
+  }
+
+  .btn-primary-corp:active,
+  .btn-outline-corp:active,
+  .btn-ghost-corp:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .btn-primary-corp:disabled,
+  .btn-outline-corp:disabled,
+  .btn-ghost-corp:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Primario — sólido (funciona sobre claro y oscuro) */
+  .btn-primary-corp {
     background-color: var(--color-primary-600);
     color: #ffffff;
-    font-family: var(--font-heading);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    border: 2px solid var(--color-primary-600);
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-    cursor: pointer;
+    box-shadow: var(--shadow-xs);
   }
 
   .btn-primary-corp:hover {
     background-color: var(--color-primary-700);
-    border-color: var(--color-primary-700);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
 
-  /* Botón CTA secundario — borde blanco */
+  /* Outline — pensado para fondos oscuros */
   .btn-outline-corp {
-    position: relative;
-    overflow: hidden;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.05);
     color: #ffffff;
-    font-family: var(--font-heading);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    border: 2px solid rgba(255,255,255,0.5);
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-    cursor: pointer;
+    border-color: rgba(255, 255, 255, 0.35);
   }
 
   .btn-outline-corp:hover {
+    background-color: rgba(255, 255, 255, 0.12);
     border-color: #ffffff;
-    background-color: rgba(255,255,255,0.08);
+    transform: translateY(-1px);
+  }
+
+  /* Ghost — pensado para fondos claros */
+  .btn-ghost-corp {
+    background-color: #ffffff;
+    color: var(--color-navy-950);
+    border-color: var(--color-gray-300);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .btn-ghost-corp:hover {
+    border-color: var(--color-primary-600);
+    color: var(--color-primary-700);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
   }
 
   /* Separador de sección con acento */
@@ -382,4 +428,73 @@
     display: none !important;
     animation: none !important;
   }
+}
+
+/* ── Foco visible global (accesibilidad por teclado) ──────── */
+@layer base {
+  :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   AJUSTES PARA CHINO (ZH)
+   Poppins / League Spartan no incluyen glifos CJK: sin esto el
+   chino cae a una fuente de sistema despareja. Además se reduce
+   el tracking amplio, que se ve mal sobre caracteres chinos.
+════════════════════════════════════════════════════════════ */
+html[lang="zh"] {
+  --font-sans: var(--font-poppins), "PingFang SC", "Microsoft YaHei",
+    "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
+  --font-heading: var(--font-league-spartan), "PingFang SC",
+    "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
+}
+
+/* `@theme inline` inyecta la pila de fuentes directamente en la utilidad
+   `font-sans`, así que la variable por sí sola no alcanza: hay que declarar
+   la familia de forma explícita para el chino. */
+html[lang="zh"] body {
+  font-family: var(--font-poppins), "PingFang SC", "Microsoft YaHei",
+    "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
+}
+
+html[lang="zh"] .font-heading,
+html[lang="zh"] h1,
+html[lang="zh"] h2,
+html[lang="zh"] h3,
+html[lang="zh"] h4 {
+  font-family: var(--font-league-spartan), "PingFang SC", "Microsoft YaHei",
+    "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
+}
+
+html[lang="zh"] .industrial-label {
+  letter-spacing: 0.04em;
+}
+
+html[lang="zh"] :where(.btn-primary-corp, .btn-outline-corp, .btn-ghost-corp) {
+  letter-spacing: 0;
+}
+
+/* ── Scrollbar sutil para paneles oscuros (desplegable de catálogo) ─────────
+   El scrollbar nativo sobre navy se ve como una barra gris pegada al borde.
+   Acá se adelgaza, se separa del borde y solo se insinúa hasta que hay hover. */
+.dd-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+.dd-scroll::-webkit-scrollbar {
+  width: 11px;
+}
+.dd-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dd-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  border: 4px solid transparent;
+  background-clip: content-box;
+}
+.dd-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.45);
 }

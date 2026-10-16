@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NOMBRE}} — {{RUBRO}} en {{CIUDAD}}</title>
+<meta name="description" content="{{DESCRIPCION}}">
+<meta name="theme-color" content="{{COLOR}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{NOMBRE}} — {{RUBRO}} en {{CIUDAD}}">
+<meta property="og:description" content="{{DESCRIPCION}}">
+<meta property="og:image" content="{{OG_IMAGE}}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23{{COLOR_HEX}}'/><text x='50' y='68' font-size='58' font-family='system-ui' font-weight='700' fill='white' text-anchor='middle'>{{INICIAL}}</text></svg>">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{NOMBRE}}",
+  "description": "{{DESCRIPCION}}",
+  "telephone": "{{TELEFONO}}",
+  "address": { "@type": "PostalAddress", "streetAddress": "{{DIRECCION}}", "addressLocality": "{{CIUDAD}}", "addressCountry": "AR" },
+  "openingHours": "{{HORARIOS_SCHEMA}}",
+  "url": "{{SITIO}}",
+  "sameAs": ["{{INSTAGRAM}}"]
+}
+</script>
+<style>
+  :root{
+    --brand:{{COLOR}};
+    --brand-dark:{{COLOR_OSCURO}};
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --bg:#ffffff;
+    --soft:#f8fafc;
+    --radius:14px;
+    --max:1120px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+  h1,h2,h3{line-height:1.2;letter-spacing:-0.02em;margin:0}
+  h1{font-size:clamp(2rem,5.5vw,3.4rem);font-weight:800}
+  h2{font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:750}
+  .lead{font-size:clamp(1rem,2.2vw,1.2rem);color:var(--muted);max-width:56ch}
+  .eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    padding:.85rem 1.5rem;border-radius:10px;font-weight:650;font-size:.98rem;
+    border:1px solid transparent;cursor:pointer;transition:transform .15s ease,filter .15s ease,background .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-primary:hover{filter:brightness(1.07)}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+  .btn-wa{background:#25d366;color:#08321b}
+  .btn-wa:hover{filter:brightness(1.05)}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:66px}
+  .logo{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.05rem}
+  .logo .mark{width:34px;height:34px;border-radius:9px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.95rem;font-weight:800}
+  .navlinks{display:flex;gap:1.6rem;font-size:.92rem;font-weight:550;color:#334155}
+  .navlinks a:hover{color:var(--brand)}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  .hero{padding:clamp(40px,7vw,84px) 0 56px;background:
+     radial-gradient(900px 420px at 85% -10%, color-mix(in srgb,var(--brand) 12%,transparent), transparent 70%);}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:34px}}
+  .hero .cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.8rem}
+  .hero-media{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);background:var(--soft);aspect-ratio:4/3;display:grid;place-items:center}
+  .hero-media img{width:100%;height:100%;object-fit:cover}
+  .hero-media .phi{color:#cbd5e1}
+
+  section.band{padding:clamp(46px,6vw,76px) 0}
+  section.soft{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .head{max-width:60ch;margin-bottom:2.4rem}
+  .head p{margin:.7rem 0 0}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;transition:border-color .15s ease,box-shadow .15s ease}
+  .card:hover{border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:0 10px 30px -18px rgba(15,23,42,.35)}
+  .card .ico{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--brand) 12%,#fff);color:var(--brand);margin-bottom:1rem}
+  .card h3{font-size:1.05rem;font-weight:700;margin-bottom:.4rem}
+  .card p{margin:0;color:var(--muted);font-size:.95rem}
+
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+  .gallery figure{margin:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--soft);aspect-ratio:4/3;display:grid;place-items:center}
+  .gallery img{width:100%;height:100%;object-fit:cover}
+  .gallery .phi{color:#cbd5e1}
+
+  .info{display:grid;grid-template-columns:1fr 1.15fr;gap:38px;align-items:start}
+  @media(max-width:900px){.info{grid-template-columns:1fr;gap:26px}}
+  .row{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+  .row:last-child{border-bottom:0}
+  .row .k{font-weight:650;min-width:96px;color:#334155}
+  .row .v{color:var(--muted)}
+  .map{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);aspect-ratio:16/10;background:var(--soft)}
+  .map iframe{width:100%;height:100%;border:0;display:block}
+
+  .final{background:var(--brand-dark);color:#fff;border-radius:var(--radius);padding:clamp(30px,5vw,54px);display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+  .final h2{color:#fff}
+  .final p{color:rgba(255,255,255,.82);margin:.6rem 0 0;max-width:52ch}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.88rem}
+  .foot{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+
+  .wa-float{position:fixed;right:18px;bottom:18px;z-index:60;width:56px;height:56px;border-radius:50%;
+    background:#25d366;color:#fff;display:grid;place-items:center;box-shadow:0 10px 28px -8px rgba(37,211,102,.65)}
+  .wa-float:hover{filter:brightness(1.06)}
+  @media print{.wa-float,header{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#inicio">
+      <span class="mark">{{INICIAL}}</span>
+      <span>{{NOMBRE}}</span>
+    </a>
+    <nav class="navlinks">
+      <a href="#servicios">{{T_NAV_SERVICIOS}}</a>
+      <a href="#galeria">{{T_NAV_GALERIA}}</a>
+      <a href="#contacto">{{T_NAV_CONTACTO}}</a>
+    </nav>
+    <a class="btn btn-wa" href="{{WA_LINK}}" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">{{RUBRO}}</span>
+        <h1 style="margin-top:.7rem">{{TAGLINE}}</h1>
+        <p class="lead" style="margin-top:1.1rem">{{DESCRIPCION}}</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="{{WA_LINK}}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+          <a class="btn btn-ghost" href="#servicios">{{T_CTA_VER}}</a>
+        </div>
+      </div>
+      <div class="hero-media">{{HERO_MEDIA}}</div>
+    </div>
+  </div>
+
+  <section class="band soft" id="servicios">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">{{T_SERV_EYEBROW}}</span>
+        <h2>{{T_SERV_TITULO}}</h2>
+        <p class="lead">{{T_SERV_SUB}}</p>
+      </div>
+      <div class="cards">
+{{#SERVICIOS}}
+        <article class="card">
+          <div class="ico">{{ICONO}}</div>
+          <h3>{{TITULO}}</h3>
+          <p>{{TEXTO}}</p>
+        </article>
+{{/SERVICIOS}}
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="galeria">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">{{T_GAL_EYEBROW}}</span>
+        <h2>{{T_GAL_TITULO}}</h2>
+      </div>
+      <div class="gallery">
+{{#GALERIA}}
+        <figure>{{FOTO}}</figure>
+{{/GALERIA}}
+      </div>
+    </div>
+  </section>
+
+  <section class="band soft" id="contacto">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">{{T_NAV_CONTACTO}}</span>
+        <h2>{{T_INFO_TITULO}}</h2>
+      </div>
+      <div class="info">
+        <div>
+          <div class="row"><span class="k">{{T_DIR}}</span><span class="v">{{DIRECCION}}, {{CIUDAD}}</span></div>
+          <div class="row"><span class="k">{{T_TEL}}</span><span class="v"><a href="tel:{{TELEFONO}}">{{TELEFONO_VISIBLE}}</a></span></div>
+          <div class="row"><span class="k">WhatsApp</span><span class="v"><a href="{{WA_LINK}}" target="_blank" rel="noopener">{{WHATSAPP_VISIBLE}}</a></span></div>
+          {{HORARIOS_HTML}}
+          {{INSTAGRAM_ROW}}
+        </div>
+        <div class="map">{{MAPS_EMBED}}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="final">
+        <div>
+          <h2>{{T_FINAL_TITULO}}</h2>
+          <p>{{T_FINAL_SUB}}</p>
+        </div>
+        <a class="btn btn-wa" href="{{WA_LINK}}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© <span id="y">2026</span> {{NOMBRE}} — {{RUBRO}}, {{CIUDAD}}.</span>
+    <span>{{T_FOOT_DEMO}}</span>
+  </div>
+</footer>
+
+<a class="wa-float" href="{{WA_LINK}}" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.35-.5.05-.96.24-3.25-.68-2.75-1.08-4.5-3.88-4.64-4.06-.13-.18-1.1-1.47-1.1-2.8 0-1.33.7-1.98.94-2.25.25-.27.54-.34.72-.34.18 0 .36 0 .52.01.17.01.39-.06.61.47.23.54.77 1.88.84 2.02.07.13.11.29.02.47-.09.18-.14.29-.27.45-.13.16-.28.36-.4.48-.13.13-.27.28-.11.54.16.27.7 1.16 1.51 1.88 1.04.93 1.91 1.21 2.18 1.35.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.61-.13.25.09 1.59.75 1.86.89.27.13.45.2.52.31.07.11.07.65-.17 1.33Z"/></svg>
+</a>
+
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

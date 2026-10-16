@@ -84,6 +84,9 @@ export const useStore = create<StoreState>()(
     }),
     {
       name: 'prodelec-storage',
+      // Evita el mismatch de hidratación: el estado persistido se rehidrata
+      // después del montaje (ver AppHydration), no durante el primer render.
+      skipHydration: true,
       partialize: (state) => ({ cart: state.cart, favorites: state.favorites, language: state.language }),
     }
   )

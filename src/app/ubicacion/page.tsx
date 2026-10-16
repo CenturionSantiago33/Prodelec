@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Navigation, Clock, Phone } from "lucide-react";
+import { MapPin, Navigation, Clock } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { useTranslation } from "@/i18n";
 import { motion } from "framer-motion";
@@ -83,20 +83,6 @@ export default function UbicacionPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3.5">
-                  <div className="mt-1 h-10 w-10 shrink-0 flex items-center justify-center rounded-xl bg-sky-50 text-primary-600">
-                    <Phone className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">
-                      {t("location.phone")}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-800 font-semibold leading-relaxed">
-                      <strong className="text-navy-950">+54 9 11 3912-2763</strong> (Ventas)<br />
-                      <span className="text-xs text-gray-500">(54-11) 2341-3935 (Planta Industrial)</span>
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 

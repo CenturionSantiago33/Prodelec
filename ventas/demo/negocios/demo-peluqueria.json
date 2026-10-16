@@ -1,0 +1,38 @@
+{
+  "_comentario": "EJEMPLO — datos ficticios.",
+
+  "nombre": "Peluquería Estilo",
+  "rubro": "Peluquería y estética",
+  "ciudad": "Ezpeleta",
+  "direccion": "Calle Mitre 856",
+  "telefono": "011 4212-3344",
+  "whatsapp": "1145678901",
+  "whatsappTexto": "Hola! Quería sacar un turno.",
+  "instagram": "https://instagram.com/peluqueria.estilo",
+  "sitio": "https://peluqueriaestilo.com.ar",
+
+  "color": "#7c3aed",
+  "colorOscuro": "#4c1d95",
+
+  "tagline": "Tu turno, sin esperar",
+  "descripcion": "Cortes, color y peinados con turno previo. Reservá por WhatsApp y elegí el día y horario que te quede mejor.",
+
+  "hero": { "foto": "" },
+
+  "servicios": [
+    { "icono": "tijera", "titulo": "Corte y peinado", "texto": "Corte personalizado para todas las edades, con asesoramiento de estilo incluido." },
+    { "icono": "estrella", "titulo": "Color y tratamientos", "texto": "Coloración, reflejos y tratamientos de hidratación con productos de primera línea." },
+    { "icono": "reloj", "titulo": "Turnos por WhatsApp", "texto": "Reservá en dos mensajes, sin llamados y sin esperar en la puerta." }
+  ],
+
+  "galeria": [
+    { "foto": "", "alt": "Trabajo de color" },
+    { "foto": "", "alt": "Corte y peinado" },
+    { "foto": "", "alt": "Nuestro salón" }
+  ],
+
+  "horarios": [
+    "Martes a sábado: 09:00 a 19:00",
+    "Lunes y domingo: cerrado"
+  ]
+}

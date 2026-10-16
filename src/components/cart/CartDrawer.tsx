@@ -122,7 +122,7 @@ export function CartDrawer() {
             <strong>PRODELEC S.R.L.</strong><br/>
             Parque Industrial Good Park, Florencio Varela<br/>
             Buenos Aires, Argentina<br/>
-            Email: prodelec@prodelec.com.ar | Tel Ventas: +54 9 11 3912-2763
+            Email: prodelec@prodelec.com.ar
           </div>
         </div>
 
@@ -140,7 +140,7 @@ export function CartDrawer() {
           <thead>
             <tr>
               <th style="text-align: center; width: 40px;">#</th>
-              <th>SKU / Code</th>
+              <th>Code</th>
               <th>Description</th>
               <th style="text-align: center;">Status</th>
               <th style="text-align: center; width: 80px;">Qty</th>
@@ -180,10 +180,13 @@ export function CartDrawer() {
       ? "👋 您好 Prodelec（销售部），我想咨询以下产品的正式技术报价：\n\n"
       : "👋 Hola Prodelec (Ventas), quisiera solicitar la cotización formal del siguiente pedido de mi carrito:\n\n";
 
+    const codeWord =
+      language === "EN" ? "Code" : language === "PT" ? "Código" : language === "ZH" ? "编码" : "Código";
+
     cart.forEach((item, idx) => {
       const prod = getTranslatedProduct(item.product, language);
       const extraInfo = prod.sizeInfo ? ` | ${prod.sizeInfo}` : "";
-      message += `${idx + 1}. *${item.quantity}x* ${prod.name} (SKU: ${prod.code}${extraInfo})\n`;
+      message += `${idx + 1}. *${item.quantity}x* ${prod.name} (${codeWord}: ${prod.code}${extraInfo})\n`;
     });
 
     const totalWord = language === "EN" ? "Total items" : language === "PT" ? "Total de itens" : language === "ZH" ? "总件数" : "Total de ítems";
@@ -215,7 +218,7 @@ export function CartDrawer() {
               </p>
             </div>
             <Button
-              className="mt-4 bg-navy-950 hover:bg-primary-600 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
+              className="btn-primary-corp mt-4"
               onClick={() => setCartOpen(false)}
             >
               {t("navCatalog")}
@@ -259,7 +262,7 @@ export function CartDrawer() {
                             </button>
                           </div>
                           <p className="mt-0.5 text-[10px] font-mono text-slate-400 font-bold">
-                            SKU: {prod.code}
+                            {t("common.code")}: {prod.code}
                           </p>
                         </div>
 
@@ -312,9 +315,13 @@ export function CartDrawer() {
                 </span>
               </div>
 
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                {t("cart.noStoreNotice")}
+              </p>
+
               {/* Botón WhatsApp */}
               <Button
-                className="w-full h-12 text-xs font-extrabold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-xs transition-all flex items-center justify-center gap-2"
+                className="w-full h-12 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
                 onClick={handleSendWhatsApp}
               >
                 <Send className="h-4 w-4" />
@@ -324,7 +331,7 @@ export function CartDrawer() {
               {/* Botón PDF Proforma */}
               <Button
                 variant="outline"
-                className="w-full h-11 text-xs font-bold uppercase tracking-wider border-slate-300 text-slate-800 hover:bg-slate-100 rounded-xl transition-all flex items-center justify-center gap-2"
+                className="btn-ghost-corp w-full h-11 text-sm"
                 onClick={handleDownloadPDFQuote}
               >
                 <FileText className="h-4 w-4 text-primary-600" />
@@ -334,7 +341,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={clearCart}
-                className="w-full text-center text-xs text-red-500 hover:text-red-700 font-bold uppercase tracking-wider pt-1"
+                className="w-full text-center text-xs text-red-500 hover:text-red-700 font-semibold pt-1"
               >
                 {t("cartClear")}
               </button>

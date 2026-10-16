@@ -2,13 +2,21 @@
 
 import React from "react";
 import { products } from "@/data/mock";
-import { Download, Printer, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Printer, ArrowLeft, FileText } from "lucide-react";
 import Link from "next/link";
+import { PdfIndex } from "@/components/pdf/PdfIndex";
 
 export default function FichaTecnicaPDFPage() {
   const handlePrint = () => {
     window.print();
   };
+
+  // Entradas del índice: un ancla por producto, en el orden del documento.
+  const indexItems = products.map((prod) => ({
+    anchor: `doc-${prod.id}`,
+    code: prod.code,
+    name: prod.name,
+  }));
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4 font-sans text-navy-950">
@@ -51,58 +59,53 @@ export default function FichaTecnicaPDFPage() {
           </div>
         </div>
 
-        {/* CUADRO DE REVISIÓN Y APROBACIÓN TIPO AGUAMAT */}
-        <div className="mb-10">
-          <h2 className="text-xs font-extrabold uppercase tracking-widest bg-navy-950 text-white px-4 py-1.5 mb-2">
-            HOJA DE CAMBIOS Y CONTROL DE REVISIONES
-          </h2>
-          <table className="w-full text-xs border border-gray-300 border-collapse text-left">
-            <thead>
-              <tr className="bg-sky-100/60 font-bold border-b border-gray-300">
-                <th className="p-2 border.r border-gray-300">REVISIÓN</th>
-                <th className="p-2 border-r border-gray-300">FECHA</th>
-                <th className="p-2">SECCIÓN / DESCRIPCIÓN DEL CAMBIO</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              <tr>
-                <td className="p-2 border-r font-mono font-bold">03</td>
-                <td className="p-2 border-r font-mono">17/05/2024</td>
-                <td className="p-2">Se actualiza tabla de tolerancias y torques de apriete N·m.</td>
-              </tr>
-              <tr>
-                <td className="p-2 border-r font-mono font-bold">04</td>
-                <td className="p-2 border-r font-mono">10/08/2026</td>
-                <td className="p-2">Incorporación de nuevos modelos Cajas C400 CS y Abrazaderas Inox.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="grid grid-cols-2 gap-4 mt-4 text-xs border border-gray-300 p-3 bg-gray-50">
+        {/* RESUMEN DE CUMPLIMIENTO NORMATIVO Y CALIDAD */}
+        <div className="mb-10 bg-slate-50 border border-slate-200 p-5 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-3 mb-3">
             <div>
-              <span className="font-bold text-gray-500 block">Última Revisión Técnica:</span>
-              <span className="font-extrabold text-navy-950">Ing. Pablo Bondi — Dpto. de Ingeniería</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-primary-600 block">Normativa Vigente</span>
+              <h2 className="text-sm font-heading font-extrabold uppercase text-navy-950">
+                Certificaciones de Calidad y Ensayos Normalizados
+              </h2>
             </div>
-            <div>
-              <span className="font-bold text-gray-500 block">Aprobó Control de Calidad:</span>
-              <span className="font-extrabold text-navy-950">Ing. Guillermo Ocio — Dirección Técnica</span>
-            </div>
+            <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded">
+              ISO 9001:2015 · OAA
+            </span>
           </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Todos los componentes y accesorios hidráulicos de PRODELEC S.R.L. se producen bajo estrictos estándares de calidad con polímeros vírgenes de alta densidad, protección UV y ensayos hidráulicos según especificaciones técnicas de prestatarias sanitarias nacionales (AySA, ABSA, Aguas Cordobesas, Aguas Mendocinas, ASSA).
+          </p>
         </div>
+
+        {/* ÍNDICE CLICKEABLE CON BUSCADOR — este documento reúne todos los
+            productos, por eso lleva índice y buscador. */}
+        <PdfIndex
+          items={indexItems}
+          title="Índice de productos"
+          hint="Hacé clic en un código para ir directo a su ficha. El buscador filtra el índice en pantalla."
+          placeholder="Buscar por nombre o código (ej. C1400CS)…"
+          emptyText="Ningún producto coincide con esa búsqueda."
+          counterLabel={(visible, total) => `${visible} / ${total} productos`}
+          entryHint="Ir a la ficha de este producto"
+        />
 
         {/* FICHAS TÉCNICAS DESGLOSADAS DE PRODUCTO */}
         <div className="space-y-12">
-          {products.map((prod, i) => (
-            <div key={prod.id} className="border-2 border-gray-300 p-6 bg-white page-break-inside-avoid">
+          {products.map((prod) => (
+            <div
+              key={prod.id}
+              id={`doc-${prod.id}`}
+              className="border-2 border-gray-300 p-6 bg-white page-break-inside-avoid scroll-mt-6"
+            >
               
-              {/* Encabezado del Producto Tipo Aguamat */}
+              {/* Encabezado del Producto */}
               <div className="flex justify-between items-center border-b-2 border-navy-950 pb-3 mb-4">
                 <div>
-                  <span className="text-[10px] font-mono font-extrabold text-primary-600 uppercase tracking-widest">PRODELEC TECHNICAL SHEET</span>
-                  <h3 className="text-xl font-heading font-extrabold uppercase text-navy-950">{prod.name} (SKU: {prod.code})</h3>
+                  <span className="text-[10px] font-mono font-extrabold text-primary-600 uppercase tracking-widest">FICHA TÉCNICA OFICIAL PRODELEC</span>
+                  <h3 className="text-xl font-heading font-extrabold uppercase text-navy-950">{prod.name} (Código: {prod.code})</h3>
                 </div>
                 <span className="text-xs font-mono font-bold border border-navy-950 px-3 py-1 bg-sky-50">
-                  PN 10 / PN 16 BAR
+                  {prod.diameter ? `DN: ${prod.diameter}` : prod.homologado ? "HOMOLOGADO" : "LÍNEA ESTÁNDAR"}
                 </span>
               </div>
 
@@ -124,7 +127,7 @@ export default function FichaTecnicaPDFPage() {
                 </div>
 
                 <div>
-                  <strong className="text-navy-950 uppercase block font-extrabold mb-1">3. Características Constructivas y Materiales:</strong>
+                  <strong className="text-navy-950 uppercase block font-extrabold mb-1">3. Características Constructivas y Materiales (generales de línea):</strong>
                   <table className="w-full text-xs border border-gray-300 border-collapse mt-2">
                     <tbody>
                       <tr className="border-b border-gray-200">
@@ -141,22 +144,66 @@ export default function FichaTecnicaPDFPage() {
                       </tr>
                       <tr className="border-b border-gray-200">
                         <td className="p-2 font-bold bg-sky-50">Torque de Apriete Recomendado:</td>
-                        <td className="p-2 font-mono font-bold text-emerald-700">25 N·m - 35 N·m (Aplicar en cruz con dinamométrica)</td>
+                        <td className="p-2 font-mono font-bold text-emerald-700">Según especificación del modelo — consultar al área técnica de Prodelec.</td>
                       </tr>
                       <tr>
-                        <td className="p-2 font-bold bg-sky-50">Marcado de Fábrica:</td>
-                        <td className="p-2">Isotipo grabado en relieve "PRODELEC", DN, PN y fecha de fabricación.</td>
+                        <td className="p-2 font-bold bg-sky-50">Identificación de Pieza:</td>
+                        <td className="p-2">Marca registrada grabada en relieve &quot;PRODELEC&quot;, DN y PN normalizados.</td>
                       </tr>
                     </tbody>
                   </table>
+
+                  {/* Especificaciones propias del producto (cuando están cargadas en el catálogo) */}
+                  {prod.specs && prod.specs.length > 0 && (
+                    <table className="w-full text-xs border border-gray-300 border-collapse mt-2">
+                      <tbody>
+                        {prod.sizeInfo && (
+                          <tr className="border-b border-gray-200">
+                            <td className="p-2 font-bold bg-sky-50 w-1/3">Medida / Dimensiones:</td>
+                            <td className="p-2">{prod.sizeInfo}</td>
+                          </tr>
+                        )}
+                        {prod.diameter && (
+                          <tr className="border-b border-gray-200">
+                            <td className="p-2 font-bold bg-sky-50">Diámetro Nominal:</td>
+                            <td className="p-2 font-mono">{prod.diameter}</td>
+                          </tr>
+                        )}
+                        {prod.specs.map((spec) => (
+                          <tr key={spec.label} className="border-b border-gray-200 last:border-0">
+                            <td className="p-2 font-bold bg-sky-50">{spec.label}:</td>
+                            <td className="p-2">{spec.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
                 </div>
+
+                {/* Ficha técnica específica del modelo (cuando existe en origen) */}
+                {prod.technicalSheet && (
+                  <div className="mt-4 pt-3 border-t border-gray-200 flex flex-wrap items-center gap-2 text-xs">
+                    <FileText className="h-3.5 w-3.5 text-primary-600 shrink-0" aria-hidden />
+                    <span className="font-extrabold uppercase text-navy-950">
+                      Ficha técnica específica:
+                    </span>
+                    <a
+                      href={prod.technicalSheet}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-primary-700 underline hover:text-navy-950"
+                    >
+                      {prod.code} — abrir PDF
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-16 pt-6 border-t-2 border-navy-950 text-center text-xs text-gray-500 font-mono">
-          PRODELEC S.A. — Documento Técnico Confidencial de Especificación Técnica Unificada.
+          PRODELEC S.R.L. — Ficha Técnica Oficial de Productos Homologados para Redes de Agua y Saneamiento.
         </div>
       </div>
     </div>

@@ -192,20 +192,14 @@ export function Footer() {
                   Berazategui, Buenos Aires
                 </span>
               </li>
-              <li className="flex items-start gap-3">
-                <Phone className="h-4 w-4 text-accent-400 shrink-0 mt-0.5" />
-                <div>
-                  <button
-                    onClick={handleWhatsApp}
-                    className="text-sm text-gray-300 hover:text-white transition-colors text-left font-medium block"
-                  >
-                    +54 9 11 3912-2763
-                    <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-accent-400">
-                      WhatsApp Ventas
-                    </span>
-                  </button>
-                  <p className="text-xs text-gray-500 mt-0.5">(54-11) 2341-3935 — Planta</p>
-                </div>
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-accent-400 shrink-0" />
+                <button
+                  onClick={handleWhatsApp}
+                  className="text-sm text-gray-300 hover:text-white transition-colors text-left font-medium"
+                >
+                  {t("footer.whatsappSales")}
+                </button>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-accent-400 shrink-0" />
@@ -237,9 +231,19 @@ export function Footer() {
           <p className="font-medium">
             © {currentYear} <span className="text-gray-400 font-bold">PRODELEC S.R.L.</span> — {t("footerRights")}
           </p>
-          <p>
-            Camino General Belgrano 1910 · Berazategui · Buenos Aires · Argentina
-          </p>
+          <div className="flex items-center gap-4 flex-wrap">
+            <p>
+              Camino General Belgrano 1910 · Berazategui · Buenos Aires · Argentina
+            </p>
+            <span className="text-gray-700 hidden sm:inline">•</span>
+            <Link
+              href="/admin"
+              className="text-gray-600 hover:text-sky-400 font-mono text-[11px] transition-colors"
+              title="Panel de Control Administrativo"
+            >
+              [Panel Admin]
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,0 +1,40 @@
+{
+  "_comentario": "EJEMPLO — datos ficticios. Copiá este archivo, renombralo y poné los datos reales del comercio.",
+
+  "nombre": "Rotisería Doña Rosa",
+  "rubro": "Rotisería y comidas caseras",
+  "ciudad": "Ezpeleta",
+  "direccion": "Av. San Martín 1234",
+  "telefono": "011 4256-7890",
+  "whatsapp": "1156789012",
+  "whatsappTexto": "Hola! Vi la página y quería hacer un pedido.",
+  "instagram": "https://instagram.com/rotiseria.donarosa",
+  "sitio": "https://rotiseriadonarosa.com.ar",
+
+  "color": "#c2410c",
+  "colorOscuro": "#7c2d12",
+
+  "tagline": "Comida casera lista para llevar",
+  "descripcion": "Viandas, empanadas y platos caseros elaborados todos los días. Pedí por WhatsApp y pasá a retirar.",
+
+  "hero": {
+    "foto": ""
+  },
+
+  "servicios": [
+    { "icono": "bolsa", "titulo": "Viandas del día", "texto": "Menú casero que cambia todos los días. Pedilo antes de las 12 y lo tenés listo al mediodía." },
+    { "icono": "cafe", "titulo": "Empanadas y pizzas", "texto": "Elaboradas en el momento, por docena o por unidad. También para encargar en cantidad." },
+    { "icono": "camion", "titulo": "Delivery en la zona", "texto": "Repartimos en Ezpeleta y alrededores. Consultá la zona de cobertura por WhatsApp." }
+  ],
+
+  "galeria": [
+    { "foto": "", "alt": "Plato del día" },
+    { "foto": "", "alt": "Empanadas recién hechas" },
+    { "foto": "", "alt": "Local por dentro" }
+  ],
+
+  "horarios": [
+    "Lunes a sábado: 10:00 a 15:00 y 19:00 a 23:00",
+    "Domingo: cerrado"
+  ]
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Globe, Mail, Lock, Bell, Database, Palette } from "lucide-react";
+import { Globe, Mail, Lock, Bell, Database } from "lucide-react";
 
 const sections = [
   {

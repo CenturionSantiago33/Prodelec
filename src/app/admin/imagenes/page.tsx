@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, Image, CheckCircle2, X } from "lucide-react";
+import { Upload, Image as ImageIcon, CheckCircle2, X } from "lucide-react";
 import { products } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 
@@ -72,7 +72,7 @@ export default function ImagenesAdminPage() {
         <div className="lg:col-span-2">
           {!selected ? (
             <div className="bg-white rounded-2xl border border-gray-200 h-96 flex flex-col items-center justify-center text-gray-400">
-              <Image className="h-12 w-12 mb-3 opacity-40" />
+              <ImageIcon className="h-12 w-12 mb-3 opacity-40" />
               <p className="font-medium">Seleccioná un producto</p>
               <p className="text-sm">para gestionar sus imágenes</p>
             </div>
@@ -80,7 +80,7 @@ export default function ImagenesAdminPage() {
             <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
               <div>
                 <h2 className="font-semibold text-gray-900">{selected.name}</h2>
-                <p className="text-xs text-gray-400 font-mono">SKU: {selected.code}</p>
+                <p className="text-xs text-gray-400 font-mono">Código: {selected.code}</p>
               </div>
 
               {/* Current Images */}

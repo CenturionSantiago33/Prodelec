@@ -12,7 +12,15 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Scripts de documentación/backup (no forman parte del bundle)
+    "docs/**",
   ]),
+  // Scripts utilitarios de Node en CommonJS (un solo uso, no bundleados).
+  {
+    files: ["src/scripts/**/*.js"],
+    languageOptions: { sourceType: "commonjs" },
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
 ]);
 
 export default eslintConfig;

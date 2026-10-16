@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -11,32 +11,14 @@ import {
   Factory,
   Award,
   Truck,
+  Download,
 } from "lucide-react";
 import { categories, products } from "@/data/mock";
+import { CLIENTS, COUNTRIES } from "@/data/company";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedProduct, getTranslatedCategory } from "@/i18n";
 import { HeroHydraulicWave } from "@/components/home/HeroHydraulicWave";
-
-// ─── Clientes ────────────────────────────────────────────────
-const CLIENTS = [
-  { name: "Aguas Mendocinas", abbr: "AM" },
-  { name: "AySA", abbr: "AySA" },
-  { name: "ABSA", abbr: "ABSA" },
-  { name: "Obras Sanitarias", abbr: "OSN" },
-  { name: "Aguas Cordobesas", abbr: "AC" },
-  { name: "Sabesp", abbr: "SBP" },
-  { name: "ASSA", abbr: "ASSA" },
-  { name: "EPAS Neuquén", abbr: "EPAS" },
-];
-
-// ─── Países ──────────────────────────────────────────────────
-const COUNTRIES = [
-  { flag: "🇦🇷", name: "Argentina" },
-  { flag: "🇧🇷", name: "Brasil" },
-  { flag: "🇺🇾", name: "Uruguay" },
-  { flag: "🇨🇱", name: "Chile" },
-  { flag: "🇧🇴", name: "Bolivia" },
-];
+import { CELESTE_BANDERA } from "@/lib/brand";
 
 // ─── Reveal hook ─────────────────────────────────────────────
 function useReveal() {
@@ -138,13 +120,14 @@ export default function Home() {
   const newProducts = products.filter((p) => p.isNew).slice(0, 6);
 
   const [slideIndex, setSlideIndex] = useState(0);
-  const nextSlide = () => setSlideIndex((i) => (i + 1) % SLIDES.length);
-  const prevSlide = () => setSlideIndex((i) => (i - 1 + SLIDES.length) % SLIDES.length);
+  const slideCount = SLIDES.length;
+  const nextSlide = useCallback(() => setSlideIndex((i) => (i + 1) % slideCount), [slideCount]);
+  const prevSlide = () => setSlideIndex((i) => (i - 1 + slideCount) % slideCount);
 
   useEffect(() => {
     const timer = setInterval(nextSlide, 7000);
     return () => clearInterval(timer);
-  }, []);
+  }, [nextSlide]);
 
   // Reveal refs
   const revealStats = useReveal();
@@ -197,30 +180,47 @@ export default function Home() {
         >
           <div className="max-w-3xl">
 
-            {/* Label industrial */}
+            {/* Label industrial + Badge ISO */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex items-center gap-3 mb-6"
+              className="flex flex-wrap items-center gap-3 mb-6"
             >
-              <span className="inline-block w-8 h-[2px] bg-accent-400" />
-              <span className="industrial-label">
-                {t("home.hero.badge")}
-              </span>
+              <div className="flex items-center gap-2.5">
+                <span className="inline-block w-8 h-[2px] bg-accent-400" />
+                <span className="industrial-label">
+                  {t("home.hero.badge")}
+                </span>
+              </div>
+              <span className="text-white/30 hidden sm:inline">•</span>
+              <a
+                href="/certificados/PRODELEC-SRL-ISO-9001-2015.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[11px] font-mono font-bold uppercase tracking-wider backdrop-blur-xs hover:bg-emerald-500/30 transition-all shadow-xs"
+                title="Descargar Certificado Oficial ISO 9001:2015"
+              >
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                <span>ISO 9001:2015 Certificada OAA</span>
+              </a>
             </motion.div>
 
-            {/* H1 — Grande, potente, sin glow */}
+            {/* H1 — Grande, potente, sin glow.
+                Solo tipografía y los colores de la bandera: celeste arriba y
+                abajo, blanco al medio. Sin adornos ni imágenes. */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="font-heading font-black text-white mb-6 leading-[1.0]"
+              className="font-heading font-black text-white mb-6 leading-[1.2]"
               style={{ fontSize: "clamp(44px, 6.5vw, 92px)", letterSpacing: "-0.03em" }}
             >
-              {t("home.hero.title1")}<br />
-              <span style={{ color: "#4a9de0" }}>{t("home.hero.title2")}</span><br />
-              {t("home.hero.title3")}
+              <span style={{ color: CELESTE_BANDERA }}>{t("home.hero.title1")}</span>
+              <br />
+              <span style={{ color: "#FFFFFF" }}>{t("home.hero.title2")}</span>
+              <br />
+              <span style={{ color: CELESTE_BANDERA }}>{t("home.hero.title3")}</span>
             </motion.h1>
 
             {/* Subtítulo */}
@@ -249,7 +249,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.65, duration: 0.5 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-wrap items-center gap-3 sm:gap-4"
             >
               <Link href="/empresa" className="btn-primary-corp">
                 {t("home.hero.btnCompany")}
@@ -258,6 +258,15 @@ export default function Home() {
               <Link href="/categorias" className="btn-outline-corp">
                 {t("home.hero.btnCatalog")}
               </Link>
+              <a
+                href="/certificados/PRODELEC-SRL-ISO-9001-2015.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-[10px] px-[26px] py-[13px] border border-emerald-400/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-white text-sm font-semibold leading-none transition-colors duration-200 backdrop-blur-sm"
+              >
+                <Download className="h-4 w-4 shrink-0" />
+                <span>{t("isoCertPdf")}</span>
+              </a>
             </motion.div>
 
           </div>
@@ -549,7 +558,7 @@ export default function Home() {
                         {product.name}
                       </h3>
                       <p className="text-gray-400 font-mono text-[11px] mb-2 font-bold">
-                        SKU: {product.code}
+                        {t("common.code")}: {product.code}
                       </p>
                       {product.description && (
                         <p className="text-gray-500 text-xs leading-relaxed mb-4 flex-1 line-clamp-2">
@@ -578,7 +587,7 @@ export default function Home() {
             <p className="text-gray-500 text-xs sm:text-sm mb-5">
               {t("home.featured.desc")}
             </p>
-            <Link href="/categorias" className="btn-primary-corp inline-flex text-xs font-bold uppercase tracking-wider">
+            <Link href="/categorias" className="btn-primary-corp inline-flex text-xs">
               {t("home.featured.viewAll")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -607,24 +616,24 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Grilla logos */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-gray-200 border border-gray-200 rounded-xl overflow-hidden">
+          {/* Grilla logos reales */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             {CLIENTS.map((client, i) => (
               <div
                 key={i}
-                className="bg-white flex flex-col items-center justify-center py-7 px-4 text-center opacity-70 hover:opacity-100 transition-opacity duration-200"
+                className="bg-white flex flex-col items-center justify-center p-6 text-center group hover:bg-slate-50 transition-all duration-200"
               >
+                <div className="h-14 w-full flex items-center justify-center mb-3 px-3 transition-transform duration-200 group-hover:scale-105">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    className="max-h-12 max-w-[150px] w-auto object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 opacity-75 group-hover:opacity-100"
+                  />
+                </div>
                 <span
-                  className="font-heading font-black text-navy-950 mb-1"
-                  style={{ fontSize: "clamp(18px, 2vw, 24px)" }}
+                  className="text-slate-500 font-bold uppercase tracking-wider text-[10px] group-hover:text-primary-700 transition-colors"
                 >
-                  {client.abbr}
-                </span>
-                <span
-                  className="text-gray-400 font-bold uppercase tracking-wider"
-                  style={{ fontSize: "10px" }}
-                >
-                  {client.name}
+                  {client.fullName || client.name}
                 </span>
               </div>
             ))}
@@ -788,7 +797,7 @@ export default function Home() {
               <p className="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-sm mb-8">
                 {t("home.export.desc")}
               </p>
-              <Link href="/contacto" className="btn-primary-corp inline-flex text-xs font-bold uppercase tracking-wider">
+              <Link href="/contacto" className="btn-primary-corp inline-flex text-xs">
                 {t("home.cta.btnContact")} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -850,12 +859,12 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
-              <Link href="/contacto" className="btn-outline-corp text-xs font-bold uppercase tracking-wider">
+              <Link href="/contacto" className="btn-outline-corp text-xs">
                 {t("home.cta.btnQuote")}
               </Link>
               <Link
                 href="/categorias"
-                className="btn-primary-corp text-xs font-bold uppercase tracking-wider"
+                className="btn-primary-corp text-xs"
                 style={{ background: "white", color: "#124d8f", borderColor: "white" }}
               >
                 {t("home.hero.btnCatalog")}

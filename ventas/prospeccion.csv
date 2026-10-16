@@ -1,0 +1,4 @@
+﻿nombre,rubro,barrio,direccion,telefono,whatsapp,tiene_web,instagram,google_maps,estado,prioridad,proximo_paso,fecha_contacto,notas
+(EJEMPLO) Rotisería Doña Rosa,Rotisería,Centro,Av. San Martín 1234,011 4256-7890,1156789012,no,https://instagram.com/rotiseria.donarosa,,Visitado,Alta,Llevar demo con su nombre el martes 20,2026-10-13,"Atendió la dueña, le interesó pero quiere consultar con el marido"
+(EJEMPLO) Peluquería Estilo,Peluquería,Estación,Calle Mitre 856,011 4212-3344,1145678901,solo Facebook,,,Sin contactar,Media,Pasar el jueves a la tarde,,"Tiene solo Facebook, sin dirección ni horarios"
+(EJEMPLO) Ferretería El Tornillo,Ferretería,Av. Calchaquí,Av. Calchaquí 3400,011 4224-1188,1134567890,no,,,Interesado,Alta,Pasar presupuesto escrito el viernes,2026-10-14,Pidió precio de una página con los productos

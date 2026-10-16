@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import {
-  Plus, Search, Package, Tag, CheckCircle, XCircle,
+  Plus, Search, Tag, CheckCircle, XCircle,
   Pencil, X, DollarSign, ShoppingCart, BarChart2,
-  TrendingUp, Save, AlertTriangle, ToggleLeft, ToggleRight,
+  Save, AlertTriangle, ToggleLeft, ToggleRight,
 } from "lucide-react";
 import { products as initialProducts, categories } from "@/data/mock";
 import { Product } from "@/types";
@@ -321,7 +321,7 @@ export default function ProductosAdminPage() {
 
                   {/* Toggle novedad */}
                   <div className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-                    <span className="text-sm text-gray-700 font-medium">Marcar como "Novedad"</span>
+                    <span className="text-sm text-gray-700 font-medium">Marcar como &quot;Novedad&quot;</span>
                     <button
                       onClick={() => handleChange("isNew", !draft.isNew)}
                       className="flex items-center gap-2"

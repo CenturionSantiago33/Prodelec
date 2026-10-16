@@ -83,7 +83,7 @@ export function ProductSlider({ title, subtitle, filterByNew, filterByViews }: P
                       <h3 className="text-xl font-bold text-navy-950 mb-2 leading-tight transition-colors group-hover:text-primary-600">
                         {product.name}
                       </h3>
-                      <p className="text-sm text-gray-500 font-mono mb-6">SKU: {product.code}</p>
+                      <p className="text-sm text-gray-500 font-mono mb-6">Código: {product.code}</p>
 
                       <div className="inline-flex items-center text-sm font-bold text-white bg-navy-950 px-5 py-2.5 rounded-full transition-all duration-300 group-hover:bg-primary-600 group-hover:px-6 shadow-md">
                         Ver producto <ArrowRight className="ml-2 h-4 w-4" />

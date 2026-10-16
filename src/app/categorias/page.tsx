@@ -1,20 +1,24 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { categories as rawCategories, products as rawProducts } from "@/data/products";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedCategory, getTranslatedProduct } from "@/i18n";
 import { ProductCard } from "@/components/product/ProductCard";
 import {
-  Download, BookOpen, Search, X, SlidersHorizontal, ArrowRight, Filter, ChevronDown, Check,
+  Download, BookOpen, Search, X, SlidersHorizontal, ArrowRight, Filter, ChevronDown,
+  FileText, FileDown, Droplets, Waves, Flame, Home, Layers,
 } from "lucide-react";
+import { productMatchesQuery } from "@/lib/catalog";
+import { NICHE_ORDER, type Niche } from "@/types";
 import { cn } from "@/lib/utils";
 
-export default function CategoriasPage() {
+function CategoriasContent() {
   const language = useStore((state) => state.language);
   const t = useTranslation(language);
+  const searchParams = useSearchParams();
 
   const categories = useMemo(() => {
     return rawCategories.map((c) => getTranslatedCategory(c, language));
@@ -24,36 +28,38 @@ export default function CategoriasPage() {
     return rawProducts.map((p) => getTranslatedProduct(p, language));
   }, [language]);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // ── Sincronización con la URL (deep links del navbar: /categorias?categoria=...) ──
+  const urlCategory = searchParams.get("categoria") ?? "all";
+  const urlQuery = searchParams.get("q") ?? "";
 
-  // Real multi-field search across name, code/SKU, category, description, features
+  const [selectedCategory, setSelectedCategory] = useState<string>(urlCategory);
+  const [searchTerm, setSearchTerm] = useState<string>(urlQuery);
+  // Filtro por nicho de aplicación (Agua / Saneamiento / Gas / Domiciliaria)
+  const [selectedNiche, setSelectedNiche] = useState<Niche | "all">("all");
+  const [lastUrl, setLastUrl] = useState({ c: urlCategory, q: urlQuery });
+
+  if (lastUrl.c !== urlCategory || lastUrl.q !== urlQuery) {
+    setLastUrl({ c: urlCategory, q: urlQuery });
+    setSelectedCategory(urlCategory);
+    setSearchTerm(urlQuery);
+    setSelectedNiche("all");
+  }
+
+  const nicheTabs: Array<Niche | "all"> = ["all", ...NICHE_ORDER];
+
+  // Búsqueda multi-campo compartida con /productos
   const filteredProducts = useMemo(() => {
-    const q = searchTerm.trim().toLowerCase();
     return allProducts.filter((p) => {
-      const matchesCategory =
-        selectedCategory === "all" || p.categoryId === selectedCategory;
-
-      if (!matchesCategory) return false;
-      if (!q) return true;
-
-      const nameMatch = p.name.toLowerCase().includes(q);
-      const codeMatch = p.code.toLowerCase().includes(q);
-      const descMatch = p.description.toLowerCase().includes(q);
-      const categoryMatch = p.categoryId.toLowerCase().includes(q);
-      const sizeMatch = p.sizeInfo ? p.sizeInfo.toLowerCase().includes(q) : false;
-      const diameterMatch = p.diameter ? p.diameter.toLowerCase().includes(q) : false;
-
+      if (selectedNiche !== "all") {
+        const cat = categories.find((c) => c.id === p.categoryId);
+        if (!cat?.niches?.includes(selectedNiche)) return false;
+      }
       return (
-        nameMatch ||
-        codeMatch ||
-        descMatch ||
-        categoryMatch ||
-        sizeMatch ||
-        diameterMatch
+        (selectedCategory === "all" || p.categoryId === selectedCategory) &&
+        productMatchesQuery(p, searchTerm)
       );
     });
-  }, [selectedCategory, searchTerm, allProducts]);
+  }, [selectedCategory, searchTerm, selectedNiche, allProducts, categories]);
 
   // Product counts per category
   const productCountMap = useMemo(() => {
@@ -63,6 +69,96 @@ export default function CategoriasPage() {
     });
     return map;
   }, [categories, allProducts]);
+
+  // Íconos por nicho (decorativos: la etiqueta siempre va acompañada de texto).
+  const nicheIcons: Record<Niche, typeof Droplets> = {
+    agua: Droplets,
+    saneamiento: Waves,
+    gas: Flame,
+    domiciliaria: Home,
+  };
+
+  // Tarjeta de categoría: una sola definición para todas las secciones de nicho.
+  const renderCategoryCard = (cat: (typeof categories)[number]) => {
+    const catProducts = allProducts.filter((p) => p.categoryId === cat.id);
+    const sampleImage =
+      catProducts.length > 0 && catProducts[0].images[0]
+        ? catProducts[0].images[0]
+        : cat.image;
+    const count = productCountMap[cat.id] || 0;
+    const catColor = cat.color || "#1a65b5";
+
+    return (
+      <div
+        key={cat.id}
+        className="bg-white group rounded-2xl overflow-hidden flex flex-col border border-slate-200/80 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-slate-300"
+        style={{ borderTop: `3px solid ${catColor}` }}
+      >
+        {/* Imagen */}
+        <div
+          className="relative bg-slate-50 overflow-hidden flex items-center justify-center p-6 border-b border-slate-100"
+          style={{ height: "190px" }}
+        >
+          <img
+            src={sampleImage}
+            alt={cat.name}
+            className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+            style={{ mixBlendMode: "multiply" }}
+          />
+        </div>
+
+        {/* Contenido */}
+        <div className="p-5 flex flex-col flex-1">
+          <h3 className="font-heading font-bold text-navy-950 text-base leading-snug line-clamp-2 group-hover:text-primary-700 transition-colors mb-1.5">
+            {cat.name}
+          </h3>
+
+          <p className="text-slate-600 text-xs leading-relaxed mb-4 flex-1 line-clamp-2">
+            {cat.description}
+          </p>
+
+          {/* Subcategorías / Variantes */}
+          {cat.subcategories && cat.subcategories.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {cat.subcategories.slice(0, 3).map((sub) => (
+                <span
+                  key={sub}
+                  className="text-[9px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 uppercase tracking-wide rounded-full"
+                >
+                  {sub}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Acciones */}
+          <div className="flex items-center justify-between gap-2 pt-3 mt-auto border-t border-slate-100">
+            <span className="text-[11px] font-semibold text-slate-500">
+              {count} {t("catalog.productsWord")}
+            </span>
+            <div className="flex items-center gap-2">
+              <a
+                href={`/pdf/catalogo?categoria=${cat.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-9 w-9 rounded-lg bg-slate-100 hover:bg-primary-600 hover:text-white text-slate-600 transition-colors flex items-center justify-center shrink-0"
+                title={`Descargar catálogo PDF de ${cat.name}`}
+              >
+                <Download className="h-4 w-4" />
+              </a>
+              <button
+                onClick={() => setSelectedCategory(cat.id)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold text-xs px-3.5 h-9 transition-colors group/btn"
+              >
+                <span>{t("catalog.viewProducts")}</span>
+                <ArrowRight className="h-3.5 w-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const activeCategoryObj = categories.find((c) => c.id === selectedCategory);
 
@@ -144,27 +240,52 @@ export default function CategoriasPage() {
       {/* ── CONTROLS: BÚSQUEDA Y SELECTOR DE FAMILIAS (NO HORIZONTAL SCROLL) ── */}
       <div className="container-corp py-6">
         <div
-          className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-white p-4 border border-slate-200 shadow-xs mb-4"
+          className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-4"
         >
-          {/* Input de Búsqueda multi-campo */}
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={t("catalog.searchPlaceholder")}
-              className="w-full h-10 pl-9 pr-9 bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-600 transition-colors"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
-                aria-label="Limpiar búsqueda"
+          {/* Búsqueda + selector de categoría: dos controles compactos, nada más */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            {/* Input de Búsqueda multi-campo */}
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder={t("catalog.searchPlaceholder")}
+                className="w-full h-11 pl-10 pr-9 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Selector de categoría: reemplaza la fila de 17 chips por un solo
+                control plegable. Las flechas del teclado recorren las categorías. */}
+            <div className="relative w-full sm:w-72">
+              <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                aria-label={t("catalog.selectFamily")}
+                className="w-full h-11 pl-10 pr-9 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 appearance-none focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 cursor-pointer"
               >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+                <option value="all">
+                  {t("catalog.allFamilies")} ({allProducts.length})
+                </option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name} ({productCountMap[cat.id] || 0})
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+            </div>
           </div>
 
           {/* Dynamic Counter & Secondary Links */}
@@ -179,7 +300,7 @@ export default function CategoriasPage() {
 
             <Link
               href="/productos"
-              className="flex items-center gap-1.5 font-heading font-bold text-primary-700 hover:text-primary-900 uppercase tracking-wider text-xs transition-colors"
+              className="flex items-center gap-1.5 font-semibold text-primary-700 hover:text-primary-900 text-xs transition-colors"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
               <span>{t("catalog.advancedFilters")}</span>
@@ -187,101 +308,36 @@ export default function CategoriasPage() {
           </div>
         </div>
 
-        {/* ── MOBILE COMPACT SELECTOR (Dropdown for mobile devices) ── */}
-        <div className="block lg:hidden mb-4 bg-white p-3 border border-slate-200 shadow-xs">
-          <label className="block text-[11px] font-heading font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-            {t("catalog.selectFamily")}
-          </label>
-          <div className="relative">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full h-11 bg-slate-50 border border-slate-300 text-slate-900 text-sm font-semibold px-3 pr-8 appearance-none focus:outline-none focus:border-primary-600 rounded-none cursor-pointer"
-            >
-              <option value="all">
-                {t("catalog.allFamilies")} ({allProducts.length})
-              </option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name} ({productCountMap[cat.id] || 0})
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-          </div>
-        </div>
-
-        {/* ── DESKTOP & TABLET CHIPS CON WRAP (AUTOMÁTICAMENTE EN VARIAS FILAS) ── */}
-        <div className="hidden lg:block bg-white p-4 border border-slate-200 shadow-xs">
-          <div className="flex items-center gap-2 mb-2.5">
-            <Filter className="h-3.5 w-3.5 text-primary-700" />
-            <span className="text-[11px] font-heading font-bold text-slate-600 uppercase tracking-wider">
-              {t("catalog.filterFamilies")}:
-            </span>
-          </div>
-
-          {/* WRAP Container: wraps automatically in multiple lines, NO horizontal scroll */}
-          <div className="flex flex-wrap gap-1.5">
-            {/* Chip: Todas */}
-            <button
-              onClick={() => setSelectedCategory("all")}
-              className={cn(
-                "px-3.5 py-1.5 font-heading font-bold text-xs uppercase tracking-wider transition-all border",
-                selectedCategory === "all"
-                  ? "bg-navy-950 text-white border-navy-950 shadow-xs"
-                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-navy-950"
-              )}
-            >
-              {t("catalog.allFamilies")}
-              <span
+        {/* ── FILTRO POR NICHO DE APLICACIÓN (agua / saneamiento / gas / domiciliaria) ── */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1 inline-flex items-center gap-1.5">
+            <Layers className="h-3.5 w-3.5" />
+            {t("niche.filterLabel")}
+          </span>
+          {nicheTabs.map((niche) => {
+            const active = selectedNiche === niche;
+            const count =
+              niche === "all"
+                ? categories.length
+                : categories.filter((c) => c.niches?.includes(niche)).length;
+            return (
+              <button
+                key={niche}
+                type="button"
+                onClick={() => setSelectedNiche(niche)}
+                aria-pressed={active}
                 className={cn(
-                  "ml-1.5 text-[10px] font-mono",
-                  selectedCategory === "all" ? "text-sky-300" : "text-slate-400"
+                  "inline-flex items-center gap-1.5 rounded-full border px-3.5 h-8 text-xs font-semibold transition-colors",
+                  active
+                    ? "bg-navy-950 border-navy-950 text-white"
+                    : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:text-navy-950"
                 )}
               >
-                ({allProducts.length})
-              </span>
-            </button>
-
-            {/* Chips por Categoría */}
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat.id;
-              const count = productCountMap[cat.id] || 0;
-              const catColor = cat.color || "#1a65b5";
-
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={cn(
-                    "px-3 py-1.5 font-heading font-bold text-xs uppercase tracking-wider transition-all border flex items-center gap-1.5",
-                    isSelected
-                      ? "bg-navy-950 text-white border-navy-950 shadow-xs"
-                      : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-navy-950"
-                  )}
-                  style={
-                    isSelected
-                      ? { borderTop: `2px solid ${catColor}` }
-                      : undefined
-                  }
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ backgroundColor: catColor }}
-                  />
-                  <span>{cat.name}</span>
-                  <span
-                    className={cn(
-                      "text-[10px] font-mono",
-                      isSelected ? "text-sky-300" : "text-slate-400"
-                    )}
-                  >
-                    ({count})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                {t(niche === "all" ? "niche.all" : `niche.${niche}`)}
+                <span className={active ? "text-white/60" : "text-slate-400"}>{count}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -302,82 +358,36 @@ export default function CategoriasPage() {
             </div>
           </div>
 
-          {/* Grid de familias industriales sobrias */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {categories.map((cat, idx) => {
-              const catProducts = allProducts.filter((p) => p.categoryId === cat.id);
-              const sampleImage =
-                catProducts.length > 0 && catProducts[0].images[0]
-                  ? catProducts[0].images[0]
-                  : cat.image;
-              const count = productCountMap[cat.id] || 0;
-              const catColor = cat.color || "#1a65b5";
+          {/* Categorías agrupadas por nicho de aplicación (aprobado por el cliente).
+              Una categoría puede aparecer en más de un nicho. */}
+          <div className="space-y-14">
+            {NICHE_ORDER.filter((n) => selectedNiche === "all" || selectedNiche === n).map((niche) => {
+              const list = categories.filter((c) => c.niches?.includes(niche));
+              if (list.length === 0) return null;
+              const Icon = nicheIcons[niche];
+              const productCount = allProducts.filter((p) =>
+                list.some((c) => c.id === p.categoryId)
+              ).length;
 
               return (
-                <div
-                  key={cat.id}
-                  className="bg-white group hover:bg-slate-50/70 transition-all flex flex-col border border-slate-200 shadow-xs"
-                  style={{ borderTop: `3px solid ${catColor}` }}
-                >
-                  {/* Imagen */}
-                  <div
-                    className="relative bg-slate-50 overflow-hidden flex items-center justify-center p-6 border-b border-slate-200"
-                    style={{ height: "180px" }}
-                  >
-                    <img
-                      src={sampleImage}
-                      alt={cat.name}
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-                      style={{ mixBlendMode: "multiply" }}
-                    />
+                <div key={niche} id={`nicho-${niche}`} className="scroll-mt-24">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="h-11 w-11 shrink-0 rounded-xl bg-navy-950 text-white flex items-center justify-center">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-heading font-black text-navy-950 text-xl leading-tight">
+                        {t(`niche.${niche}`)}
+                      </h3>
+                      <p className="text-xs text-slate-500 font-medium">
+                        {productCount} {t("catalog.productsWord")}
+                      </p>
+                    </div>
+                    <span className="flex-1 h-px bg-slate-200" aria-hidden="true" />
                   </div>
 
-                  {/* Contenido */}
-                  <div className="p-4 flex flex-col flex-1">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span
-                        className="font-heading font-bold uppercase tracking-widest text-[10px]"
-                        style={{ color: catColor }}
-                      >
-                        {t("catalog.familyNumber")} #{String(idx + 1).padStart(2, "0")}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 border border-slate-200">
-                        {count} {t("catalog.productsWord")}
-                      </span>
-                    </div>
-
-                    <h3
-                      className="font-heading font-bold text-navy-950 uppercase group-hover:text-primary-700 transition-colors mb-2 text-sm leading-snug line-clamp-1"
-                    >
-                      {cat.name}
-                    </h3>
-
-                    <p className="text-slate-600 text-xs leading-relaxed mb-3 flex-1 line-clamp-2">
-                      {cat.description}
-                    </p>
-
-                    {/* Subcategorías / Variantes */}
-                    {cat.subcategories && cat.subcategories.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {cat.subcategories.slice(0, 3).map((sub) => (
-                          <span
-                            key={sub}
-                            className="text-[9px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 uppercase tracking-wider border border-slate-200"
-                          >
-                            {sub}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Botón de acción */}
-                    <button
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className="w-full flex items-center justify-between py-2 px-3 bg-slate-100 hover:bg-navy-950 hover:text-white text-slate-800 font-heading font-bold uppercase tracking-wider transition-colors text-[11px] border border-slate-200 group/btn"
-                    >
-                      <span>{t("catalog.viewProducts")}</span>
-                      <ArrowRight className="h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {list.map(renderCategoryCard)}
                   </div>
                 </div>
               );
@@ -390,7 +400,7 @@ export default function CategoriasPage() {
       <section className="container-corp pb-16">
         {/* Cabecera de la sección de productos */}
         <div
-          className="flex items-center justify-between mb-6 pb-3 bg-white px-5 py-3.5 border border-slate-200"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-white px-5 py-4 rounded-2xl border border-slate-200 shadow-sm"
           style={{
             borderLeft: `4px solid ${
               activeCategoryObj ? activeCategoryObj.color || "#1a65b5" : "#1a65b5"
@@ -399,7 +409,7 @@ export default function CategoriasPage() {
         >
           <div>
             <h2
-              className="font-heading font-bold text-navy-950 uppercase text-sm sm:text-base"
+              className="font-heading font-bold text-navy-950 text-sm sm:text-base"
               style={{ letterSpacing: "-0.01em" }}
             >
               {activeCategoryObj
@@ -413,15 +423,61 @@ export default function CategoriasPage() {
             </p>
           </div>
 
-          {selectedCategory !== "all" && (
-            <button
-              onClick={() => setSelectedCategory("all")}
-              className="text-xs font-heading font-bold text-primary-700 hover:text-primary-900 uppercase tracking-wider transition-colors flex items-center gap-1 shrink-0 ml-4"
-            >
-              ← {t("common.backToAll")}
-            </button>
+          {selectedCategory !== "all" && activeCategoryObj && (
+            <div className="flex items-center gap-3 shrink-0">
+              <a
+                href={`/pdf/catalogo?categoria=${activeCategoryObj.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary-corp py-1.5 px-3 text-xs flex items-center gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>PDF Categoría</span>
+              </a>
+              <button
+                onClick={() => setSelectedCategory("all")}
+                className="text-xs font-semibold text-primary-700 hover:text-primary-900 transition-colors flex items-center gap-1 shrink-0"
+              >
+                ← {t("common.backToAll")}
+              </button>
+            </div>
           )}
         </div>
+
+        {/* Fichas técnicas de los modelos de la categoría que todavía no están
+            publicados como producto (la línea real de PRODELEC es más amplia
+            que el catálogo). Se ofrecen igual, a nivel de categoría. */}
+        {activeCategoryObj?.technicalSheets && activeCategoryObj.technicalSheets.length > 0 && (
+          <div className="mb-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-1.5">
+              <FileText className="h-4 w-4 text-primary-700 shrink-0" aria-hidden />
+              <h3 className="font-heading font-bold text-navy-950 text-sm">
+                {t("catalog.lineSheetsTitle")}
+              </h3>
+              <span className="text-[11px] font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
+                {activeCategoryObj.technicalSheets.length}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mb-4">{t("catalog.lineSheetsSub")}</p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {activeCategoryObj.technicalSheets.map((sheet) => (
+                <li key={sheet.url}>
+                  <a
+                    href={sheet.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start gap-2.5 h-full rounded-xl border border-slate-200 px-3 py-2.5 hover:border-primary-300 hover:bg-primary-50/40 transition-colors"
+                  >
+                    <FileDown className="h-4 w-4 text-primary-600 shrink-0 mt-0.5" aria-hidden />
+                    <span className="text-xs font-semibold text-navy-950 leading-snug group-hover:text-primary-700">
+                      {sheet.label}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -430,7 +486,7 @@ export default function CategoriasPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-white p-12 text-center border border-slate-200">
+          <div className="bg-white p-12 text-center rounded-2xl border border-slate-200 shadow-sm">
             <p className="font-heading font-bold text-navy-950 text-base mb-2">
               {t("catalog.noResultsTitle")}
             </p>
@@ -451,5 +507,24 @@ export default function CategoriasPage() {
       </section>
 
     </div>
+  );
+}
+
+export default function CategoriasPage() {
+  const language = useStore((state) => state.language);
+  const t = useTranslation(language);
+
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 pt-[72px]">
+          <p className="text-slate-500 text-xs font-semibold">
+            {t("common.loading")}
+          </p>
+        </div>
+      }
+    >
+      <CategoriasContent />
+    </Suspense>
   );
 }
