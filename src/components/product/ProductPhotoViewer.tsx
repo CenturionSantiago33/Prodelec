@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   ArrowLeft,
   ArrowRight,
-  Images,
   Maximize2,
   Minimize2,
   Pause,
@@ -16,7 +15,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TranslateFn } from "@/i18n";
-import { Product3DViewer } from "@/components/product/Product3DViewer";
 
 /**
  * Visor de producto: usa SIEMPRE las fotos reales del catálogo. No dibuja
@@ -72,17 +70,12 @@ export function ProductPhotoViewer({
 
   const mode: Mode = spinFrames ? "turntable" : views.length >= 3 ? "spin" : "gallery";
   const canSpin = mode !== "gallery";
-  /** La vista 3D se arma con la foto real; alcanza con que haya una. */
-  const tiene3d = views.length > 0;
-
   const [index, setIndex] = useState(0);
   const [zoom, setZoom] = useState(false);
   const [origin, setOrigin] = useState("50% 50%");
   const [full, setFull] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [tab, setTab] = useState<"3d" | "fotos">("3d");
-  const is3d = tiene3d && tab === "3d";
 
   const drag = useRef<{ x: number; index: number; moved: number } | null>(null);
   const count = views.length;
@@ -223,50 +216,7 @@ export function ProductPhotoViewer({
 
   return (
     <div className={className}>
-      {/* Selector 3D / Fotos */}
-      {tiene3d && (
-        <div className="mb-3 inline-flex rounded-lg border border-slate-200 bg-white p-0.5 shadow-xs">
-          <button
-            type="button"
-            onClick={() => setTab("3d")}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
-              tab === "3d" ? "bg-navy-950 text-white" : "text-slate-500 hover:text-navy-950"
-            )}
-          >
-            <Rotate3d className="h-3.5 w-3.5" />
-            {t("viewer.tab3d")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("fotos")}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
-              tab === "fotos" ? "bg-navy-950 text-white" : "text-slate-500 hover:text-navy-950"
-            )}
-          >
-            <Images className="h-3.5 w-3.5" />
-            {t("viewer.tabPhotos")}
-          </button>
-        </div>
-      )}
-
-      {/* Vista 3D */}
-      {tiene3d && (
-        <div className={cn(is3d ? "block" : "hidden")}>
-          <Product3DViewer src={current} alt={alt} t={t} overlay={overlay} />
-          <p className="mb-4 text-[11px] leading-snug text-slate-400">
-            {t("viewer.model3dNote")}
-          </p>
-        </div>
-      )}
-
-      <div
-        className={cn(
-          "relative aspect-square rounded-xl bg-slate-50 border border-slate-200/80 overflow-hidden mb-4",
-          is3d && "hidden"
-        )}
-      >
+      <div className="relative aspect-square rounded-xl bg-slate-50 border border-slate-200/80 overflow-hidden mb-4">
         <div className="absolute inset-0 p-8" style={{ touchAction: "none" }}>
           {frame}
         </div>
@@ -294,7 +244,7 @@ export function ProductPhotoViewer({
       </div>
 
       {/* Miniaturas: en modo 360 real no aportan, así que se ocultan */}
-      {count > 1 && !spinFrames && !is3d && (
+      {count > 1 && !spinFrames && (
         <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-none">
           {views.map((src, idx) => (
             <button

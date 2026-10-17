@@ -11,7 +11,7 @@ export const categories: Category[] = [
     name: "Cajas de Conexión y Protección",
     order: 1,
     color: "#1a65b5", // Prodelec Corporate Blue
-    image: "/productos/catalogo/04-cajas/5_-_compactada.jpg",
+    image: "/productos/categorias/cajas-conexion.jpeg",
     technicalSheet: "/productos/LP 09-2024 CAJAS.pdf",
     // Fichas oficiales de modelos de la línea que aún no están publicados como
     // producto. Los 4 modelos publicados (C1400CS, C11530CS, C4200CSLC y
@@ -59,7 +59,7 @@ export const categories: Category[] = [
     name: "Abrazaderas de Derivación",
     order: 2,
     color: "#0284c7", // Steel Blue
-    image: "/productos/catalogo/5-abrazadera_de_derivacion/5-abrazadera_de_derivacion_1.jpg",
+    image: "/productos/categorias/abrazaderas-derivacion.jpeg",
     technicalSheet: "/productos/LP 13-2025-AB.DER. HOMOLOGADAS.pdf",
     // Fichas de los modelos de la línea que no están publicados como producto.
     // Las versiones ABS y PP comparten código interno en el origen (AD-INS /
@@ -99,7 +99,7 @@ export const categories: Category[] = [
     name: "Abrazaderas de Reparación",
     order: 3,
     color: "#0d9488", // Industrial Teal
-    image: "/productos/catalogo/1-_abrazaderas_de_reparacion/150-165_largo_191_1.jpg",
+    image: "/productos/categorias/abrazaderas-reparacion.jpeg",
     technicalSheet: "/productos/LISTA DE PRECIOS ABRAZADERAS DE REPARACION LP11-2025.pdf",
     description: "Abrazaderas de acero inoxidable AISI 304 de 1 a 4 bandas para obturación y reparación definitiva de roturas en cañerías bajo presión.",
     subcategories: ["1 Banda", "2 Bandas", "3 Bandas", "Bridada"],
@@ -159,7 +159,7 @@ export const categories: Category[] = [
     name: "Cinchas de Acero Inoxidable",
     order: 5,
     color: "#3b82f6", // Cobalt
-    image: "/productos/catalogo/15_-_cinchas/1-_dn_100_1.jpg",
+    image: "/productos/categorias/cinchas.jpg",
     technicalSheet: "/productos/LP 15-2025-Cincha de Acero Inoxidable.pdf",
     description: "Cinchas de alta tenacidad en acero inoxidable para fijación, sujeción y ajuste de cañerías en obras públicas.",
     subcategories: ["DN50 a DN300", "Ajustables"],
@@ -189,7 +189,7 @@ export const categories: Category[] = [
     name: "Cepos de Corte y Seguridad",
     order: 6,
     color: "#dc2626", // Warning Red
-    image: "/productos/catalogo/23_cepos/23_cepos_1.jpg",
+    image: "/productos/categorias/cepos.jpg",
     description: "Dispositivos de seguridad y bloqueo antivandálico para corte y restricción de servicio en medidores de agua.",
     subcategories: ["Antivandálico", "De Corte", "De Restricción"],
     nameI18n: {

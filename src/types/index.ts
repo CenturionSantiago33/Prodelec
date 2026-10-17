@@ -46,7 +46,7 @@ export interface TechnicalSheetRef {
 export type Niche = "agua" | "saneamiento" | "gas" | "domiciliaria";
 
 /** Orden de presentación de los nichos en el catálogo. */
-export const NICHE_ORDER: Niche[] = ["agua", "saneamiento", "gas", "domiciliaria"];
+export const NICHE_ORDER: Niche[] = ["agua", "saneamiento", "domiciliaria", "gas"];
 
 export interface Category {
   id: string;

@@ -191,6 +191,8 @@ export const es = {
   "catalog.eyebrow": "Catálogo Técnico Industrial",
   "catalog.title": "Catálogo de Productos por Categoría",
   "catalog.subtitle": "Explorá nuestras líneas técnicas homologadas para redes de distribución de agua potable, saneamiento y gas.",
+  "catalog.dropdownTitle": "Catálogo de productos",
+  "catalog.linesVariants": "Líneas y variantes",
   "catalog.searchPlaceholder": "Buscar por nombre, código, medida o modelo...",
   "catalog.showing": "Mostrando",
   "catalog.productsWord": "productos",

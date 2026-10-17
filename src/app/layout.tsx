@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, League_Spartan } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -8,15 +8,15 @@ import { HydraulicRippleProvider } from "@/components/ui/HydraulicRippleProvider
 import { AppHydration } from "@/components/system/AppHydration";
 import { SITE } from "@/lib/site";
 
-const poppins = Poppins({
+const plexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
+  variable: "--font-plex-sans",
   subsets: ["latin"],
 });
 
-const leagueSpartan = League_Spartan({
-  weight: ["400", "600", "700", "800"],
-  variable: "--font-league-spartan",
+const plexCondensed = IBM_Plex_Sans_Condensed({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-condensed",
   subsets: ["latin"],
 });
 
@@ -64,7 +64,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${poppins.variable} ${leagueSpartan.variable} h-full antialiased`}
+      className={`${plexSans.variable} ${plexCondensed.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
         <AppHydration />

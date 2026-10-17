@@ -32,8 +32,8 @@
   --color-gray-900: #121416;
 
   /* ── Tipografía ────────────────────────────────────────── */
-  --font-sans:    var(--font-poppins);
-  --font-heading: var(--font-league-spartan);
+  --font-sans:    var(--font-plex-sans);
+  --font-heading: var(--font-plex-condensed);
 
   /* ── Radii — Reducidos, industriales ─────────────────── */
   --radius-none: 0px;
@@ -445,9 +445,9 @@
    el tracking amplio, que se ve mal sobre caracteres chinos.
 ════════════════════════════════════════════════════════════ */
 html[lang="zh"] {
-  --font-sans: var(--font-poppins), "PingFang SC", "Microsoft YaHei",
+  --font-sans: var(--font-plex-sans), "PingFang SC", "Microsoft YaHei",
     "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
-  --font-heading: var(--font-league-spartan), "PingFang SC",
+  --font-heading: var(--font-plex-condensed), "PingFang SC",
     "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
 }
 
@@ -455,7 +455,7 @@ html[lang="zh"] {
    `font-sans`, así que la variable por sí sola no alcanza: hay que declarar
    la familia de forma explícita para el chino. */
 html[lang="zh"] body {
-  font-family: var(--font-poppins), "PingFang SC", "Microsoft YaHei",
+  font-family: var(--font-plex-sans), "PingFang SC", "Microsoft YaHei",
     "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
 }
 
@@ -464,7 +464,7 @@ html[lang="zh"] h1,
 html[lang="zh"] h2,
 html[lang="zh"] h3,
 html[lang="zh"] h4 {
-  font-family: var(--font-league-spartan), "PingFang SC", "Microsoft YaHei",
+  font-family: var(--font-plex-condensed), "PingFang SC", "Microsoft YaHei",
     "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
 }
 

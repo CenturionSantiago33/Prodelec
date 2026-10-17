@@ -193,6 +193,8 @@ export const zh: typeof es = {
   "catalog.eyebrow": "工业技术产品目录",
   "catalog.title": "按产品类别浏览目录",
   "catalog.subtitle": "探索专为饮用水供水、排污排水及燃气管网设计的官方认证工程构件系列。",
+  "catalog.dropdownTitle": "产品目录",
+  "catalog.linesVariants": "系列与型号",
   "catalog.searchPlaceholder": "输入产品名称、编码、尺寸或型号搜索...",
   "catalog.showing": "显示",
   "catalog.productsWord": "个产品",

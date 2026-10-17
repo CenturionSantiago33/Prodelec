@@ -193,6 +193,8 @@ export const en: typeof es = {
   "catalog.eyebrow": "Industrial Technical Catalog",
   "catalog.title": "Product Catalog by Category",
   "catalog.subtitle": "Explore our certified technical lines for drinking water distribution, sanitation, and gas networks.",
+  "catalog.dropdownTitle": "Product catalog",
+  "catalog.linesVariants": "Lines & variants",
   "catalog.searchPlaceholder": "Search by name, code, size or model...",
   "catalog.showing": "Showing",
   "catalog.productsWord": "products",
