@@ -42,7 +42,7 @@ yarn-error.log*
 next-env.d.ts
 
 # archivos locales / personales (no versionar)
-data/
+/data/
 _capturas/
 Cambios_Prodelec.pdf
 
