@@ -12,7 +12,7 @@ import { useStore } from "@/store/useStore";
 import { Drawer } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/i18n/translations";
-import { categories as rawCategories, products as rawProducts } from "@/data/products";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { getTranslatedCategory } from "@/i18n";
 import { NICHE_ORDER, type Niche } from "@/types";
 
@@ -29,6 +29,7 @@ const NICHE_ICONS: Record<Niche, typeof Droplets> = {
 };
 
 export function Navbar() {
+  const { categories: rawCategories, products: rawProducts } = useCatalog();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

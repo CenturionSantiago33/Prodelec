@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { products, categories } from "@/data/products";
+import { getCatalogData } from "@/lib/catalogStore";
 import { SITE } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const { categories, products } = getCatalogData();
 
   const staticRoutes: { path: string; priority: number; freq: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
     { path: "", priority: 1, freq: "weekly" },

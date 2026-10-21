@@ -17,7 +17,7 @@ import {
   FileDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { products as allProducts, categories } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { useStore } from "@/store/useStore";
 import {
   useTranslation,
@@ -37,6 +37,7 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<"specs" | "downloads">("specs");
 
   const { addToCart, toggleFavorite, isFavorite, setCartOpen, language } = useStore();
+  const { products: allProducts, categories } = useCatalog();
   const t = useTranslation(language);
 
   // Catálogo local y sincrónico: no se necesita estado de carga ni efectos.

@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Mail, MapPin, Phone, Clock, ExternalLink, ArrowRight } from "lucide-react";
-import { categories } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedCategory } from "@/i18n";
 
@@ -34,6 +34,7 @@ function LinkedinIcon({ className }: { className?: string }) {
 const WHATSAPP_NUMBER = "5491139122763";
 
 export function Footer() {
+  const { categories } = useCatalog();
   const currentYear = new Date().getFullYear();
   const language = useStore(state => state.language);
   const t = useTranslation(language);

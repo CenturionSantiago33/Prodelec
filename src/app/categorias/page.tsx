@@ -3,7 +3,7 @@
 import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { categories as rawCategories, products as rawProducts } from "@/data/products";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedCategory, getTranslatedProduct } from "@/i18n";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -24,6 +24,7 @@ const NICHE_ICONS: Record<Niche, typeof Droplets> = {
 };
 
 function CategoriasContent() {
+  const { categories: rawCategories, products: rawProducts } = useCatalog();
   const language = useStore((state) => state.language);
   const t = useTranslation(language);
   const searchParams = useSearchParams();

@@ -2,7 +2,7 @@
 
 import React, { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { products as rawProducts, categories as rawCategories } from "@/data/products";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Drawer } from "@/components/ui/drawer";
@@ -142,6 +142,7 @@ function FilterPanel({
 }
 
 function CatalogContent() {
+  const { categories: rawCategories, products: rawProducts } = useCatalog();
   const searchParams = useSearchParams();
   const router = useRouter();
 

@@ -13,7 +13,7 @@ import {
   Truck,
   Download,
 } from "lucide-react";
-import { categories, products } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { CLIENTS, COUNTRIES } from "@/data/company";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedProduct, getTranslatedCategory } from "@/i18n";
@@ -86,36 +86,8 @@ export default function Home() {
     },
   ];
 
-  // Dynamic Noticias
-  const NOTICIAS = [
-    {
-      id: 1,
-      category: "Innovación",
-      date: "2025",
-      title: "Nueva línea de abrazaderas homologadas para redes de alta presión",
-      excerpt:
-        "Desarrollamos una nueva generación de abrazaderas de derivación con homologación extendida para presiones de trabajo superiores a 16 bar en redes de agua potable.",
-      image: "/carousel-2.jpg",
-    },
-    {
-      id: 2,
-      category: "Producción",
-      date: "2025",
-      title: "Ampliación de capacidad productiva en Florencio Varela",
-      excerpt:
-        "Nueva línea de inyección incorporada para responder a la demanda creciente del mercado regional.",
-      image: "/carousel-3.jpg",
-    },
-    {
-      id: 3,
-      category: "Exportación",
-      date: "2025",
-      title: "Prodelec consolida su presencia en Brasil y Uruguay",
-      excerpt:
-        "Acuerdos comerciales con operadores de infraestructura hídrica en Sudamérica.",
-      image: "/carousel-4.jpg",
-    },
-  ];
+  // Catálogo y novedades desde el proveedor (incluye los cambios del admin)
+  const { categories, products, novelties: NOTICIAS } = useCatalog();
 
   const newProducts = products.filter((p) => p.isNew).slice(0, 6);
 

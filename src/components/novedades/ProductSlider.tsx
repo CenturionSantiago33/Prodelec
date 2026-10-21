@@ -4,7 +4,7 @@ import React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { products, categories } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 
 interface ProductSliderProps {
   title: string;
@@ -14,6 +14,7 @@ interface ProductSliderProps {
 }
 
 export function ProductSlider({ title, subtitle, filterByNew, filterByViews }: ProductSliderProps) {
+  const { products, categories } = useCatalog();
   const [emblaRef] = useEmblaCarousel({
     align: "start",
     dragFree: true,

@@ -6,7 +6,7 @@ import { ShoppingCart, Ruler, ArrowRight, FileText, Check } from "lucide-react";
 import { Product } from "@/types";
 import { useStore } from "@/store/useStore";
 import { useTranslation, getTranslatedCategory, getTranslatedProduct } from "@/i18n";
-import { categories as rawCategories } from "@/data/products";
+import { useCatalog } from "@/components/system/CatalogProvider";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +15,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product: rawProduct, viewMode = "grid" }: ProductCardProps) {
   const { addToCart, setCartOpen, language } = useStore();
+  const { categories: rawCategories } = useCatalog();
   const t = useTranslation(language);
 
   const product = getTranslatedProduct(rawProduct, language);

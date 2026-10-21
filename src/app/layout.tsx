@@ -6,6 +6,8 @@ import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { HydraulicRippleProvider } from "@/components/ui/HydraulicRippleProvider";
 import { AppHydration } from "@/components/system/AppHydration";
+import { CatalogProvider } from "@/components/system/CatalogProvider";
+import { PageViewTracker } from "@/components/system/PageViewTracker";
 import { SITE } from "@/lib/site";
 
 const plexSans = IBM_Plex_Sans({
@@ -69,12 +71,15 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans">
         <AppHydration />
         <HydraulicRippleProvider />
-        <Navbar />
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
-        <Footer />
-        <CartDrawer />
+        <PageViewTracker />
+        <CatalogProvider>
+          <Navbar />
+          <main className="flex-1 flex flex-col">
+            {children}
+          </main>
+          <Footer />
+          <CartDrawer />
+        </CatalogProvider>
       </body>
     </html>
   );

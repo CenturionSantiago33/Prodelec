@@ -2,12 +2,13 @@
 
 import React, { useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { products, categories } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { Printer, ArrowLeft, ShieldCheck, Filter } from "lucide-react";
 import Link from "next/link";
 import { PdfIndex } from "@/components/pdf/PdfIndex";
 
 function CatalogoContent() {
+  const { products, categories } = useCatalog();
   const searchParams = useSearchParams();
   const router = useRouter();
 

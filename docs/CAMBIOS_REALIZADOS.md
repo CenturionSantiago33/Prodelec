@@ -965,6 +965,73 @@ y el HTML del `h1` es exactamente
 > estaba en su momento. Se dejan como registro histórico; **lo vigente es esta
 > sección**.
 
+---
+
+## 22. Panel de administración real (auth + CRUD + analítica)
+
+Se reemplazó el panel `/admin` que era una **demo sin autenticación y con datos
+ficticios** (cotizaciones, clientes, stock y métricas inventadas) por un panel
+funcional con persistencia y seguridad básica.
+
+### 22.1 Autenticación
+
+- `src/lib/auth.ts`: token de sesión firmado con **HMAC-SHA256 vía Web Crypto**
+  (funciona en Edge y en Node); la contraseña se verifica con **scrypt** en la ruta
+  de login (solo Node). Un único usuario admin.
+- `src/middleware.ts`: protege `/admin/*` (menos `/admin/login`) y redirige al login
+  si no hay sesión válida.
+- Rutas: `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`.
+- Credenciales configurables con `ADMIN_USER`, `ADMIN_PASSWORD` y `ADMIN_SECRET`
+  (archivo `.env.local`, que no se versiona).
+
+### 22.2 Almacenamiento (JSON, sin dependencias)
+
+- `src/lib/db.ts`: mini base de datos en `data/db.json` (lectura/escritura con `fs`).
+- `src/lib/catalogStore.ts`: `getCatalogData()` devuelve categorías + productos +
+  novedades, con **prioridad a lo que editó el admin** sobre la semilla
+  (`src/data/products.ts` / `src/data/novelties.ts`). Incluye `trackView()`.
+
+> **Límite honesto:** el archivo funciona en desarrollo. En un deploy serverless
+> (Render/Vercel) el filesystem no persiste entre deploys; el camino es migrar a
+> Supabase (ver `docs/PROPUESTA_BACKEND.md`).
+
+### 22.3 Datos en runtime (el sitio público refleja los cambios)
+
+Antes todo el catálogo se leía por import estático de `src/data/products.ts` (queda
+"horneado" en el build). Ahora:
+
+- `GET /api/catalog` sirve el catálogo en runtime (con lo editado por el admin).
+- `src/components/system/CatalogProvider.tsx`: proveedor cliente que arranca con la
+  semilla (para que el SSR/SEO nunca quede vacío) y enseguida trae los datos reales
+  de `/api/catalog`; re-sincroniza al volver a la pestaña.
+- Se migraron a `useCatalog()` los consumidores: `Navbar`, `Footer`, `ProductCard`,
+  `ProductQuickViewModal`, `ProductSlider`, y las páginas `home`, `/categorias`,
+  `/productos`, `/productos/[slug]`, `/pdf/catalogo`, `/pdf/ficha-tecnica`.
+- `src/app/sitemap.ts` pasa a leer `getCatalogData()`.
+
+### 22.4 Analítica real de visitas
+
+- `src/components/system/PageViewTracker.tsx` (en el layout raíz): registra cada
+  navegación en `POST /api/track` (excluye `/admin` y `/api`).
+- `GET /api/admin/stats`: total, visitas de hoy, serie de los últimos 14 días y
+  páginas más visitadas.
+
+### 22.5 CRUD
+
+- Productos: `GET/POST /api/admin/products` y `PUT/DELETE /api/admin/products/[id]`.
+- Novedades: `GET/POST /api/admin/novelties` y `PUT/DELETE /api/admin/novelties/[id]`.
+- UI nueva: `/admin` (dashboard), `/admin/productos` (tabla + formulario con toggles
+  de stock/homologado/nuevo), `/admin/novedades` (tarjetas + formulario) y
+  `/admin/login`. Las páginas demo viejas (`cotizaciones`, `clientes`, `mailing`,
+  `imagenes`) quedaron fuera de la navegación.
+
+### 22.6 Verificación
+
+`npx tsc --noEmit` 0 errores · `npm run build` OK (**33 rutas**: 23 + `/admin/login`
++ `/admin/novedades` + 7 rutas API) · probado en runtime: login → redirección del
+middleware → dashboard con estadísticas → crear/editar/eliminar producto y novedad
+(aparece y desaparece en `/api/catalog`) → el sitio público muestra los cambios.
+
 
 
 

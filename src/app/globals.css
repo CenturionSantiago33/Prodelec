@@ -498,3 +498,20 @@ html[lang="zh"] :where(.btn-primary-corp, .btn-outline-corp, .btn-ghost-corp) {
 .dd-scroll:hover::-webkit-scrollbar-thumb {
   background-color: rgba(148, 163, 184, 0.45);
 }
+
+/* Panel de administracion - inputs reutilizables */
+.admin-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  color: #0f172a;
+  outline: none;
+  background: #fff;
+}
+.admin-input:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(33, 119, 204, 0.18);
+}
+

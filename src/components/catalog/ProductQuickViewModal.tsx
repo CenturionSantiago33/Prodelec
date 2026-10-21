@@ -17,7 +17,7 @@ import {
 import { Product } from "@/types";
 import { useStore } from "@/store/useStore";
 import { useTranslation } from "@/i18n/translations";
-import { categories } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 
 interface ProductQuickViewModalProps {
   product: Product | null;
@@ -26,6 +26,7 @@ interface ProductQuickViewModalProps {
 
 export function ProductQuickViewModal({ product, onClose }: ProductQuickViewModalProps) {
   const { addToCart, setCartOpen, language } = useStore();
+  const { categories } = useCatalog();
   const t = useTranslation(language);
   const category = product ? categories.find((c) => c.id === product.categoryId) : null;
 

@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { products } from "@/data/mock";
+import { useCatalog } from "@/components/system/CatalogProvider";
 import { Printer, ArrowLeft, FileText } from "lucide-react";
 import Link from "next/link";
 import { PdfIndex } from "@/components/pdf/PdfIndex";
 
 export default function FichaTecnicaPDFPage() {
+  const { products } = useCatalog();
   const handlePrint = () => {
     window.print();
   };

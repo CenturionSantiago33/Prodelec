@@ -93,11 +93,21 @@ de productos; el resto de las páginas consume este archivo.
 
 ---
 
-## Panel `/admin` — AVISO DE SEGURIDAD
+## Panel `/admin` — autenticado, con persistencia local
 
-El panel `/admin` es **una demostración**: **no tiene autenticación ni persistencia** y trabaja con
-datos simulados en memoria. **No debe exponerse públicamente tal como está.** `robots.txt` lo excluye
-de indexación, pero eso **no** lo protege. Antes de usarlo en producción, ver `docs/PROPUESTA_BACKEND.md`.
+El panel `/admin` ya **no es una demo**: tiene **login con usuario y contraseña**, gestiona
+**productos** y **novedades** (CRUD), muestra **estadísticas reales de visitas** y persiste los
+cambios en `data/db.json`. Los cambios se reflejan en el sitio público sin rebuild.
+
+- Credenciales de acceso: se configuran con las variables de entorno `ADMIN_USER`,
+  `ADMIN_PASSWORD` y `ADMIN_SECRET` en un archivo `.env.local` (que **no** se versiona).
+- Rutas de la API: `/api/auth/*`, `/api/catalog`, `/api/admin/*` y `/api/track`.
+- `src/middleware.ts` protege `/admin/*` (redirige al login si no hay sesión).
+
+> **Límite:** el almacenamiento en archivo sirve para desarrollo. En un deploy serverless
+> (Render/Vercel) el filesystem no persiste entre deploys; para producción hay que mover los datos
+> a una base real (Supabase), ver `docs/PROPUESTA_BACKEND.md`. El detalle completo está en
+> `docs/CAMBIOS_REALIZADOS.md` §22.
 
 ---
 
